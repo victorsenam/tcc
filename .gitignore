@@ -1,0 +1,10 @@
+**/*.aux
+**/*.log
+**/*.lof
+**/*.lot
+**/*.out
+**/*.toc
+**/*.bib
+**/*.swp
+**/*.swo
+**/*.run.xml
