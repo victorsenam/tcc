@@ -39,13 +39,25 @@ f(i,j) = \begin{cases}
 \end{cases}
 $$
 
-A recorrência acima pode ser resolvida facilmente com programação dinâmica em tempo $O(n^3)$.
-\begin{algorithm}
+A recorrência acima pode ser resolvida facilmente com programação dinâmica em tempo $O(n^3)$. Consideramos que os valores de $\sum\limits_{k=1}^j v_k$ estão pré calculados para todo $j \leq n$, assim, conseguimos calcular $\sum\limits_{k=i}^j v_k$ para todo par $i,j$ onde $1 \leq i \leq j \leq n$ em tempo $O(1)$.
+\begin{algorithm}[h]
 \caption{Concatenação de Custo Mínimo $O(n^3)$}
 \label{MinCostConcat}
 \begin{algorithmic}[1]
 \Function{MinCostConcat}{v, n}
-\State \Return \text{resposta}
+    \For{$i$ de $1$ até $n$}
+        \State $f(i,i) = v_i$
+    \EndFor
+    \For{$i$ de $1$ até $n$}
+        \For{$j$ de $i+1$ até $n$}
+            \State $f(i,j) = \inf$
+            \For{$k$ de $i$ até $j-1$}
+                \State $f(i,j) = \min\{f(i,j), f(i,k)+f(k+1,j)\}$
+            \EndFor
+            \State $f(i,j) += \sum\limits_{k=i}^j v_k$
+        \EndFor
+    \EndFor
+    \State \Return \text{resposta}
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -67,14 +79,14 @@ f(i,j) = \begin{cases}
 \end{cases}
 $$
 
-Além disso, chamamos $f_k(i,j)$ de corte do estado $(i,j)$ no ponto $k$ e $f_\bullet(i,j)$ de constante do estado $(i,j)$.
+Além disso, chamamos as funções $f_k(i,j)$ de funções de corte da recorrência e a função $f_\bullet$ de função custo da recorrência.
 \end{defi}
 
 Se definirmos $f_\bullet : [i,j] \in [[n]] \mapsto \sum\limits_{k=i}^j v_k$ e, para todo $k \in [n]$, $f_k : [i,j] \in \{ \B{N}^2 \mid 1 \leq i \leq k < j \leq n \} \mapsto f(i,k) + f(k+1,j)$, temos $f$ escrita como recorrência de intervalos.
 
 \begin{defi}[Monótono nos Intervalos] \label{mon_int}
 Dizemos que uma função $w : [[n]] \to \B{R}$ é monótona nos intervalos se, para todo $[i',j'] \subseteq [i,j] \in [[n]]$,
-$$ w(i',j') \leq w(i,j) $$
+$$ w(i',j') \leq w(i,j). $$
 \end{defi}
 
 \begin{prop}
@@ -82,7 +94,10 @@ $f$ é monótona nos intervalos.
 \end{prop}
 
 \begin{proof}
-Prova vazia.
+É fácil ver que $f_\bullet$ é monótona nos intervalos, pois todos os elementos de $v$ são positivos. \\
+Queremos provar que, para todo intervalo $[i,j] \in [[n]]$ vale que se $[i',j'] \subseteq [i,j]$, então $f(i',j') \leq f(i,j)$. Vamos usar indução no tamanho do intervalo, ou seja, indução no valor de $j - i + 1$. Inicialmente, assumimos $j - i + 1 = 1$, isto é, $j = i$. Já que o único intervalo contido num intervalo de tamanho 1 é ele mesmo, vale a tese. Agora, assuma que $j - i + 1 = d > 1$. \\
+A ultima operação feita para gerar $v[i..j]$ é do tipo 2, já que $v[i..j]$ tem tamanho maior do que 1, ou seja, existe um $k \in [i..j-1]$ tal que $f(i,j) = f(i,k) + f(k+1,j) + f_\bullet(i,j)$. Temos três casos. Se $j' \leq k$, então $[i',j'] \subseteq [i,k]$, já que $k - i + 1 < j - i + 1$, aplicamos a hipótese de indução e podemos afirmar que $f(i',j') \leq f(i,k)$, portanto, $f(i',j') \leq f(i',j') + f(k+1,j) + f_\bullet(i,j) \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$. O caso onde $i' > k$ implica em $[i',j'] \subseteq [k+1,j]$ e, de maneira análoga, obtemos $f(i',j') \leq f(k+1,j)$ e, portanto, $f(i',j') \leq f(i,j)$. \\
+No último caso, $i' \leq k < j'$. Mas, então, uma forma válida de gerar o vetor $v[i'..j']$ é concatenar os vetores $v[i'..k]$ e $v[k+1..j']$. Isso quer dizer que $f(i',j') \leq f(i',k) + f(k+1,j') + f_\bullet(i',j')$. Podemos aplicar a hipótese de indução para afirmar que $f(i',k) \leq f(i,k)$ e $f(k+1,j') \leq f(k+1,j)$. Além disso, já que $f_\bullet$ é monótona nos intervalos, $f_\bullet(i',j') \leq f_\bullet(i,j)$, portanto, $f(i',k) + f(k+1,j') + f_\bullet(i',j') \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$.
 \end{proof}
 
 \begin{defi}[Desigualdade Quadrangular] \label{qi}
@@ -119,14 +134,34 @@ Prova vazia.
 Sabendo que para a função $f$ vale \ref{knuthyao}, podemos alterar o algoritmo \ref{MinCostConcat} gerando um novo algoritmo de complexidade $O(n^2)$ para calcular $f$. Se calcularmos, junto com $f$, os valores de $f_*$, podemos limitar os testes feitos para calcular cada estado de $f$. \\
 É importante notar que para todos estados $(i,j)$ com $i < j$, precisamos conhecer o valor de $f_*(i+1, j)$ e $f_*(i,j-1)$ antes de calcular $f(i,j)$, ou seja, os estados $(i+1,j)$ e $(i,j-1)$ devem ser calculados antes de $(i,j)$. Essa restrição não ocorria na ultima versão deste algoritmo. Para resolver isso, basta iterar pelos estados em ordem de tamanho, ou seja, primeiro calculamos todos os estados $(i,j)$ onde $j-i = 1$, depois aqueles onde $j-i = 2$ e assim por diante.
 
-\begin{algorithm}
+\begin{algorithm}[h]
 \caption{Concatenação de Custo Mínimo $O(n^2)$}
-\label{MinCostConcatOpt}
+\label{alg_MinCostConcatOpt}
 \begin{algorithmic}[1]
+\Function{MinCostConcatOpt}{v, n}
 \State \Return \text{resposta}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Observe que já que as observações feitas para o problema da Concatenação de Custo Mínimo foram feitas em termos de recorrências de intervalos, qualquer $f$ que seja uma reccorência de intervalos e respeite \ref{knuthyao} pode ser resolvida com uma versão adaptada do algoritmo \ref{alg_MinCostConcatOpt}. Consideramos então tal $f$ com funções de corte $f_k$ e contantes $f_\bullet$.
+
+\begin{algorithm}[h]
+\caption{Otimização de Knuth-Yao}
+\label{alg_KnuthYao}
+\begin{algorithmic}[1]
+\Function{KnuthYao}{v, n}
+\State \Return \text{resposta}
+\EndFunction
 \end{algorithmic}
 \end{algorithm}
 
 \begin{prop}
-O algoritmo \ref{MinCostConcatOpt} tem tempo $O(n^2)$.
+O algoritmo \ref{alg_KnuthYao} faz $O(n^2)$ chamadas a $f_\bullet$, $f_*$ e $f$.
 \end{prop}
+
+\begin{proof}
+Prova vazia.
+\end{proof}
+
+Já que o algoritmo \ref{alg_MinCostConcatOpt} é uma especificação de \ref{alg_KnuthYao}, ele tem complexidade $O(n^2)$ já que cada chamada a $f_\bullet$ tem custo $O(1)$, assim como as chamadas a $f_*$ e $f$ que são memorizadas.
