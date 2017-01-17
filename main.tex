@@ -42,10 +42,13 @@ headsepline, % Uncomment to get a line under the header
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
 \usepackage{palatino} % Use the Palatino font by default
+\usepackage{amsmath,amsthm,amsfonts}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
 
 \usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
-\addbibresource{example.bib} % The filename of the bibliography
+\addbibresource{main.bib} % The filename of the bibliography
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 
@@ -89,6 +92,7 @@ headsepline, % Uncomment to get a line under the header
 
 \begin{document}
 
+\input{settings.tex}
 \frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
 
 \pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
