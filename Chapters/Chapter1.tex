@@ -78,22 +78,6 @@ Além disso, chamamos as funções $f_k(i,j)$ de funções de corte da recorrên
 
 Se definirmos $f_\bullet : [i..j] \in [[n]] \mapsto \sum\limits_{k=i}^j v_k$ e, para todo $k \in [n]$, $f_k : [i..j] \in \{ \B{N}^2 \mid 1 \leq i \leq k < j \leq n \} \mapsto f(i,k) + f(k+1,j)$, temos $f$ escrita como recorrência de intervalos.
 
-\begin{defi}[Monótono nos Intervalos] \label{mon_int}
-Dizemos que uma função $w : [[n]] \to \B{R}$ é monótona nos intervalos se, para todo $[i'..j'] \subseteq [i..j] \in [[n]]$,
-$$ w(i',j') \leq w(i,j). $$
-\end{defi}
-
-\begin{prop}
-$f$ é monótona nos intervalos.
-\end{prop}
-
-\begin{proof}
-É fácil ver que $f_\bullet$ é monótona nos intervalos, pois todos os elementos de $v$ são positivos. \\
-Queremos provar que, para todo intervalo $[i..j] \in [[n]]$ vale que se $[i'..j'] \subseteq [i..j]$, então $f(i',j') \leq f(i,j)$. Vamos usar indução no tamanho do intervalo, ou seja, indução no valor de $j - i + 1$. Inicialmente, assumimos $j - i + 1 = 1$, isto é, $j = i$. Já que o único intervalo contido num intervalo de tamanho 1 é ele mesmo, vale a tese. Agora, assuma que $j - i + 1 = d > 1$. \\
-A ultima operação feita para gerar $v[i..j]$ é do tipo 2, já que $v[i..j]$ tem tamanho maior do que 1, ou seja, existe um $k \in [i..j-1]$ tal que $f(i,j) = f(i,k) + f(k+1,j) + f_\bullet(i,j)$. Temos três casos. Se $j' \leq k$, então $[i'..j'] \subseteq [i..k]$, já que $k - i + 1 < j - i + 1$, aplicamos a hipótese de indução e podemos afirmar que $f(i',j') \leq f(i,k)$, portanto, $f(i',j') \leq f(i',j') + f(k+1,j) + f_\bullet(i,j) \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$. O caso onde $i' > k$ implica em $[i'..j'] \subseteq [k+1..j]$ e, de maneira análoga, obtemos $f(i',j') \leq f(k+1,j)$ e, portanto, $f(i',j') \leq f(i,j)$. \\
-No último caso, $i' \leq k < j'$. Mas, então, uma forma válida de gerar o vetor $v[i'..j']$ é concatenar os vetores $v[i'..k]$ e $v[k+1..j']$. Isso quer dizer que $f(i',j') \leq f(i',k) + f(k+1,j') + f_\bullet(i',j')$. Podemos aplicar a hipótese de indução para afirmar que $f(i',k) \leq f(i,k)$ e $f(k+1,j') \leq f(k+1,j)$. Além disso, já que $f_\bullet$ é monótona nos intervalos, $f_\bullet(i',j') \leq f_\bullet(i,j)$, portanto, $f(i',k) + f(k+1,j') + f_\bullet(i',j') \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$.
-\end{proof}
-
 \begin{defi}[Corte Ótimo]
 Se $f : [[n]] \to \B{R}$ é uma recorrência de intervalos, a função $f_* : [i..j] \in [[n]] \mapsto \min\limits_{i \leq k < j} \Big\{ k \mid f(i,j) = f_k(i,j) \Big\}$ é chamada de corte ótimo de $f$. Ela representa, para cada estado $[i..j]$, o ponto de corte que gera uma resposta ótima e tem o menor índice. 
 \end{defi}
@@ -119,15 +103,32 @@ $$ w(i',j) + w(i,j') \leq w(i,j) + w(i',j') $$
 Foram appresentados em \cite{Yao:1980} alguns fatos sobre a Desigualdade Quadrangular que serão enunciados e provados aqui.
 
 \begin{theo} \label{qi_to_knuthyao}
-Se uma recorrência $f$ é uma recorrência de intervalos que respeita a Desigualdade Quadrangular e é monótona nos intervalos, vale \ref{knuthyao}.
+Se uma recorrência $f$ é uma recorrência de intervalos que respeita a Desigualdade Quadrangular, vale \ref{knuthyao}.
 \end{theo}
 
 \begin{proof}
-Prova vazia.
+Seja $f$ uma recorrência de intervalos que respeita a Desigualdade Quadrangular. Sejam $[i',j'] \subseteq [i,j] \in [[n]]$.\\
+Vamos provar que vale $f_*(i,j') \leq f_*(i,j)$. Suponha que vale $j' > c = f_*(i,j') > f_*(i,j) = b \geq i$, temos
+$$ f_c(i,j') = f(i,c) + f(c+1,j') < f(i,b) + f(b+1,j') = f_b(i,j') \text{ e } $$
+$$ f(i,b) + f(b+1,j) \leq f(i,c) + f(c+1,j) \text{.} $$
+Somando as duas equações, obtemos
+$$ f(b+1,j) + f(c+1,j') < f(b+1,j') + f(c+1,j) \text{, }$$
+porém, já que $[c+1,j'] \subseteq [b+1,j] \in [[n]]$, esta afirmação contradiz a Desigualdade Quadrangular. Portanto, por absurdo, vale $f_*(i,j') \leq f_*(i,j)$. \\
+De forma parecida, vamos provar que vale $f_*(i,j) \leq f_*(i',j)$. Suponha que vale $j > c = f_*(i,j) > f_*(i',j) = b \geq i'$, temos
+$$ f_c(i,j) = f(i,c) + f(c+1,j) < f(i,b) + f(b+1,j) = f_b(i,j) \text{ e } $$
+$$ f_b(i',j) = f(i',b) + f(b+1,j) \leq f(i',c) + f(c+1,j) = f_c(i',j) \text{.} $$
+Somamos as duas, obtendo
+$$ f(i',b) + f(i,c) < f(i,b) + f(i',c) \text{, }$$
+mas $[i',b] \subseteq [i,c] \in [[n]]$, portanto, esta afirmaçào contradiz a Desigualdade Quadrangular. Por absurdo, vale $f_*(i,j) \leq f_*(i',j)$.
 \end{proof}
 
+\begin{defi}[Monótono nos Intervalos] \label{mon_int}
+Dizemos que uma função $w : [[n]] \to \B{R}$ é monótona nos intervalos se, para todo $[i'..j'] \subseteq [i..j] \in [[n]]$,
+$$ w(i',j') \leq w(i,j). $$
+\end{defi}
+
 \begin{theo} \label{qi_cost_to_rec}
-Se $f$ é uma recorrência de intervalos com função de custo $f_\bullet$ e $f_\bullet$ respeita a Desigualdade Quadrangular, então, $f$ respeita a Desigualdade Quadrangular.
+Se $f$ é uma recorrência de intervalos com função de custo $f_\bullet$, $f$ é monótona nos intervalos e $f_\bullet$ respeita a Desigualdade Quadrangular, então, $f$ respeita a Desigualdade Quadrangular.
 \end{theo}
 
 \begin{proof}
@@ -141,11 +142,28 @@ Prova vazia.
 Agora, com os teoremas sobre desigualdade quadrangular, podemos provar que $f$ é Knuth-Yao Otimizável.
 
 \begin{prop}
+$f$ é monótona nos intervalos.
+\end{prop}
+
+\begin{proof}
+É fácil ver que $f_\bullet$ é monótona nos intervalos, pois todos os elementos de $v$ são positivos. \\
+Queremos provar que, para todo intervalo $[i..j] \in [[n]]$ vale que se $[i'..j'] \subseteq [i..j]$, então $f(i',j') \leq f(i,j)$. Vamos usar indução no tamanho do intervalo, ou seja, indução no valor de $j - i + 1$. Inicialmente, assumimos $j - i + 1 = 1$, isto é, $j = i$. Já que o único intervalo contido num intervalo de tamanho 1 é ele mesmo, vale a tese. Agora, assuma que $j - i + 1 = d > 1$. \\
+A ultima operação feita para gerar $v[i..j]$ é do tipo 2, já que $v[i..j]$ tem tamanho maior do que 1, ou seja, existe um $k \in [i..j-1]$ tal que $f(i,j) = f(i,k) + f(k+1,j) + f_\bullet(i,j)$. Temos três casos. Se $j' \leq k$, então $[i'..j'] \subseteq [i..k]$, já que $k - i + 1 < j - i + 1$, aplicamos a hipótese de indução e podemos afirmar que $f(i',j') \leq f(i,k)$, portanto, $f(i',j') \leq f(i',j') + f(k+1,j) + f_\bullet(i,j) \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$. O caso onde $i' > k$ implica em $[i'..j'] \subseteq [k+1..j]$ e, de maneira análoga, obtemos $f(i',j') \leq f(k+1,j)$ e, portanto, $f(i',j') \leq f(i,j)$. \\
+No último caso, $i' \leq k < j'$. Mas, então, uma forma válida de gerar o vetor $v[i'..j']$ é concatenar os vetores $v[i'..k]$ e $v[k+1..j']$. Isso quer dizer que $f(i',j') \leq f(i',k) + f(k+1,j') + f_\bullet(i',j')$. Podemos aplicar a hipótese de indução para afirmar que $f(i',k) \leq f(i,k)$ e $f(k+1,j') \leq f(k+1,j)$. Além disso, já que $f_\bullet$ é monótona nos intervalos, $f_\bullet(i',j') \leq f_\bullet(i,j)$, portanto, $f(i',k) + f(k+1,j') + f_\bullet(i',j') \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$.
+\end{proof}
+
+\begin{prop}
 $f$ é Knuth-Yao otimizável.
 \end{prop}
 
 \begin{proof}
-Primeiramente, vamos mostrar que vale a desigualdade quadrangular para $f_\bullet$. Sejam $[i',j'] \subseteq [i,j] \in [[n]]$. Se $i < i' < j' < j$, temos $f_\bullet(i',j) + f_\bullet(i,j') = f_\bullet(i',j') + f_\bullet(j'+1,j) + f_\bullet(i,i') + f_\bullet(i'+1,j') = f_\bullet(i',j') + f_\bullet(i,j)$. Se $i < i' = j' < j$, temos $f_\bullet(i',j) + f_\bullet(i,j') = f_\bullet(i',j) + f_\bullet(i,i') = f_\bullet(i,j) + f_\bullet(i',j')$. Os outros casos $i = j$, $i = i'$ e $j = j'$ valem trivialmente. \\
+Primeiramente, vamos mostrar que vale a desigualdade quadrangular para $f_\bullet$. Sejam $[i',j'] \subseteq [i,j] \in [[n]]$,
+$$
+f_\bullet(i,j') + f_\bullet(i',j) = 
+\sum\limits_{k=i}^{j'} v_k + \sum\limits_{k=i'}^j v_k =
+\sum\limits_{k=i}^j v_k + \sum\limits_{k=i'}^{j'} v_k =
+f_\bullet(i,j) + f_\bullet(i'j') \text{.} 
+$$
 Pelo Teorema \ref{qi_cost_to_rec}, a desigualdade quadrangular vale para $f$. Pelo Teorema \ref{qi_to_knuthyao}, $f$ é Knuth-Yao otimizável.
 \end{proof}
 
@@ -161,7 +179,7 @@ Se calcularmos, junto com $f$, os valores de $f_*$, podemos limitar os testes fe
         \State $f_*(i,i) = i$
     \EndFor
     \For{$d$ de $1$ até $n-1$}
-        \For{$i$ de $i$ até $n-d$}
+        \For{$i$ de $1$ até $n-d$}
             \State $j = i+d$
             \State $f(i,j) = \inf$
             \For{$k$ de $f_*(i,j-1)$ até $\min\{f_*(i+1,j), j-1\}$}
@@ -191,16 +209,16 @@ Note que já que as observações feitas para o problema da Concatenação de Cu
         \State $f_*(i,i) = i$
     \EndFor
     \For{$d$ de $1$ até $n-1$}
-        \For{$i$ de $i$ até $n-d$}
+        \For{$i$ de $1$ até $n-d$}
             \State $j = i+d$
             \State $f(i,j) = \inf$
             \For{$k$ de $f_*(i,j-1)$ até $\min\{f_*(i+1,j), j-1\}$}
-                \If{$f_k(i,j) < f(i,j)$}
-                    \State $f(i,j) = f_k(i,j)$
+                \If{$f_k(i,j) < f(i,j)$} \label{alg_KnuthYao:fk}
+                    \State $f(i,j) = f_k(i,j)$ \label{alg_KnuthYao:fk2}
                     \State $f_*(i,j) = k$
                 \EndIf
             \EndFor
-            \State $f(i,j) += f_\bullet(i,j)$
+            \State $f(i,j) += f_\bullet(i,j)$ \label{alg_KnuthYao:fbullet}
         \EndFor
     \EndFor
     \State \Return $f(1,n)$
@@ -209,11 +227,18 @@ Note que já que as observações feitas para o problema da Concatenação de Cu
 \end{algorithm}
 
 \begin{prop}
-O algoritmo \ref{alg_KnuthYao} faz $O(n^2)$ chamadas a $f_\bullet$, $f_*$ e $f$.
+O algoritmo \ref{alg_KnuthYao} faz $O(n^2)$ chamadas a $f_\bullet$ e qualquer das $f_k$.
 \end{prop}
 
 \begin{proof}
-Prova vazia.
+As chamdas a $f_\bullet$ estão todas na linha \ref{alg_KnuthYao:fbullet}. Podemos expressar a quantidade de ocorrências desta linha da seguinte maneira
+$$ \sum\limits_{d=1}^{n-1} \sum\limits_{i=1}^{n-d} 1 = n(n-1) - \sum\limits_{d=1}^{n-1} d = O(n^2). $$
+As chamdas a $f_k$, para todo $k$, estão todas nas linhas \ref{alg_KnuthYao:fk}, \ref{alg_KnuthYao:fk2}. Podemos expressar a quantidade máxima de ocorrências destas linhas da seguinte maneira:
+\begin{multline*} 
+\sum\limits_{d=1}^{n-1} \sum\limits_{i=1}^{n-d} \sum\limits_{k=f_*(i,i+d-1)}^{f_*(i+1,i+d)} 2 =
+\sum\limits_{d=1}^{n-1} \sum\limits_{i=1}^{n-d} 2(f_*(i+1,i+d) - f_*(i,i+d-1) + 1) \leq \\
+\sum\limits_{d=1}^{n-1} 4n = O(n^2)
+\end{multline*}
 \end{proof}
 
 Já que o algoritmo \ref{alg_MinCostConcatOpt} é uma especificação de \ref{alg_KnuthYao}, ele tem complexidade $O(n^2)$ já que cada chamada a $f_\bullet$ tem custo $O(1)$, assim como as chamadas a $f_*$ e $f$ que são memorizadas.
