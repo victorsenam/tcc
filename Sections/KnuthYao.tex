@@ -1,8 +1,5 @@
-% Chapter 1
-
-\chapter{Otimização de Knuth-Yao} % Main chapter title
-
-\label{Knuth-Yao} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+\section{Otimização de Knuth-Yao}
+\label{Knuth-Yao}
 
 %----------------------------------------------------------------------------------------
 
@@ -18,7 +15,7 @@ Além disso, eu defino funções sobre intervalos (exemplo: $f : [[n]] \to \B{R}
 
 %----------------------------------------------------------------------------------------
 
-\section{Concatenação de Custo Mínimo}
+\subsection{Concatenação de Custo Mínimo}
 
 Para apresentar a técnica da otimização de Knuth-Yao, vamos introduzir o problema da \textit{Concatenação de Custo Mínimo}. O problema consiste em um inteiro $n$, um vetor $v \in \B{R}^n_+$ e duas operações:
 
@@ -93,7 +90,7 @@ Queremos conseguir provar que $f$ é Knuth-Yao Otimizável para podermos alterar
 
 %----------------------------------------------------------------------------------------
 
-\section{A Desigualdade Quadrangular}
+\subsection{A Desigualdade Quadrangular}
 
 \begin{defi}[Desigualdade Quadrangular] \label{qi}
 Dizemos que uma função $w : [[n]] \to \B{R}$ respeita a desigualdade quadrangular se para todo \todo{O Yao usa $i \leq i' \leq j \leq j'$, eu acho que em termos de intervalos fica bem menos confuso} $[i',j'] \subseteq [i,j] \in [[n]]$ tais que $1 \leq i \leq i' \leq j \leq j' \leq n$ vale
@@ -137,7 +134,7 @@ Prova vazia.
 
 %----------------------------------------------------------------------------------------
 
-\section{Otimização}
+\subsection{Otimização}
 
 Agora, com os teoremas sobre desigualdade quadrangular, podemos provar que $f$ é Knuth-Yao Otimizável.
 
