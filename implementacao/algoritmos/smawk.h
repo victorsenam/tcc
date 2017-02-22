@@ -1,5 +1,5 @@
-#ifndef CODE_SMAWK
-#define CODE_SMAWK
+#ifndef TCC_smawk
+#define TCC_smawk
 
 #include <iostream>
 #include <vector>
