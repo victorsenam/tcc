@@ -19,11 +19,11 @@ std::function< void() > TEST_compare_vectors_int (const std::vector<int> & a, co
     return [a, b] ()->void {
         printf("Esperado:\n\t");
         for (unsigned i = 0u; i < a.size(); i++)
-            printf(" (%d,%d)", a[i].x, a[i].y);
+            printf(" %d", a[i]);
         printf("\n");
         printf("Fornecido:\n\t");
         for (unsigned i = 0u; i < b.size(); i++)
-            printf(" (%d,%d)", b[i].x, b[i].y);
+            printf(" %d", b[i]);
         printf("\n");
     };
 }

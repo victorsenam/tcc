@@ -1,6 +1,9 @@
 #ifndef TCC_LIB_point
 #define TCC_LIB_point
 
+#include <functional>
+#include <vector>
+
 class point {
 public:
     int x, y;
@@ -26,5 +29,7 @@ public:
     inline long long operator * (const point & ot) const
     { return (long long)(x) * ot.x + (long long)(y) * ot.y; }
 };
+
+std::function< void() > TEST_compare_vectors_point (const std::vector<point> & a, const std::vector<point> & b);
 
 #endif
