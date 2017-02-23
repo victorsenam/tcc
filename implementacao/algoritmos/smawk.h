@@ -4,8 +4,13 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <functional>
+#include <random>
 
-void smawk_reduce (std::list<int> & col, const std::vector<std::vector<int> > & mat, int p);
-void smawk (std::vector<int> & res, const std::vector<std::vector<int> > & mat, std::list<int> col, int p);
+#include "../lib/graham.h"
+
+std::list<int> smawk_reduce (std::function< int(int,int) > w, int n, int p, std::list<int> col);
+void smawk (std::function< int(int,int) > w, int n, int p, const std::list<int> & col, std::vector <int> & res);
+std::vector<int> smawk (std::function< int(int,int) > w, int n, int m);
 
 #endif
