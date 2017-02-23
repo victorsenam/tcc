@@ -20,8 +20,8 @@ void test_all_points_collinear () {
     TEST(a == b, "lib/graham", "Caso Colinear");
 }
 
-void test_generic () {
-    std::srand(7u);
+void test_generic (unsigned seed) {
+    std::srand(seed);
 
     // resposta esperada
     std::vector<point> a({
@@ -38,17 +38,7 @@ void test_generic () {
     std::random_shuffle(b.begin(), b.end());
     graham(b);
 
-    TEST(a == b, "lib/graham", "Caso Convexo", [a,b] ()->void {
-        printf("Esperado:\n\t");
-        for (unsigned i = 0u; i < a.size(); i++)
-            printf(" (%d,%d)", a[i].x, a[i].y);
-        printf("\n");
-        printf("Fornecido:\n\t");
-        for (unsigned i = 0u; i < b.size(); i++)
-            printf(" (%d,%d)", b[i].x, b[i].y);
-        printf("\n");
-        exit(1);
-    });
+    TEST(a == b, "lib/graham", "Caso Convexo", TEST_compare_vectors(a,b));
 
     b.insert(b.end(), {
         // colineares
@@ -70,20 +60,10 @@ void test_generic () {
     std::random_shuffle(b.begin(), b.end());
     graham(b);
 
-    TEST(a == b, "lib/graham", "Caso Genérico", [a,b] ()->void {
-        printf("Esperado:\n\t");
-        for (unsigned i = 0u; i < a.size(); i++)
-            printf(" (%d,%d)", a[i].x, a[i].y);
-        printf("\n");
-        printf("Fornecido:\n\t");
-        for (unsigned i = 0u; i < b.size(); i++)
-            printf(" (%d,%d)", b[i].x, b[i].y);
-        printf("\n");
-        exit(1);
-    });
+    TEST(a == b, "lib/graham", "Caso Genérico", TEST_compare_vectors(a,b));
 }
 
 int main () {
     test_all_points_collinear();
-    test_generic();
+    test_generic(7u);
 }

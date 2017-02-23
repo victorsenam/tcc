@@ -4,16 +4,11 @@
 #include <cassert>
 #include <string>
 #include <functional>
+#include <vector>
 
-template<typename Function>
-void TEST (bool cond, std::string file, std::string msg, Function callback) {
-	if (cond) return;
-
-	printf("Falha em %s: %s\n", file.c_str(), msg.c_str());
-	fflush(stdout);
-	callback();
-}
-
+void TEST (bool cond, std::string file, std::string msg, std::function< void() > callback);
 void TEST (bool cond, std::string file, std::string msg);
+
+std::function< void() > TEST_compare_vectors_int (const std::vector<int> & a, const std::vector<int> & b);
 
 #endif
