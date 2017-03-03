@@ -30,9 +30,11 @@
 
 \usepackage[color=green!40]{todonotes}
 
-\usepackage{amsmath,amsthm,amsfonts}
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+
 \usepackage[noend]{algpseudocode}
 \usepackage[section]{algorithm}
+\usepackage{listings}
 
 \usepackage[authoryear]{natbib}
 
@@ -41,8 +43,6 @@
 %----------------------------------------------------------------------------------------
 
 \begin{document}
-
-\input{settings.tex}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -64,16 +64,23 @@
 %   DEFINITIONS
 %----------------------------------------------------------------------------------------
 
-%\input{definitions.tex}
+\input{settings.tex}
 
 %----------------------------------------------------------------------------------------
-%	THESIS CONTENT - CHAPTERS
+%	
 %----------------------------------------------------------------------------------------
 
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
-\include{Sections/KnuthYao}
+\include{Sections/Introducao}
+\include{Sections/MatrizMonge}
+\include{Sections/DivisaoEConquista}
+% \include{Sections/SMAWK}
+% \include{Sections/OnlineOptimization}
+% \include{Sections/StaircaseOnlineOptimization}
+% \include{Sections/ConvexHullTrick}
+% \include{Sections/KnuthYao}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

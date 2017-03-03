@@ -1,9 +1,16 @@
 AUXFILES=main.aux main.toc main.loc main.bbl main.blg main.lot main.log main.pdf main.out main-blx.bib main.lof main.dvi main.run.xml
 
+SECTION_NAMES=Introducao MatrizMonge DivisaoEConquista
+SECTION_PATHS=$(addprefix Sections/,${SECTION_NAMES})
+SECTION_TEX=$(addsuffix .tex,${SECTION_PATHS})
+SECTION_AUX=$(addsuffix .aux,${SECTION_PATHS})
+
+.PHONY: clear
+
 clear: 
 	rm ${AUXFILES}
 
-main.pdf: main.tex Sections/KnuthYao.tex
+main.pdf: main.tex ${SECTION_TEX}
 	rm -f ${AUXFILES}
 	pdflatex main.tex
 	bibtex main.aux
