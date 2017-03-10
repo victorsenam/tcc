@@ -69,24 +69,3 @@ Aqui serão discutidos os detalhes de implementação do algoritmo \ref{DivideAn
 Primeiramente a matriz $A$ deve ser facilmente manipulada, não podemos gerar novas matrizes para alimentar as chamadas recursivas da função \hbox{\textsc{DivConq}}. Além disso, como explicado em \ref{Introducao_Implementacao}, o parâmetro a ser passado será uma função e não uma matriz. Note que a matriz nas chamadas recursivas é sempre formada por um intervalo das linhas e um intervalo das colunas da matriz $A$ original, portanto, podemos guardar 4 inteiros, $\ell s$, $\ell t$, $cs$ e $ct$, rempresentando, respectivamente, a primeira linha, a última linha, a primeira coluna e a última coluna acessíveis na chamada atual da recursão.  
 
 Agora, devemos tomar cuidado com as atribuições feitas nas linhas \ref{DivideAndConquer:Div_left} e \ref{DivideAndConquer:Div_right}. A forma como elas foram apresentadas sugere que os vetores $R$ recebidos pelas funções sejam recebidos e copiados para o vetor $R$. Ao invés de fazer isso, iremos passar o endereço do vetor $R$ recursivamente e garantir que cada chamada só complete o subvetor $R[\ell s \tdots \ell t]$, referente a seu subproblema. Além disso, a linha \ref{DivideAndConquer:Div_right} possui uma adição, o que sugere que o valor $R[i]$ seja adicionado elemento-a-elemento, o que não será feito, os vetor $R$ já será preenchido com o índice correto da coluna na matriz original $A$ da primeira vez que for acessado.
-
-\subsection{Aplicação em programação dinâmica} \label{DivisaoEConquista_PD}
-A técnica da divisão e conquista pode ser aplicada para agilizar a solução de algus problemas de programação dinâmica. Aqui será apresentado um exemplo dessa aplicação.  
-
-Sejam, $n,k \in \B{N}$ e $w \in \B{Q}_+^{n \times n}$ triângular superior (todos os valores $w(i,j)$ onde $i>j$ são indefinidos). Queremos calcular, para todo $n' \in [n]$ e $k' \in [k]$ os valores de
-$$ f(k',n') = \begin{cases}
-    w(1, n') & \text{, se } k' = 0 \text{ e }\\
-    \max_{1 \leq i \leq n'} f(k'-1, i) + w(i,n') & \text{, caso contrário.}
-\end{cases} $$
-
-Este problema pode ser resolvido fácilmente em tempo $O(kn^2)$, porem, se $w$ for monótona convexa nas colunas, podemos aplicar a técnica da divisão e conquista para calcular todos os valores desejados em tempo $O(kn\lg(n))$. Definimos, para todo $1 \leq k' \leq k$ e $1 \leq i \leq n' \leq n$, a função $b_{k'}(i,n')$.
-
-\begin{prop}
-Para todo $k' \in [k]$, $b_{k'}$ é monótona convexa nas colunas.
-\end{prop}
-
-\begin{proof}
-Indução em $k'$.
-\end{proof}
-
-Os valores de $f(0,n')$ podem ser descobertos em tempo costante. 
