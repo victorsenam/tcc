@@ -3,7 +3,7 @@
 
 %----------------------------------------------------------------------------------------
 
-Aqui será apresentada uma técnica que pode ser usada para encontrar máximos ou mínimos de linhas em matrizes monótonas convexas ou côncavas em tempo $O((m+n)\lg(n))$, onde $m$ é a quantidade de colunas e $n$ a quantidade de linhas da matriz. Ao final, apresentamos exemplos de aplicações desta ideia em programação dinâmica.  
+Aqui será apresentada uma técnica que pode ser usada para encontrar máximos ou mínimos de linhas em matrizes monótonas convexas\todo{eu acho que tem que falar algo como "monótona convexa por linhas". Eu quero dizer que o row-maxima tem índice crescente no índice da linha. Quando estiver escrevedo a seção 2 vou pensar melhor sobre isso.} ou côncavas em tempo $O((m+n)\lg(n))$, onde $m$ é a quantidade de colunas e $n$ a quantidade de linhas da matriz. Ao final, apresentamos exemplos de aplicações desta ideia em programação dinâmica.  
 
 %----------------------------------------------------------------------------------------
 
@@ -70,4 +70,23 @@ Primeiramente a matriz $A$ deve ser facilmente manipulada, não podemos gerar no
 
 Agora, devemos tomar cuidado com as atribuições feitas nas linhas \ref{DivideAndConquer:Div_left} e \ref{DivideAndConquer:Div_right}. A forma como elas foram apresentadas sugere que os vetores $R$ recebidos pelas funções sejam recebidos e copiados para o vetor $R$. Ao invés de fazer isso, iremos passar o endereço do vetor $R$ recursivamente e garantir que cada chamada só complete o subvetor $R[\ell s \tdots \ell t]$, referente a seu subproblema. Além disso, a linha \ref{DivideAndConquer:Div_right} possui uma adição, o que sugere que o valor $R[i]$ seja adicionado elemento-a-elemento, o que não será feito, os vetor $R$ já será preenchido com o índice correto da coluna na matriz original $A$ da primeira vez que for acessado.
 
-\lstinputlisting[language=C++,firstline=3,lastline=16]{../implementacao/algoritmos/divisaoeconquista.cpp}
+\subsection{Aplicação em programação dinâmica} \label{DivisaoEConquista_PD}
+A técnica da divisão e conquista pode ser aplicada para agilizar a solução de algus problemas de programação dinâmica. Aqui será apresentado um exemplo dessa aplicação.  
+
+Sejam, $n,k \in \B{N}$ e $w \in \B{Q}_+^{n \times n}$ triângular superior (todos os valores $w(i,j)$ onde $i>j$ são indefinidos). Queremos calcular, para todo $n' \in [n]$ e $k' \in [k]$ os valores de
+$$ f(k',n') = \begin{cases}
+    w(1, n') & \text{, se } k' = 0 \text{ e }\\
+    \max_{1 \leq i \leq n'} f(k'-1, i) + w(i,n') & \text{, caso contrário.}
+\end{cases} $$
+
+Este problema pode ser resolvido fácilmente em tempo $O(kn^2)$, porem, se $w$ for monótona convexa nas colunas, podemos aplicar a técnica da divisão e conquista para calcular todos os valores desejados em tempo $O(kn\lg(n))$. Definimos, para todo $1 \leq k' \leq k$ e $1 \leq i \leq n' \leq n$, a função $b_{k'}(i,n')$.
+
+\begin{prop}
+Para todo $k' \in [k]$, $b_{k'}$ é monótona convexa nas colunas.
+\end{prop}
+
+\begin{proof}
+Indução em $k'$.
+\end{proof}
+
+Os valores de $f(0,n')$ podem ser descobertos em tempo costante. 

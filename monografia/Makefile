@@ -7,6 +7,8 @@ AUXFILES=main.aux main.toc main.loc main.bbl main.blg main.lot main.log main.pdf
 
 .PHONY: clear
 
+all: main.pdf
+
 clear: 
 	rm ${AUXFILES}
 
