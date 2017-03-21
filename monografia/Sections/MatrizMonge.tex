@@ -5,7 +5,7 @@
 
 Aqui serão apresentados e explorados os conceitos de monotonicidade, convexidade e matrizes Monge, além disso, alguns resultados referentes a estes conceitos serão demonstrados. Estes conceitos são fundamentais para o desenvolvimento do restante do trabalho.
 
-\begin{defi}[Vetor Monótono]
+\begin{defi}[Vetor monótono]
 Seja $a \in \B{Q}^n$ um vetor, $a$ é dito monótono quando vale uma das propriedades abaixo.
     \begin{itemize}
         \item Se para todo $i,j \in [n]$, $i < j \so a_i \leq a_j$, $a$ é dito monótono crescente (ou só crescente).
@@ -15,7 +15,7 @@ Seja $a \in \B{Q}^n$ um vetor, $a$ é dito monótono quando vale uma das proprie
 
 Sabemos que a monotonicidade de vetores pode ser aproveitada para agilizar alguns algoritmos importantes, por exemplo, a busca binária pode ser interpretada como uma otimização da busca linear para vetores monótonos. 
 
-\begin{defi}[Vetor Convexo]
+\begin{defi}[Vetor convexo]
 Seja $a \in \B{Q}^n$ um vetor,
     \begin{itemize}
         \item se para todo $i,j,k \in [n]$, $i < j < k \so a_j \leq \frac{(j-k)a_i + (i-j)a_k}{i-k}$, $a$ é dito convexo e
@@ -40,20 +40,34 @@ Seja $A \in \B{Q}^{n \times m}$, definimos
 
 Calcular estes vetores para dadas matrizes é um problema interessante. Algumas propriedades das matrizes podem ser exploradas a fim de agilizar este cálculo. A monotonicidade, convexidade ou concavidade de matrizes indicam propriedades interessantes sobre estes problemas, portanto, vamos explorar estas definições.
 
-\begin{defi}[Matriz Monótona]
-Seja $A \in \B{Q}^{n \times m}$ uma matriz. Se $A$ tiver o vetor de índices de máximos ou mínimos das linhas ou colunas monótono, $A$ é chamada monótona. Especificamente,
+\begin{defi}[Matriz monótona]
+Seja $A \in \B{Q}^{n \times m}$ uma matriz. Se $A$ tiver o vetor de índices de máximos das linhas monótono, $A$ é dita monótona nos máximos das linhas. 
+
+Valem também as definições análogas para mínimos ou colunas e pode-se especificar monotonicidade crescente ou decrescente.
+\end{defi}
+
+\begin{defi}[Matriz totalmente monótona]
+Seja $A \in \B{Q}^{n \times m}$ uma matriz.
     \begin{itemize}
-        \item se o vetor de índices de máximos das linhas de $A$ é crescente, $A$ é dita monótona crescente nos máximos das linhas,
-        \item se o vetor de índices de máximos das linhas de $A$ é decrescente, $A$ é dita monótona decrescente nos máximos das linhas,
-        \item se o vetor de índices de máximos das colunas de $A$ é crescente, $A$ é dita monótona crescente nos máximos das colunas,
-        \item se o vetor de índices de máximos das colunas de $A$ é decrescente, $A$ é dita monótona decrescente nos máximos das colunas,
-        \item se o vetor de índices de mínimos das linhas de $A$ é crescente, $A$ é dita monótona crescente nos mínimos das linhas,
-        \item se o vetor de índices de mínimos das linhas de $A$ é decrescente, $A$ é dita monótona decrescente nos mínimos das linhas,
-        \item se o vetor de índices de mínimos das colunas de $A$ é crescente, $A$ é dita monótona crescente nos mínimos das colunas e 
-        \item se o vetor de índices de mínimos das colunas de $A$ é decrescente, $A$ é dita monótona decrescente nos mínimos das colunas.
+        \item Se vale $A[i'][j'] < A[i'][j] \so A[i][j'] < A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
+        \item Se vale $A[i'][j'] > A[i'][j] \so A[i][j'] > A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
+        \item Se vale $A[i'][j'] < A[i][j'] \so A[i'][j] < A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
+        \item Se vale $A[i'][j'] > A[i][j'] \so A[i'][j] > A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
     \end{itemize}
 \end{defi}
 
-\begin{defi}[Matriz Totalmente Monótona]
-Seja $A \in \B{Q}^{n \times m}$ uma matriz,
-\end{defi}
+O motivo do uso dos termos "convexa" e "côncava" neste contexto são justificados pelo teorema \ref{convexRelation}. O seguinte lema caracteriza uma propriedade importante sobre matrizes totalmente monótonas.  
+
+\begin{lema}
+Seja $A \in \B{Q}^{n \times m}$. As seguintes afirmações são equivalentes.
+    \begin{enumerate}
+        \item Toda submatriz de $A$ é monótona crescente no máximo das linhas. \label{totMonLema:1}
+        \item Toda submatriz $2 \times 2$ de $A$ é monótona crescente no máximo das linhas. Isto é, vale $A[i'][j'] < A[i'][j] \so A[i][j'] < A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$. \label{totMonLema:2}
+        \item Vale $A[i+1][j+1] < A[i+1][j] \so A[i][j+1] < a[i][j]$. \label{totMonLema:3}
+    \end{enumerate}
+Vale notar que o lema é análogo em termos de colunas, mínimos e índices decrescentes.
+\end{lema}
+
+\begin{proof}
+Trivialmente, \ref{totMonLema:1} implica em \ref{totMonLema:2} que, por sua vez, implica em \ref{totMonLema:3}. Queremos provar que \ref{totMonLema:3} implica em \ref{totMonLema:1}.
+\end{proof}
