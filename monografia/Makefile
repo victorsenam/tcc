@@ -12,7 +12,7 @@ all: main.pdf
 clear: 
 	rm ${AUXFILES}
 
-main.pdf: main.tex ${SECTION_TEX}
+main.pdf: main.tex ${SECTION_TEX} definitions.tex
 	rm -f ${AUXFILES}
 	pdflatex main.tex
 	bibtex main.aux
