@@ -37,6 +37,8 @@ Seja $A \in \B{Q}^{n \times m}$, definimos quatro vetores a seguir.
         \item $\hat{i_A} \in \B{Q}^m : j \mapsto \min\{i \in [n] \mid A[i][j] \geq A[i'][j] \text{ para todo } i' \in [n]\}$, o vetor de índices de máximos das colunas de $A$ e 
         \item $\check{i_A} \in \B{Q}^m : j \mapsto \min\{i \in [n] \mid A[i][j] \leq A[i'][j] \text{ para todo } i' \in [n]\}$, o vetor de índices de mínimos das colunas de $A$.
     \end{itemize}
+
+Note que o índice de máximo de uma linha é definido como o menor índice que contém o valor máximo daquela linha. O mesmo vale para colunas e mínimos.
 \end{defi}
 
 Calcular estes vetores para dadas matrizes é um problema interessante. Algumas propriedades das matrizes podem ser exploradas a fim de agilizar este cálculo. A monotonicidade, convexidade ou concavidade de matrizes indicam propriedades interessantes sobre estes problemas, portanto, vamos explorar estas definições.
@@ -50,25 +52,27 @@ Valem também as definições análogas para mínimos ou colunas e pode-se espec
 \begin{defi}[Matriz totalmente monótona]
 Seja $A \in \B{Q}^{n \times m}$ uma matriz.
     \begin{itemize}
-        \item Se $A[i'][j'] < A[i'][j]$ implica $A[i][j'] < A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
-        \item Se vale $A[i'][j'] > A[i'][j] \so A[i][j'] > A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
-        \item Se vale $A[i'][j'] < A[i][j'] \so A[i'][j] < A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
-        \item Se vale $A[i'][j'] > A[i][j'] \so A[i'][j] > A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
+        \item Se $A[i][j'] > A[i][j]$ implica $A[i'][j'] > A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
+        \item Se $A[i][j'] < A[i][j]$ implica $A[i'][j'] < A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
+        \item Se $A[i'][j] > A[i][j]$ implica $A[i'][j'] > A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas colunas.
+        \item Se $A[i'][j] < A[i][j]$ implica $A[i'][j'] < A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas colunas.
     \end{itemize}
 \end{defi}
 
-O motivo do uso dos termos ``convexa'' e ``côncava'' neste contexto são justificados pelo Teorema~\ref{convexRelation}. O seguinte lema caracteriza uma propriedade importante sobre matrizes totalmente monótonas.  
+O motivo do uso dos termos ``convexa'' e ``côncava'' neste contexto são justificados pelo Teorema~\ref{convexRelation}. Note que se uma matriz é totalmente monótona, todas as suas submatrizes são totalmente monótonas no mesmo sentido. O seguinte lema caracteriza uma propriedade importante sobre matrizes totalmente monótonas.  
 
 \begin{lema}
-Seja $A \in \B{Q}^{n \times m}$. As seguintes afirmações são equivalentes.
+Se $A \in \B{Q}^{n \times m}$ é uma matriz totalmente monótona convexa nas linhas.
     \begin{enumerate}
-        \item Toda submatriz de $A$ é monótona crescente no máximo das linhas. \label{totMonLema:1}
-        \item Toda submatriz $2 \times 2$ de $A$ é monótona crescente no máximo das linhas. Isto é, vale $A[i'][j'] < A[i'][j] \so A[i][j'] < A[i][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$. \label{totMonLema:2}
-        \item Vale $A[i+1][j+1] < A[i+1][j] \so A[i][j+1] < a[i][j]$. \label{totMonLema:3}
+        \item Toda submatriz de $A$ é monótona crescente nos máximos das linhas.
+        \item Toda submatriz de $A$ é monótona decrescente nos mínimos das linhas.
     \end{enumerate}
-Vale notar que o lema é análogo em termos de colunas, mínimos e índices decrescentes.
+
+Simetricamente, se $A$ é côncava nas linhas, suas submatrizes são decrescentes nos máximos e crescentes nos mínimos das linhas. O lema funciona análogamente em termos de colunas, também.  
 \end{lema}
 
 \begin{proof}
-Trivialmente, \eqref{totMonLema:1} implica em \eqref{totMonLema:2} que, por sua vez, implica em \eqref{totMonLema:3}. Queremos provar que \eqref{totMonLema:3} implica em \eqref{totMonLema:1}.
+Seja $A \in \B{Q}^{n \times m}$ uma matriz totalmente monótona convexa nas linhas. Vamos provar que $A$ é monótona crescente nos máximos das linhas. Sejam $i < i'$ índices de linhas de $A$. Seja $j'$ o índice de máximo da linha $i$ e $j$ o índice de máximo da linha $i'$. Suponha, por absurdo, $j < j'$. Assim, teremos, já que $j'$ é o máximo na $i$-ésima linha, $A[i][j'] > A[i][j]$ e, por outro lado, já que $j$ é o máximo na $i'$-ésima, $A[i'][j] \geq A[i'][j']$, porém, $A$ é totalmente monótona, portanto, $A[i'][j'] > A[i'][j]$, uma contradição.  
+
+Agora, vamos mostrar que $A$ é monótona decrescente nos mínimos das linhas. Sejam $i < i'$ índices de linhas de $A$. Seja $j$ o índice de mínimo da linha $i$ e $j'$ o índice de mínimo da linha $i'$. Suponha, por absurdo, $j < j'$. Assim, teremos $A[i][j] \leq A[i][j']$ e $A[i'][j'] < A[i'][j]$
 \end{proof}
