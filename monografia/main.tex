@@ -1,34 +1,12 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Masters/Doctoral Thesis 
-% LaTeX Template
-% Version 2.4 (22/11/16)
-%
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% Version 2.x major modifications by:
-% Vel (vel@latextemplates.com)
-%
-% This template is based on a template by:
-% Steve Gunn (http://users.ecs.soton.ac.uk/srg/softwaretools/document/templates/)
-% Sunil Patel (http://www.sunilpatel.co.uk/thesis-template/)
-%
-% Template license:
-% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %----------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%	PACKAGES AND SETTINGS
 %----------------------------------------------------------------------------------------
 
 \documentclass[11pt]{amsart}
 
 \usepackage[brazil]{babel}
-\usepackage[utf8]{inputenc} % Required for inputting international characters
-\usepackage[T1]{fontenc} % Output font encoding for international characters
-
-\usepackage[color=green!40]{todonotes}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 
 \usepackage{amsmath,amsthm,amsfonts,mathtools}
 
@@ -36,11 +14,10 @@
 \usepackage[section]{algorithm}
 \usepackage{listings}
 
+\usepackage[color=green!40]{todonotes}
+
 \usepackage[authoryear]{natbib}
 
-%----------------------------------------------------------------------------------------
-%	MARGIN SETTINGS
-%----------------------------------------------------------------------------------------
 \sloppy
 
 \begin{document}
@@ -52,14 +29,12 @@
 % \input{declarations.tex}
 
 %----------------------------------------------------------------------------------------
-%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%	LISTS
 %----------------------------------------------------------------------------------------
 
-%\tableofcontents % Prints the main table of contents
-
-%\listoffigures % Prints the list of figures
-
-%\listoftables % Prints the list of tables
+%\tableofcontents
+%\listoffigures
+%\listoftables
 
 %----------------------------------------------------------------------------------------
 %   DEFINITIONS
@@ -68,11 +43,8 @@
 \input{definitions.tex}
 
 %----------------------------------------------------------------------------------------
-%	
+%	CONTENT
 %----------------------------------------------------------------------------------------
-
-% Include the chapters of the thesis as separate files from the Chapters folder
-% Uncomment the lines as you write the chapters
 
 \include{Sections/Introducao}
 \include{Sections/MatrizMonge}
@@ -82,19 +54,6 @@
 % \include{Sections/StaircaseOnlineOptimization}
 % \include{Sections/ConvexHullTrick}
 % \include{Sections/KnuthYao}
-
-%----------------------------------------------------------------------------------------
-%	THESIS CONTENT - APPENDICES
-%----------------------------------------------------------------------------------------
-
-%\appendix % Cue to tell LaTeX that the following "chapters" are Appendices
-
-% Include the appendices of the thesis as separate files from the Appendices folder
-% Uncomment the lines as you write the Appendices
-
-%\include{Appendices/AppendixA}
-%\include{Appendices/AppendixB}
-%\include{Appendices/AppendixC}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
