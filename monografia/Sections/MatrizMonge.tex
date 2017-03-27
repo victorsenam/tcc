@@ -23,25 +23,27 @@ Seja $a \in \B{Q}^n$ um vetor,
     \end{itemize}
 \end{defi}
 
-Vale notar que a definição dada acima é específica para vetores porém é compatível com a definição usual de funções convexas, isto é, $a$ é convexa se e somente se existe uma função $f$ convexa tal que para todo $i \in [n]$, $a_i = f(i)$. A afirmação análoga para a concavidade também é verdadeira.  
+Geralmente, ao se definir convexidade de funções, diz-se que a função é convexa se e somente se para todo par $x,y$ no domínio da função e todo $\lambda \in [0,1]$ real, $f(\lambda x + (1 - \lambda)y) \leq \lambda f(x) + (1 - \lambda) f(y)$. A definição utilizada aqui é compatível com essa, porém, é específica para vetores. Uma situação parecida ocorre no sentido da concavidade.
 
-Assim como a monotonicidade, a convexidade também é usualmente explorada para agilizar algoritmos, por exemplo, se um vetor é estritamente convexo (basta substituir $\leq$ por $<$ na definição) podemos encontrar o mínimo (que é único) com uma busca ternária ao invés de percorrer todo o vetor.  
+Assim como a monotonicidade, a convexidade também é usualmente explorada para agilizar algoritmos, por exemplo, se um vetor é estritamente convexo (a desigualdade apresentada na definição vale estritamente) podemos encontrar o mínimo (que é único) com uma busca ternária ao invés de percorrer todo o vetor.  
 
 \begin{defi}
 Seja $A \in \B{Q}^{n \times m}$, definimos quatro vetores a seguir.
-\todo{Talvez essa definição vá para a introdução. Prometo não usar essa notação estranha sem aviso.}
     \begin{itemize}
         \item O vetor de índices de máximos das linhas de $A$ guarda na posição $i$ 
               o número $\min\{j \in [m] \mid A[i][j] \geq A[i][j'] \text{ para todo } j' \in [m]\}$. 
-        \item $\check{j_A} \in \B{Q}^n : i \mapsto \min\{j \in [m] \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in [m]\}$, o vetor de índices de mínimos das linhas de $A$,
-        \item $\hat{i_A} \in \B{Q}^m : j \mapsto \min\{i \in [n] \mid A[i][j] \geq A[i'][j] \text{ para todo } i' \in [n]\}$, o vetor de índices de máximos das colunas de $A$ e 
-        \item $\check{i_A} \in \B{Q}^m : j \mapsto \min\{i \in [n] \mid A[i][j] \leq A[i'][j] \text{ para todo } i' \in [n]\}$, o vetor de índices de mínimos das colunas de $A$.
+        \item O vetor de índices de mínimos das linhas de $A$ guarda na posição $i$ 
+              o número $\min\{j \in [m] \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in [m]\}$. 
+        \item O vetor de índices de máximos das colunas de $A$ guarda na posição $j$ 
+              o número $\min\{i \in [n] \mid A[i][j] \geq A[i'][j] \text{ para todo } i' \in [n]\}$. 
+        \item O vetor de índices de mínimos das colunas de $A$ guarda na posição $j$ 
+              o número $\min\{i \in [n] \mid A[i][j] \leq A[i'][j] \text{ para todo } i' \in [n]\}$. 
     \end{itemize}
 
 Note que o índice de máximo de uma linha é definido como o menor índice que contém o valor máximo daquela linha. O mesmo vale para colunas e mínimos.
 \end{defi}
 
-Calcular estes vetores para dadas matrizes é um problema interessante. Algumas propriedades das matrizes podem ser exploradas a fim de agilizar este cálculo. A monotonicidade, convexidade ou concavidade de matrizes indicam propriedades interessantes sobre estes problemas, portanto, vamos explorar estas definições.
+Dada uma matriz, encontrar estes vetores é um problema central para este trabalho. Para conseguir resolver este problema de maneira especialmente eficiente, podemos explorar as propriedades definidas a seguir.
 
 \begin{defi}[Matriz monótona]
 Seja $A \in \B{Q}^{n \times m}$ uma matriz. Se $A$ tiver o vetor de índices de máximos das linhas monótono, $A$ é dita monótona nos máximos das linhas. 
@@ -59,7 +61,7 @@ Seja $A \in \B{Q}^{n \times m}$ uma matriz.
     \end{itemize}
 \end{defi}
 
-O motivo do uso dos termos ``convexa'' e ``côncava'' neste contexto são justificados pelo Teorema~\ref{convexRelation}. Note que se uma matriz é totalmente monótona, todas as suas submatrizes são totalmente monótonas no mesmo sentido. O seguinte lema caracteriza uma propriedade importante sobre matrizes totalmente monótonas.  
+O motivo do uso dos termos ``convexa'' e ``côncava'' em relação a matrizes, tanto nesta definição quanto na Definição~\ref{defi:MatrizMonge} são justificados pelo Teorema~\ref{convexRelation}. Note que se uma matriz é totalmente monótona, todas as suas submatrizes são totalmente monótonas no mesmo sentido.
 
 \begin{lema}
 Se $A \in \B{Q}^{n \times m}$ é uma matriz totalmente monótona convexa nas linhas.
@@ -74,5 +76,34 @@ Simetricamente, se $A$ é côncava nas linhas, suas submatrizes são decrescente
 \begin{proof}
 Seja $A \in \B{Q}^{n \times m}$ uma matriz totalmente monótona convexa nas linhas. Vamos provar que $A$ é monótona crescente nos máximos das linhas. Sejam $i < i'$ índices de linhas de $A$. Seja $j'$ o índice de máximo da linha $i$ e $j$ o índice de máximo da linha $i'$. Suponha, por absurdo, $j < j'$. Assim, teremos, já que $j'$ é o máximo na $i$-ésima linha, $A[i][j'] > A[i][j]$ e, por outro lado, já que $j$ é o máximo na $i'$-ésima, $A[i'][j] \geq A[i'][j']$, porém, $A$ é totalmente monótona, portanto, $A[i'][j'] > A[i'][j]$, uma contradição.  
 
-Agora, vamos mostrar que $A$ é monótona decrescente nos mínimos das linhas. Sejam $i < i'$ índices de linhas de $A$. Seja $j$ o índice de mínimo da linha $i$ e $j'$ o índice de mínimo da linha $i'$. Suponha, por absurdo, $j < j'$. Assim, teremos $A[i][j] \leq A[i][j']$ e $A[i'][j'] < A[i'][j]$
+Agora, vamos mostrar que $A$ é monótona decrescente nos mínimos das linhas. Sejam $i < i'$ índices de linhas de $A$. Seja $j$ o índice de mínimo da linha $i$ e $j'$ o índice de mínimo da linha $i'$. Suponha, por absurdo, $j < j'$. Assim, teremos $A[i][j] \leq A[i][j']$ e $A[i'][j'] < A[i'][j]$.
+
+Finalmente, se $A'$ é uma submatriz de $A$, então $A'$ é totalmente monótona convexa nas linhas, portanto monótona crescente nos máximos das linhas e monótona decrescente nos mínimos das linhas.
 \end{proof}
+
+\begin{defi} \label{defi:MatrizMonge}
+Seja $A \in \B{Q}^{n \times m}$.
+    \begin{enumerate}
+        \item Se vale $A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é dita Monge convexa.
+        \item Se vale $A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é dita Monge côncava.
+    \end{enumerate}
+\end{defi}
+
+A desigualdade que define as matrizes Monge é conhecida também por ``Condição de Monge'' ou ``Desigualdade Quadrangular''\todo{citação}.
+
+\begin{theo}
+Se $A$ é monge convexa, $A$ é totalmente monótona convexa tanto nas linhas quanto nas colunas.
+\end{theo}
+
+\begin{proof}
+Só fazer.
+\end{proof}
+
+\begin{theo}
+O do vetor convexo.
+\end{theo}
+
+\begin{proof}
+Só fazer.
+\end{proof}
+
