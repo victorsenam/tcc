@@ -3,30 +3,29 @@
 
 %----------------------------------------------------------------------------------------
 
-Aqui será apresentada uma técnica que pode ser usada para encontrar máximos ou mínimos de linhas em matrizes monótonas convexas\todo{eu acho que tem que falar algo como "monótona convexa por linhas". Eu quero dizer que o row-maxima tem índice crescente no índice da linha. Quando estiver escrevedo a seção 2 vou pensar melhor sobre isso.} ou côncavas em tempo $O((m+n)\lg(n))$, onde $m$ é a quantidade de colunas e $n$ a quantidade de linhas da matriz. Ao final, apresentamos exemplos de aplicações desta ideia em programação dinâmica.  
+Nesta seção será apresentada uma técnica que pode ser usada para encontrar máximos de linhas em matrizes monótonas crescentes nos máximos das linhas em tempo $\Cl{O}((m+n)\lg(n))$, onde $m$ é a quantidade de colunas e $n$ a quantidade de linhas da matriz. Ao final desta seção, apresentamos exemplos de aplicações desta ideia em programação dinâmica e elencamos generalizações diretas do que foi explicado.
 
 %----------------------------------------------------------------------------------------
 
 \subsection{Técnica}
-Dada uma matriz $A \in \B{Q}^{n \times m}$ monótona convexa, queremos encontrar, para toda linha $i$ da matriz, o menor índice $j$ tal que $A[i][j]$ é o valor máximo da linha $i$. Formalmente, queremos encontrar o vetor $R \in \B{N}^n$ onde, para todo $i \in [n]$,
+Dada uma matriz $A \in \B{Q}^{n \times m}$ monótona crescente nos máximos das linhas, queremos encontrar o vetor de índices de máximos das linhas de $A$. Isto é, para todo $i \in [n]$, queremos encontrar
 $$ R[i] = \min\{j \mid A[i][j] \geq A[i][j'] \text{ para todo } j' \in [n]\} \text{.}$$  
 
-Se, para alguma linha $i$, encontrarmos o valor $R[i]$, sabemos, já que $A$ é monótona convexa, que para todo $i' < i$, $R[i'] \leq R[i]$ e, para todo $i' > i$, $R[i'] \geq R[i]$, isto é, sabemos que os máximos de menor índice das outras linhas se encontram nas submatrizes $A[1 \tdots i-1][1\tdots R[i]]$ e $A[i+1\tdots n][R[i]\tdots m]$. Basta, agora, resolver o mesmo problema para estas submatrizes e conseguimos resolver o problema original. 
+Se, para alguma linha $i$, encontrarmos o valor $R[i]$, sabemos, já que $A$ é monótona convexa, que para todo $i' < i$, $R[i'] \leq R[i]$ e, para todo $i' > i$, $R[i'] \geq R[i]$, isto é, sabemos que os máximos de menor índice das outras linhas se encontram nas submatrizes $A[1 \tdots i-1][1 \tdots R[i]]$ e $A[i+1 \tdots n][R[i] \tdots m]$. Basta, agora, seguindo o paradigma de divisão e conquista, resolver o mesmo problema para estas submatrizes e conseguimos resolver o problema original. 
 
+\newcommand{\FRMDC}{\textsc{FindRowMax\_DC}}
 \begin{algorithm}[H]
-\caption{Máximo de linhas com divisão e conquista}
-\label{DivideAndConquer}
+\caption{Máximos das linhas com divisão e conquista}
+\label{FindRowMax_DC}
 \begin{algorithmic}[1]
-\Function{DivConq}{A}
-    \State $n \rec \text{quantidade de linhas de } A$ 
-    \State $m \rec \text{quantidade de colunas de } A$ 
-    \State $i \rec \ceil{n/2}$
-    \State $R[i] \rec \min\{j \mid A[i][j] \geq A[i][j'] \text{ para todo } j' \in [n]\}$
-    \If{$i > 1$}
-        \State $R[1 \tdots i-1] \rec \textsc{DivConq}(A[1 \tdots i-1][1 \tdots R[i]])$           \label{DivideAndConquer:Div_left}
+\Function{\FRMDC}{A, r_s, r_t, c_s, c_t}
+    \State $\ell \rec \ceil{(r_s+r_t)/2}$
+    \State $R[\ell] \rec \min\{j \mid A[i][j] \geq A[i][j'] \text{ para todo } j' \in [c_s \tdots c_t]\}$
+    \If{$i > r_s$}
+        \State $R[r_s \tdots \ell-1] \rec \FRMDC(A, r_s, \ell-1, c_s, R[\ell])$ \label{FindRowMax_DC:Div_left}
     \EndIf
-    \If{$i < n$}
-        \State $R[i+1 \tdots n] \rec R[i] + \textsc{DivConq}(A[i+1 \tdots n][R[i] \tdots m])$    \label{DivideAndConquer:Div_right}
+    \If{$i < r_t$}
+        \State $R[\ell+1 \tdots r_t] \rec \FRMDC(A, \ell+1, r_t, R[\ell], c_t)$ \label{FindRowMax_DC:Div_right}
     \EndIf
     \State \Return $R$
 \EndFunction
@@ -34,38 +33,45 @@ Se, para alguma linha $i$, encontrarmos o valor $R[i]$, sabemos, já que $A$ é 
 \end{algorithm}
 
 \subsection{Análise}
-Será feita uma análise do tempo de execução do algoritmo acima assumindo que as atribuições feitas nas linhas~\ref{DivideAndConquer:Div_left} e~\ref{DivideAndConquer:Div_right} custam tempo constante, futuramente, em \ref{DivisaoEConquista_Implementacao}, iremos apresentar uma implementação em C++ que está de acordo com a análise realizada.  
+Será feita uma análise do tempo de execução do algoritmo acima no pior caso assumindo que as atribuições feitas nas linhas~\ref{FindRowMax_DC:Div_left} e~\ref{FindRowMax_DC:Div_right} custam tempo constante, futuramente, em \ref{DivisaoEConquista_Implementacao}, iremos apresentar uma implementação em C++ que está de acordo com a análise realizada.  
 
-Se $A \in \B{Q}^{n \times m}$, o tempo gasto por $\textsc{FindRowMax\_DivConq}(A)$ pode ser expresso pela seguinte recorrência:
+Se $A$ é uma matriz e $r_s,r_t,c_s$ e $c_t$ são índices tais que $r_t-r_s = n > 0$ e $c_t-c_s = m > 0$, o tempo gasto por $\FRMDC(A,r_s,r_t,c_s,c_t)$ pode ser expresso pela seguinte recorrência:
 \begin{equation*}
-T(n,m) =
-\begin{cases}
-    m                                           & \text{, se } n = 1 \text{,} \\
-    m + T(1,r) \text{ para algum } r \in [m]    & \text{, se } n = 2 \text{,} \\[2pt]
-    \begin{array}{lll}
-        m & + & T(\ceil{n/2}-1,m-r+1) \\
-          & + & T(\floor{n/2},r) \text{ para algum } r \in [m] 
-    \end{array}                                 & \text{, caso contrário.}
-\end{cases}
+\arraycolsep=2pt
+T(n,m) = \left\{
+\begin{array}{lllll}
+    m &   &                         &                         & \text{, se } n = 1 \text{,} \\
+    m & + & \max\limits_{j \in [m]} & T(1,j)                  & \text{, se } n = 2 \text{,} \\[2pt]
+    m & + & \max\limits_{j \in [m]} & \left\{\begin{array}{c}
+     T(\ceil{n/2}-1,m-j+1) \\
+     + T(\floor{n/2},j)    \\
+    \end{array} \right\}                                      & \text{, caso contrário.} \\
+\end{array}
+\right.
 \end{equation*}
 
 \begin{prop}
-Para todo $n,m \geq 1$, $T(n,m) \leq (m+n)\lg(2n)$ e, portanto, a técnica da divisão e conquista consegue encontrar o máximo de todas as linhas em tempo $O((m+n)\lg(n))$
+Para todo $n,m \geq 1$, $T(n,m) \leq (m+n)\lg(2n)$ e, portanto, a técnica da divisão e conquista consegue encontrar o máximo de todas as linhas em tempo $\Cl{O}((m+n)\lg(n))$
 \end{prop}
 
 \begin{proof}
-Vamos usar indução em $n$ para provar a tese. Se $n = 1$ e $m \geq 1$, $T(1,m) = m \leq (m+1)\lg(2)$. Se $n = 2$ e $m \geq 1$, existe $r \in [m]$ tal que $T(2,m) = m + r \leq 2m \leq (m+2)\lg(4)$. Agora, se $n > 2$ e $m \geq 1$, existe um $r \in [m]$ tal que 
-$$ T(n,m) = m + T(\ceil{n/2} - 1, r) + T(\floor{n/2}, m - r + 1) $$
-assumimos que com $1 \leq n' < n$ e $m' \geq 1$ vale a tese para $T(n',m')$. Com isso, já que $1 \leq \ceil{n/2}-1 \leq n$, $1 \leq \floor{n/2} \leq n$, $r \geq 1$ e $m - r + 1 \geq 1$, temos, com a equação acima e o fato de que $\ceil{n/2}-1 \leq \floor{n/2} \leq n/2$,
+Vamos usar indução em $n$ para provar a tese. Se $n = 1$ e $m \geq 1$, $T(1,m) = m \leq (m+1)\lg(2)$. Se $n = 2$ e $m \geq 1$, existe $j \in [m]$ tal que $T(2,m) = m + r \leq 2m \leq (m+2)\lg(4)$. Agora, se $n \geq 3$ e $m \geq 1$, existe um $j \in [m]$ tal que 
+$$ T(n,m) = m + T(\ceil{n/2} - 1, j) + T(\floor{n/2}, m - j + 1). $$
+Assumimos para $1 \leq n' < n$ e $m' \geq 1$ que $T(n',m') \leq (m'+n')\lg(2n')$. Com isso, já que $1 \leq \ceil{n/2}-1 < n$, $1 \leq \floor{n/2} < n$, $j \geq 1$ e $m - j + 1 \geq 1$, temos, com a equação acima e o fato de que $\ceil{n/2}-1 \leq \floor{n/2} \leq n/2$,
 \begin{eqnarray*} 
-    T(n,m) & \leq & m + (r + \ceil{n/2} - 1 + m - r + 1 + \floor{n/2})\lg(n) \\
-           & \leq & m + (m + n)\lg(n) \leq (m + n)(\lg(n) + 1) = (m + n)\lg(2n).
+    T(n,m) & \leq & m + (j + \ceil{n/2} - 1 + m - j + 1 + \floor{n/2})\lg(n) \\
+           & =    & m + (m + n)\lg(n) < (m + n)(\lg(n) + 1) = (m + n)\lg(2n).
 \end{eqnarray*}
 \end{proof}
 
 \subsection{Implementação} \label{DivisaoEConquista_Implementacao}
-Aqui serão discutidos os detalhes de implementação do algoritmo \ref{DivideAndConquer}.  
+Para implementar o Algoritmo~\ref{FindRowMax_DC} com a complexidade desejada, devemos tomar cuidado com as atribuições feitas nas linhas~\ref{FindRowMax_DC:Div_left} e~\ref{FindRowMax_DC:Div_right}. A forma como elas foram apresentadas sugere que os vetores $R$ recebidos pelas funções sejam recebidos e copiados para o vetor $R$. Ao invés de fazer isso, passaremos o endereço do vetor $R$ recursivamente e garantir que cada chamada só complete o subvetor $R[r_c \tdots r_t]$, referente a seu subproblema. Além disso, como explicado na Seção~\ref{Introducao_Implementacao}, a matriz $A$ será passada como uma função e não como uma matriz.
 
-Primeiramente a matriz $A$ deve ser facilmente manipulada, não podemos gerar novas matrizes para alimentar as chamadas recursivas da função \hbox{\textsc{DivConq}}. Além disso, como explicado em \ref{Introducao_Implementacao}, o parâmetro a ser passado será uma função e não uma matriz. Note que a matriz nas chamadas recursivas é sempre formada por um intervalo das linhas e um intervalo das colunas da matriz $A$ original, portanto, podemos guardar 4 inteiros, $\ell s$, $\ell t$, $cs$ e $ct$, rempresentando, respectivamente, a primeira linha, a última linha, a primeira coluna e a última coluna acessíveis na chamada atual da recursão.  
+A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, pode ser encontrada em \texttt{implementacao/FindRowMax\_DC.cpp}.
 
-Agora, devemos tomar cuidado com as atribuições feitas nas linhas~\ref{DivideAndConquer:Div_left} e~\ref{DivideAndConquer:Div_right}. A forma como elas foram apresentadas sugere que os vetores $R$ recebidos pelas funções sejam recebidos e copiados para o vetor $R$. Ao invés de fazer isso, iremos passar o endereço do vetor $R$ recursivamente e garantir que cada chamada só complete o subvetor $R[\ell s \tdots \ell t]$, referente a seu subproblema. Além disso, a linha~\ref{DivideAndConquer:Div_right} possui uma adição, o que sugere que o valor $R[i]$ seja adicionado elemento-a-elemento, o que não será feito, os vetor $R$ já será preenchido com o índice correto da coluna na matriz original $A$ da primeira vez que for acessado.
+\subsection{Generalizações} \label{DivisaoEConquista_Generalizacoes}
+Podemos manipular a matriz dada e usar o Algoritmo~\ref{FindRowMax_DC} como caixa preta para resolver vários problemas parecidos. Se a matriz $A \in \B{Q}^{n \times m}$ recebida tiver os índices de máximos decrescentes, podemos espelhar a matriz e aplicar o algoritmo nesta nova matriz, ou seja, na matriz $B$ onde $B[i][j] = A[i][m-j+1]$ para todo $i \in [n]$ e $j \in [m]$.  
+
+Se estivermos interessados no vetor de mínimos das linhas em uma matriz $A$ onde este é monótono, podemos trabalhar sobre a matriz $-A$ e teremos um problema que sabemos resolver usando a técnica original ou a transformação já apresentada. Ainda mais, se estivermos interessados nos vetores relativos às colunas, basta transpor a matriz recebida e aplicar os conhecimentos já discutidos, desde que as hipóteses necessárias tornem-se válidas.   
+
+Todas as adaptações exemplificadas aqui podem ser atingidas facilmente com adaptações realizadas diretamente no algoritmo ao invés de transformações na matriz de entrada.
