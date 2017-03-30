@@ -99,6 +99,35 @@ Se $A$ é monge convexa, $A$ é totalmente monótona convexa tanto nas linhas qu
 Só fazer.
 \end{proof}
 
+As matrizes Monge são usadas para resolver uma série de problemas que serão explorados aqui. Os algoritmos se baseam principalmente nas propriedades que não dependem da condição de Monge, mas ainda aparecem como consequência dela, a monotonicidade e a total monotonicidade, porém, em alguns casos é difícil demonstrar a validade destas propriedades sem recorrer aos resultados baseados em matrizes Monge que serão apresentados a seguir.  
+
+Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento, utilizamos ele como caixa preta. Isto é motivado pelo fato de que o pensamento apresentado aqui não é útil somente para o algoritmo SMAWK, ele é útil também em vários dos outros momentos deste trabalho.  
+
+Considere dois inteiro $k \leq n$, um vetor de pesos $a \in \B{Q}^n$ e uma matriz de custos $A[i][j] = \left(\sum\limits_{k=i}^{j-1} a_k\right)^2$. Queremos particionar o vetor $a$ em $k$ partes não-vazias de forma a maximizar a soma dos custos das partes, isto é, queremos escolher um vetor $r \in \B{N}^{[0 \tdots k]}$ de índices tal que $1 = r_0 < r_1 < r_2 < \dots < r_{k-1} < r_k = n$ de forma que $\sum\limits_{i=1}^{k} A[r_{i-1}][r_i]$ seja máximo.
+
+Podemos resolver este problema com programação dinâmica. Vamos preencher a matriz $E \in \B{Q}^{k \times n}$ definida recursivamente para todo $k' \in [k]$ e $n' \in [n]$: 
+$$ E[k'][n'] = \begin{cases}
+    A[1][n']                                               & \text{, se } k'= 1 \text{,} \\[2pt]
+    \max\limits_{i=k'-1}^{n'-1} E[k'-1][i] + A[i][n']     & \text{, se } k' \leq n' \text{,} \\[2pt]
+    \text{indefinida }                                    & \text{, caso contrário.}
+\end{cases} $$
+
+A recorrência acima nos dá em cada entrada o máximo valor possível alcançado particionando o vetor $a[1 \tdots n']$ em $k'$ partes não vazias. Podemos preencher esta tabela trivialmente em tempo $O(kn^2)$, basta iterarar primeiro pelos índices $k'$ crescentemente. O caso onde $k' = 1$ é resolvido trivialmente e os casos maiores podem ser resolvidos, um por vez, testando todas as possibilidades de máximo para todo $n'$.  
+
+Fixamos um $k' > 1$. Vamos utilizar o algoritmo SMAWK para agilizar a solução deste subproblema. O algoritmo em questão pode ser usado para achar os máximos das colunas de uma matriz $n \times n$ totalmente monótona convexa nas colunas em tempo $O(2n)$, por isso, vamos reduzir o nosso problema com $k'$ fixo para o problema resolvível pelo SMAWK.  
+
+Definimos a matriz $B_{k'}$ para todo $i',n' \in \B{N}$ onde $k'-1 \leq i' < n' \leq n$ como $B_{k'}[i'][n'] = E[k'-1][i] + A[i][n']$. Note que já que $k'$ é fixo, já descobrimos os valores da entrada da matriz $E$ na linha $k'-1$. Encontrar o índice $i$ que atinge o máximo em $E[k'][n']$ é exatamente encontrar o índice de máximo da coluna $n'$ na matriz $B_{k'}$. Por isso, queremos mostrar que $B_{k'}$ é totalmente monótona convexa em todo $k'$. Para isso, os dois resultados a seguir serão úteis. 
+
+\begin{theo}
+O de manter a convexidade.
+\end{theo}
+
+\begin{proof}
+Só fazer.
+\end{proof}
+
+Com este resultado, é fácil ver que, desde que $A$ seja Monge convexa, $B_1$ será Monge convexa e a Monge convexidade será mantida para todo $B_{k'}$ com $k' \leq k$. O teorema a seguir nos ajuda a mostrar que $A$ é Monge convexa.
+
 \begin{theo}
 O do vetor convexo.
 \end{theo}
@@ -107,3 +136,4 @@ O do vetor convexo.
 Só fazer.
 \end{proof}
 
+Agora, vamos escrever formalmente a prova de que $B_{k'}$ é Monge convexa para todo $1 \leq k' \leq k$. Com isso, o algoritmo SMAWK pode ser aplicado para todo $k'$ e o problema original é resolvido em $O(kn)$.
