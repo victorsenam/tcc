@@ -43,7 +43,20 @@ Seja $A \in \B{Q}^{n \times m}$, definimos quatro vetores a seguir.
 Note que o índice de máximo de uma linha é definido como o menor índice que contém o valor máximo daquela linha. O mesmo vale para colunas e mínimos.
 \end{defi}
 
-Dada uma matriz, encontrar estes vetores é um problema central para este trabalho. Para conseguir resolver este problema de maneira especialmente eficiente, podemos explorar as propriedades definidas a seguir.
+Dada uma matriz, encontrar estes vetores é um problema central para este trabalho. Será criada uma classificação de matrizes que destaca propriedades interessantes para resolver estes problemas de forma especialmente eficiente.  
+
+Os nomes ``monótona'', ``convexa'' e ``côncava'' serão atribuídos às matrizes de acordo com as propriedades que são respeitadas por elas. A Tabela~\ref{table:ConvexMonotone} relaciona a convexidade de uma matriz com o comportamento dos vetores de índices de máximos e mínimos desta matriz e os conceitos ilustrados nela serão definidos formalmente a seguir.  
+
+\begin{table} 
+    \caption{Comportamento dos vetores de índices ótimos em relação à convexidade.} \label{table:ConvexMonotone}
+    \begin{tabular}{ c | c | c }
+        Se a matriz é & os índices de máximos são & e os de mínimos são \\
+        \hline
+        convexa       & decrescentes              & crescentes        \\
+        \hline
+        côncava       & crescentes                & decrescentes          \\
+    \end{tabular}
+\end{table}
 
 \begin{defi}[Matriz monótona]
 Seja $A \in \B{Q}^{n \times m}$ uma matriz. Se $A$ tiver o vetor de índices de máximos das linhas monótono, $A$ é dita monótona nos máximos das linhas. 
@@ -54,23 +67,21 @@ Valem também as definições análogas para mínimos ou colunas e pode-se espec
 \begin{defi}[Matriz totalmente monótona]
 Seja $A \in \B{Q}^{n \times m}$ uma matriz.
     \begin{itemize}
-        \item Se $A[i][j'] > A[i][j]$ implica $A[i'][j'] > A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
-        \item Se $A[i][j'] < A[i][j]$ implica $A[i'][j'] < A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
-        \item Se $A[i'][j] > A[i][j]$ implica $A[i'][j'] > A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas colunas.
-        \item Se $A[i'][j] < A[i][j]$ implica $A[i'][j'] < A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas colunas.
+        \item Se $A[i'][j] < A[i'][j']$ implica $A[i][j] < A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
+        \item Se $A[i][j'] < A[i'][j']$ implica $A[i][j] < A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas colunas.
+        \item Se $A[i'][j] > A[i'][j']$ implica $A[i][j] > A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
+        \item Se $A[i][j'] > A[i'][j']$ implica $A[i][j] > A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas colunas.
     \end{itemize}
 \end{defi}
 
 O motivo do uso dos termos ``convexa'' e ``côncava'' em relação a matrizes, tanto nesta definição quanto na Definição~\ref{defi:MatrizMonge} são justificados pelo Teorema~\ref{convexRelation}. Note que se uma matriz é totalmente monótona, todas as suas submatrizes são totalmente monótonas no mesmo sentido.
 
 \begin{lema}
-Se $A \in \B{Q}^{n \times m}$ é uma matriz totalmente monótona convexa nas linhas.
-    \begin{enumerate}
-        \item Toda submatriz de $A$ é monótona crescente nos máximos das linhas.
-        \item Toda submatriz de $A$ é monótona decrescente nos mínimos das linhas.
-    \end{enumerate}
+Se $A \in \B{Q}^{n \times m}$ é uma matriz totalmente monótona convexa nas linhas, toda submatriz de $A$ é monótona decrescente nos máximos das linhas e monótona crescente nos mínimos das linhas.  
 
-Simetricamente, se $A$ é côncava nas linhas, suas submatrizes são decrescentes nos máximos e crescentes nos mínimos das linhas. O lema funciona análogamente em termos de colunas, também.  
+Se $A$ é totalmente monótona côncava nas linhas, toda submatriz de $A$ é monótona decrescente nos mínimos das linhas e monótona crescente nos máximos das linhas.  
+
+As afirmações valem identicamente em termos de colunas.
 \end{lema}
 
 \begin{proof}
