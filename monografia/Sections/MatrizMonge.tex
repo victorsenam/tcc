@@ -15,6 +15,22 @@ Seja $a \in \B{Q}^n$ um vetor, $a$ é dito monótono quando vale uma das proprie
 
 Sabemos que a monotonicidade de vetores pode ser aproveitada para agilizar alguns algoritmos importantes, por exemplo, a busca binária pode ser interpretada como uma otimização da busca linear para vetores monótonos. 
 
+\begin{defi}[Função convexa]
+Seja $g : \B{Q} \to \B{Q}$ uma função,
+    \begin{itemize}
+        \item se para todo $x,y \in \B{Q}$ e $\lambda \in \B{R}$ com $0 \leq \lambda \leq 1$, $g(\lambda x + (1 - \lambda)y) \leq \lambda g(x) + (1 - \lambda) g(y)$, $g$ é dita convexa e 
+        \item se para todo $x,y \in \B{Q}$ e $\lambda \in \B{R}$ com $0 \leq \lambda \leq 1$, $g(\lambda x + (1 - \lambda)y) \geq \lambda g(x) + (1 - \lambda) g(y)$, $g$ é dita côncava.
+    \end{itemize}
+\end{defi}
+
+\begin{prop} \label{prop:sqConv}
+A função $g(x) = x^2$ é convexa. \todo{eu uso isso lá no final do capítulo, achei razoável colocar aqui pra deixar menos poluído lá na frente, a explicação de lá já é bem complexa.}
+\end{prop}
+
+\begin{proof}
+Só fazer.
+\end{proof}
+
 \begin{defi}[Vetor convexo]
 Seja $a \in \B{Q}^n$ um vetor,
     \begin{itemize}
@@ -74,7 +90,7 @@ Seja $A \in \B{Q}^{n \times m}$ uma matriz.
     \end{itemize}
 \end{defi}
 
-O motivo do uso dos termos ``convexa'' e ``côncava'' em relação a matrizes durante o texto são justificados pelo Teorema~\ref{convexRelation}. Note que se uma matriz é totalmente monótona, todas as suas submatrizes são totalmente monótonas no mesmo sentido.
+O motivo do uso dos termos ``convexa'' e ``côncava'' em relação a matrizes durante o texto são justificados pelo Teorema~\ref{theo:MongeConvex_and_Convex}. Note que se uma matriz é totalmente monótona, todas as suas submatrizes são totalmente monótonas no mesmo sentido.
 
 \begin{lema} \label{lema:MonotoneTotallyMonotone}
 Se $A \in \B{Q}^{n \times m}$ é uma matriz totalmente monótona convexa nas linhas, toda submatriz de $A$ é monótona decrescente nos máximos das linhas e monótona crescente nos mínimos das linhas.  
@@ -94,7 +110,7 @@ Finalmente, se $A'$ é uma submatriz de $A$, então $A'$ é totalmente monótona
 As demonstrações no caso côncavo e nos casos relacionados a colunas são análogas.
 \end{proof}
 
-\begin{defi} \label{defi:MatrizMonge}
+\begin{defi}[Monge Convexidade] \label{defi:MatrizMonge}
 Seja $A \in \B{Q}^{n \times m}$.
     \begin{enumerate}
         \item Se vale $A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é dita Monge convexa.
@@ -104,21 +120,27 @@ Seja $A \in \B{Q}^{n \times m}$.
 
 A desigualdade que define as matrizes Monge é conhecida também por ``Condição de Monge'' ou ``Desigualdade Quadrangular''\todo{citação}.
 
-\begin{theo}
+\begin{lema}
 Se~$A$ é Monge convexa,~$A$ é totalmente monótona convexa tanto nas linhas quanto nas colunas.  
 
 Se~$A$ é Monge côncava,~$A$ é totalmente monótona côncava tanto nas linhas quanto nas colunas.
-\end{theo}
+\end{lema}
 
 \begin{proof}
-Só fazer.
+Seja~$A$ uma matriz Monge convexa. Suponha que vale, para certos $i,i' \in [n]$ e $j,j' \in [m]$ onde $i < i'$ e $j < j'$, $A[i'][j] \leq A[i'][j']$, então, somamos esta desigualdade à definição de Monge convexa e obtemos $A[i][j] \leq A[i][j']$, ou seja, $A$ é totalmente monótona convexa nas linhas.  
+
+Por outro lado, se vale, para certos $i,i' \in [n]$ e $j,j' \in [m]$ com $i < i'$ e $j < j'$, $A[i][j'] \leq A[i'][j']$, somamos esta desigualdade à definição de Monge convexa e obtemos $A[i][j] \leq A[i'][j]$, assim, $A$ é totalmente monótona convexa nas colunas.  
+
+A prova para o caso côncavo é análoga.
 \end{proof}
 
 As matrizes Monge são usadas para resolver uma série de problemas que serão explorados aqui. A condição de Monge é a mais forte apresentada aqui. Alguns dos algoritmos apresentados não dependem dela, apenas da monotonicidade ou total monotonicidade, ainda assim, ela leva a resultados úteis que nos permitem provar a pertinência dos algoritmos a alguns problemas, mesmo que o algoritmo usado não se utilize da condição diretamente.  
 
 Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento, utilizamos ele como caixa preta. Isto é motivado pelo fato de que o pensamento apresentado aqui não é útil somente para o algoritmo SMAWK, ele é útil também em vários dos outros momentos deste trabalho.  
 
-Considere dois inteiros~$k \leq n$, um vetor de pesos~$a \in \B{Q}^n$ e uma matriz de custos~${A[i][j] = \left(\sum\limits_{k=i}^{j-1} a_k\right)^2}$. Queremos particionar o vetor~$a$ em~$k$ partes não-vazias de forma a maximizar a soma dos custos das partes, isto é, queremos escolher um vetor~${r \in \B{N}^{[0 \tdots k]}}$ de índices tal que~${1 = r_0 < r_1 < r_2 < \dots < r_{k-1} < r_k = n}$ de forma que $\sum\limits_{i=1}^{k} A[r_{i-1}][r_i]$ seja máximo.
+\begin{prob} \label{prob:Monge_ex}
+Dados dois inteiros~$k$ e~$n$ com~$k \leq n$, um vetor de pesos~$a \in \B{Q}^n$ e uma matriz de custos~${A[i][j] = \left(\sum\limits_{k=i+1}^{j} a_k\right)^2}$. Queremos particionar o vetor~$a$ em~$k$ partes não-vazias de forma a maximizar a soma dos custos das partes, isto é, queremos escolher um vetor~${r \in \B{N}^{[0 \tdots k]}}$ de índices tal que~${1 = r_0 < r_1 < r_2 < \dots < r_{k-1} < r_k = n}$ de forma que $\sum\limits_{i=1}^{k} A[r_{i-1}][r_i]$ seja máximo.
+\end{prob}
 
 Podemos resolver este problema com programação dinâmica. Vamos preencher a matriz $E \in \B{Q}^{k \times n}$ definida recursivamente para todo $k' \in [k]$ e $n' \in [n]$: 
 $$ E[k'][n'] = \begin{cases}
@@ -127,28 +149,43 @@ $$ E[k'][n'] = \begin{cases}
     \text{indefinida }                                    & \text{, caso contrário.}
 \end{cases} $$
 
-A recorrência acima nos dá em cada entrada o máximo valor possível alcançado particionando o vetor $a[1 \tdots n']$ em $k'$ partes não vazias. Podemos preencher esta tabela trivialmente em tempo $O(kn^2)$, basta iterarar primeiro pelos índices $k'$ crescentemente. O caso onde $k' = 1$ é resolvido trivialmente e os casos maiores podem ser resolvidos, um por vez, testando todas as possibilidades de máximo para todo $n'$.  
+A recorrência acima nos dá em cada entrada~$E[k'][n']$ o maior valor possível alcançado particionando o vetor~$a[1 \tdots n']$ em~$k'$ partes não vazias. Podemos preencher esta tabela trivialmente em tempo~$O(kn^2)$, basta iterarar primeiro pelos índices~$k'$ crescentemente. O caso onde~$k' = 1$ é resolvido trivialmente e os casos maiores podem ser resolvidos, um por vez, testando todas as possibilidades de máximo para todo~$n'$.  
 
-Fixamos um $k' > 1$. Vamos utilizar o algoritmo SMAWK para agilizar a solução deste subproblema. O algoritmo em questão pode ser usado para achar os máximos das colunas de uma matriz $n \times n$ totalmente monótona convexa nas colunas em tempo $O(2n)$, por isso, vamos reduzir o nosso problema com $k'$ fixo para o problema resolvível pelo SMAWK.  
+Fixamos um~$k' > 1$. Vamos utilizar o algoritmo SMAWK para agilizar a solução deste subproblema. Este algoritmo é capaz de resolver o Problema~\ref{prob:Monge_SMAWK} (descrito abaixo) em tempo $O(n)$. Precisamos provar, então, que o subproblema resolvido para cada~$k'$ é equivalente ao Problema~\ref{prob:Monge_SMAWK}.
 
-Definimos a matriz $B_{k'}$ para todo $i',n' \in \B{N}$ onde $k'-1 \leq i' < n' \leq n$ como $B_{k'}[i'][n'] = E[k'-1][i] + A[i][n']$. Note que já que $k'$ é fixo, já descobrimos os valores da entrada da matriz $E$ na linha $k'-1$. Encontrar o índice $i$ que atinge o máximo em $E[k'][n']$ é exatamente encontrar o índice de máximo da coluna $n'$ na matriz $B_{k'}$. Por isso, queremos mostrar que $B_{k'}$ é totalmente monótona convexa em todo $k'$. Para isso, os dois resultados a seguir serão úteis. 
+\begin{prob} \label{prob:Monge_SMAWK}
+Dada uma matriz $A \in \B{A}^{n \times n}$ totalmente monótona convexa nas colunas, encontrar o vetor de máximos das colunas de $A$.
+\end{prob}
 
-\begin{theo}
-O de manter a convexidade.
+Definimos a matriz $B_{k'}$ para todo $i,n' \in \B{N}$ onde $k'-1 \leq i < n' \leq n$ como $B_{k'}[i][n'] = E[k'-1][i] + A[i][n']$. Note que já que $k'$ é fixo, já descobrimos os valores da entrada da matriz $E$ na linha $k'-1$. Encontrar o índice $i$ que atinge o máximo em $E[k'][n']$ é exatamente encontrar o índice de máximo da coluna $n'$ na matriz $B_{k'}$, formalmente, 
+
+$$\max\limits_{i=k'-1}^{n'-1} B_{k'}[i][n'] = \max\limits_{i=k'-1}^{n'-1} E[k'-1][i] + A[i][n'] \text{.}$$
+
+Portanto, basta mostrar que $B_{k'}$ é monótona convexa nas colunas. Para isso, vamos mostrar, com a ajuda dos resultados abaixo, que $B_{k'}$ é Monge convexa.
+    
+
+\begin{lema}
+Sejam~$A,B \in \B{Q}^{n \times m}$ matrizes e~$c \in \B{Q}^n$ um vetor tais que para todo~$i \in [n]$ e~$j \in [m]$,~${B[i][j] = A[i][j] + c[i]}$. Se~$A$ é Monge convexa,~$B$ é Monge convexa.  
+
+O mesmo resultado vale se~$c \in \B{Q}^m$ e~${B[i][j] = A[i][j] + c[j]}$.
+\end{lema}
+
+\begin{proof}
+Sejam $A,B$ e $b$ definidos como no enunciado do teorema. Suponha que $A$ é Monge convexa. Vale, para quaisquer~${1 \leq i < i' \leq n}$ e~${1 \leq j < j' \leq m}$,~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$, logo, vale~${A[i][j] + b[i] + A[i'][j'] + b[i'] \leq A[i'][j] + b[i'] + A[i][j'] + b[i]}$ que é~${B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j']}$. A prova para o caso onde~$c \in \B{Q}^m$ e~${B[i][j] = A[i][j] + c[j]}$ é análoga.
+\end{proof}
+
+Com este resultado, é fácil ver que, desde que $A$ seja Monge convexa, $B_1$ será Monge convexa e a Monge convexidade será mantida para todo $B_{k'}$ com $1 \leq k' \leq k$. O teorema a seguir nos ajuda a mostrar que $A$ é Monge convexa.
+
+\begin{theo} \label{theo:MongeConvex_and_Convex}
+Sejam~$A \in \B{Q}^{n \times n}$ uma matriz, $b \in \B{Q}^n$ um vetor e~${g : \B{Q} \to \B{Q}}$ uma fução tais que, para todo $i \in [n]$ e $j \in [m]$, $A[i][j] = g\left(\sum\limits_{k=1}^j b_k - \sum\limits_{k=1}^i b_k\right)$. $A$ é convexa se e somente se $g$ é convexa. Similarmente, $A$ é côncava se e somente se $b$ é côncava.
 \end{theo}
+
+Antes de apresentar uma prova para o teorema acima, vamos mostrar a utilidade dele no nosso problema atual, o que deve ajudar na compreensão de seu enunciado.  
+
+Queremos mostrar que $A$ é Monge convexa, porém, para um certo vetor $a \in \B{Q}^n$, $A[i][j] = \left(\sum\limits_{k=(i+1)}^{j} a_k \right)^2 = \left(\sum\limits_{k=1}^{j} a_k - \sum\limits_{k=1}^{i} a_k \right)^2$, por definição. Assim, precisamos mostrar apenas que a função $g(x) = x^2$ é convexa, o que segue da Proposição~\ref{prop:sqConv}. Agora, como explicado acima, todas as matrizes $B_{k'}$ são Monge convexas e podemos aplicar o algoritmo SMAWK para todo $k'$, resolvendo o Problema~\ref{prob:Monge_ex} em tempo $O(kn)$.
+
+Agora, nos resta provar o Teorema~\ref{theo:MongeConvex_and_Convex}.
 
 \begin{proof}
 Só fazer.
 \end{proof}
-
-Com este resultado, é fácil ver que, desde que $A$ seja Monge convexa, $B_1$ será Monge convexa e a Monge convexidade será mantida para todo $B_{k'}$ com $k' \leq k$. O teorema a seguir nos ajuda a mostrar que $A$ é Monge convexa.
-
-\begin{theo}
-O do vetor convexo.
-\end{theo}
-
-\begin{proof}
-Só fazer.
-\end{proof}
-
-Agora, vamos escrever formalmente a prova de que $B_{k'}$ é Monge convexa para todo $1 \leq k' \leq k$. Com isso, o algoritmo SMAWK pode ser aplicado para todo $k'$ e o problema original é resolvido em $O(kn)$.
