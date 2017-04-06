@@ -18,8 +18,8 @@ Sabemos que a monotonicidade de vetores pode ser aproveitada para agilizar algun
 \begin{defi}[Função convexa]
 Seja $g : \B{Q} \to \B{Q}$ uma função,
     \begin{itemize}
-        \item se para todo $x,y \in \B{Q}$ e $\lambda \in \B{R}$ com $0 \leq \lambda \leq 1$, $g(\lambda x + (1 - \lambda)y) \leq \lambda g(x) + (1 - \lambda) g(y)$, $g$ é dita convexa e 
-        \item se para todo $x,y \in \B{Q}$ e $\lambda \in \B{R}$ com $0 \leq \lambda \leq 1$, $g(\lambda x + (1 - \lambda)y) \geq \lambda g(x) + (1 - \lambda) g(y)$, $g$ é dita côncava.
+        \item se para todo par de pontos $x,y \in \B{Q}$ e $\lambda \in \B{Q}$ que respeita $0 \leq \lambda \leq 1$, vale~${g(\lambda x + (1 - \lambda)y) \leq \lambda g(x) + (1 - \lambda) g(y)}$, $g$ é dita convexa e 
+        \item se para todo par de pontos $x,y \in \B{Q}$ e $\lambda \in \B{Q}$ que respeita $0 \leq \lambda \leq 1$, vale~${g(\lambda x + (1 - \lambda)y) \geq \lambda g(x) + (1 - \lambda) g(y)}$, $g$ é dita côncava.
     \end{itemize}
 \end{defi}
 
@@ -31,6 +31,8 @@ A função $g(x) = x^2$ é convexa. \todo{eu uso isso lá no final do capítulo,
 Só fazer.
 \end{proof}
 
+É interessante definir convexidade também em termos de vetores.
+
 \begin{defi}[Vetor convexo]
 Seja $a \in \B{Q}^n$ um vetor,
     \begin{itemize}
@@ -38,8 +40,6 @@ Seja $a \in \B{Q}^n$ um vetor,
         \item se para todo $i,j,k \in [n]$, $i < j < k \so a_j \geq \frac{(j-k)a_i + (i-j)a_k}{i-k}$, $a$ é dito côncavo.
     \end{itemize}
 \end{defi}
-
-Geralmente, ao se definir convexidade de funções, diz-se que a função é convexa se e somente se para todo par $x,y$ no domínio da função e todo $\lambda \in [0,1]$ real, $f(\lambda x + (1 - \lambda)y) \leq \lambda f(x) + (1 - \lambda) f(y)$. A definição utilizada aqui é compatível com essa, porém, é específica para vetores. Uma situação parecida ocorre no sentido da concavidade.
 
 Assim como a monotonicidade, a convexidade também é usualmente explorada para agilizar algoritmos, por exemplo, se um vetor é convexo podemos definir o valor mínimo do vetor com uma busca ternária ao invés de percorrer todo o vetor.  
 
