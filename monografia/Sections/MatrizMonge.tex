@@ -24,11 +24,17 @@ Seja $g : \B{Q} \to \B{Q}$ uma função,
 \end{defi}
 
 \begin{prop} \label{prop:sqConv}
-A função $g(x) = x^2$ é convexa. \todo{eu uso isso lá no final do capítulo, achei razoável colocar aqui pra deixar menos poluído lá na frente, a explicação de lá já é bem complexa.}
+A função $g(x) = x^2$ é convexa. \todo{Eu uso isso lá no final do capítulo, quis despoluir lá na frente. Tem uma prova de uma linha disso mas ela usa um teorema. Pra escrever essa prova eu meio que me baseio na prova desse teorema... Talvez eu tenha que fazer um apêndice e usar o teorema?}
 \end{prop}
 
 \begin{proof}
-Só fazer.
+Sejam~$x,y,\lambda \in \B{Q}$ onde vale~$0 \leq \lambda \leq 1$. Definimos~${z = \lambda x + (1 - \lambda) y}$. Queremos mostrar $z^2 \leq \lambda x^2 + (1 - \lambda) y^2$.
+
+Temos~$x^2 = (z + (x - z))^2 = z^2 + 2z(x-z) + (x-z)^2 \geq z^2 + 2z(x-z)$, com isso,~$x^2\lambda \geq z^2 \lambda + 2z(x-z)$.  
+
+Por outro lado,~$y^2 = (z + (y-z))^2 = z^2 + 2z(y-z) + (y-z)^2 \geq z^2 + 2z(y-z)$, com isso,~$y^2(1-\lambda) \geq z^2(1-\lambda) + 2z(y-z)(1-\lambda)$.  Porém,~$z = \lambda x + (1 - \lambda)y$, logo,~$\lambda = (z-y)/(x-y)$ e~$(1-\lambda) = (x-z)/(x-y)$.
+
+Assim, somando as desigualdades obtidas, temos~$\lambda x^2 + (1 - \lambda)y^2 \geq z^2 + 2z((y-z)(x-z) - (z-x)(z-y))/(x-y) = z^2$, ou seja,~$z^2 \leq \lambda x^2 + (1 - \lambda)y^2$.
 \end{proof}
 
 É interessante definir convexidade também em termos de vetores.
