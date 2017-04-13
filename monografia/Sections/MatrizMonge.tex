@@ -142,7 +142,7 @@ As matrizes Monge são usadas para resolver uma série de problemas que serão e
 Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento, utilizamos ele como caixa preta. Isto é motivado pelo fato de que o pensamento apresentado aqui não é útil somente para o algoritmo SMAWK, ele é útil também em vários dos outros momentos deste trabalho.  
 
 \begin{prob} \label{prob:Monge_ex}
-Dados dois inteiros~$k$ e~$n$ com~$k \leq n$, um vetor de pesos~$a \in \B{Q}^n$ e uma matriz de custos~${A[i][j] = \left(\sum\limits_{k=i+1}^{j} a_k\right)^2}$. Queremos particionar o vetor~$a$ em~$k$ partes não-vazias de forma a maximizar a soma dos custos das partes, isto é, queremos escolher um vetor~${r \in \B{N}^{[0 \tdots k]}}$ de índices tal que~${1 = r_0 < r_1 < r_2 < \dots < r_{k-1} < r_k = n}$ de forma que $\sum\limits_{i=1}^{k} A[r_{i-1}][r_i]$ seja máximo.
+Dados dois inteiros~$k$ e~$n$ com~$k \leq n$, um vetor de pesos~$a \in \B{Q}_+^n$ e uma matriz de custos~${A[i][j] = \left(\sum\limits_{k=i+1}^{j} a_k\right)^2}$. Queremos particionar o vetor~$a$ em~$k$ partes não-vazias de forma a maximizar a soma dos custos das partes, isto é, queremos escolher um vetor~${r \in \B{N}^{[0 \tdots k]}}$ de índices tal que~${1 = r_0 < r_1 < r_2 < \dots < r_{k-1} < r_k = n}$ de forma que $\sum\limits_{i=1}^{k} A[r_{i-1}][r_i]$ seja máximo.
 \end{prob}
 
 Podemos resolver este problema com programação dinâmica. Vamos preencher a matriz $E \in \B{Q}^{k \times n}$ definida recursivamente para todo $k' \in [k]$ e $n' \in [n]$: 
@@ -180,15 +180,19 @@ Sejam $A,B$ e $b$ definidos como no enunciado do teorema. Suponha que $A$ é Mon
 Com este resultado, é fácil ver que, desde que $A$ seja Monge convexa, $B_1$ será Monge convexa e a Monge convexidade será mantida para todo $B_{k'}$ com $1 \leq k' \leq k$. O teorema a seguir nos ajuda a mostrar que $A$ é Monge convexa.
 
 \begin{theo} \label{theo:MongeConvex_and_Convex}
-Sejam~$A \in \B{Q}^{n \times n}$ uma matriz, $b \in \B{Q}^n$ um vetor e~${g : \B{Q} \to \B{Q}}$ uma fução tais que, para todo $i \in [n]$ e $j \in [m]$, $A[i][j] = g\left(\sum\limits_{k=1}^j b_k - \sum\limits_{k=1}^i b_k\right)$. $A$ é convexa se e somente se $g$ é convexa. Similarmente, $A$ é côncava se e somente se $b$ é côncava.
+Sejam~$A \in \B{Q}^{n \times n}$ uma matriz, $w \in \B{Q}_+^n$ um vetor e~${g : \B{Q} \to \B{Q}}$ uma fução tais que para todo~$i,j \in [n]$ vale~${A[i][j] = g\left(\sum\limits_{k=1}^j w_k - \sum\limits_{k=1}^i w_k\right)}$. Se~$g$ é convexa,~$A$ é Monge convexa. Similarmente, se~$g$ é côncava,~$A$ é Monge côncava.
 \end{theo}
 
 Antes de apresentar uma prova para o teorema acima, vamos mostrar a utilidade dele no nosso problema atual, o que deve ajudar na compreensão de seu enunciado.  
 
-Queremos mostrar que $A$ é Monge convexa, porém, para um certo vetor $a \in \B{Q}^n$, $A[i][j] = \left(\sum\limits_{k=(i+1)}^{j} a_k \right)^2 = \left(\sum\limits_{k=1}^{j} a_k - \sum\limits_{k=1}^{i} a_k \right)^2$, por definição. Assim, precisamos mostrar apenas que a função $g(x) = x^2$ é convexa, o que segue da Proposição~\ref{prop:sqConv}. Agora, como explicado acima, todas as matrizes $B_{k'}$ são Monge convexas e podemos aplicar o algoritmo SMAWK para todo $k'$, resolvendo o Problema~\ref{prob:Monge_ex} em tempo $O(kn)$.
+Queremos mostrar que $A$ é Monge convexa, porém, para um certo vetor $a \in \B{Q}_+^n$, $A[i][j] = \left(\sum\limits_{k=(i+1)}^{j} a_k \right)^2 = \left(\sum\limits_{k=1}^{j} a_k - \sum\limits_{k=1}^{i} a_k \right)^2$, por definição. Assim, precisamos mostrar apenas que a função $g(x) = x^2$ é convexa, o que segue da Proposição~\ref{prop:sqConv}. Agora, como explicado acima, todas as matrizes $B_{k'}$ são Monge convexas e podemos aplicar o algoritmo SMAWK para todo $k'$, resolvendo o Problema~\ref{prob:Monge_ex} em tempo $O(kn)$.
 
 Agora, nos resta provar o Teorema~\ref{theo:MongeConvex_and_Convex}.
 
 \begin{proof}
-Só fazer.
+Sejam $A$ e $g$ quaisquer que respeitem as condições do enunciado. Sejam ainda~$i,i',j,j' \in [n]$ onde~$i < i'$ e~$j < j'$. Escrevemos~$a = \sum \limits_{k=1}^{i'} w_k - \sum \limits_{k=1}^{i} w_k$,~$b = \sum \limits_{k=1}^{j'} w_k - \sum \limits_{k=1}^{j} w_k$ e~$z = \sum \limits_{k=1}^{j} w_k - \sum \limits_{k=1}^{i'} w_k$. Desta forma, temos~$g(z) = A[i'][j]$,~$g(z+a+b) = A[i][j']$,~$g(z+a) = A[i][j]$ e~$g(z+b) = A[i'][j']$, portanto, $g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$ se e somente se $A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$ ($A$ é Monge convexa).
+
+Com isso, vamos provar que se $g$ é convexa, $A$ é Monge convexa. Sejam~$i,i',j,j' \in [n]$ onde~$i < i'$ e~$j < j'$. Definimos~$a$,~$b$ e~$z$ como acima. Sabemos~$0 \leq a$ e~$0 \leq b$. Consideramos o caso onde~$0 < a \leq b$. Temos~$0 < a \leq b < a+b$, ou seja,~$z < z+a \leq z+b < z+a+b$. Definimos~$\lambda = \frac{a}{a+b}$. Já que~$z+a = \lambda z + (1-\lambda)(z+a+b)$ e~$z+b = (1-\lambda)z + \lambda(z+a+b)$, por convexidade de~$g$, obtemos~$g(z+a) \leq \lambda g(z) + (1 - \lambda) g(z+a+b)$ e~$g(z+b) \leq \lambda g(z+a+b) + (1 - \lambda) g(z)$. Somando, obtemos~$g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$.  
+
+Se considerarmos o caso onde~$0 < b \leq a$, seguimos o mesmo raciocínio e obtemos, novamente,~$g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$. Falta considerar o caso onde~$0 = a = b$, neste caso,~$g(z) = g(z+a) = g(z+b) = g(z+a+b)$ e vale~$(z+a) + g(z+b) \leq g(z) + g(z+a+b)$. Portanto, $A$ é Monge convexa.
 \end{proof}
