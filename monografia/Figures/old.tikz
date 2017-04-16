@@ -1,0 +1,15 @@
+\begin{tikzpicture}[sibling distance=10em,
+    every node/.style = {shape=rectangle, rounded corners,
+        draw, align=center,
+        top color=white, bottom color=blue!20}]
+
+    \node {Matriz Monge convexa}
+        child { node {Totalmente monótona\\convexa por linhas}
+            child { node {decrescente\\nos máximos\\das linhas} }
+            child { node {crescente\\nos mínimos\\das linhas} }
+        }
+        child { node {Totalmente monótona\\convexa por colunas} 
+            child { node {decrescente\\nos máximos\\das colunas} }
+            child { node {crescente\\nos mínimos\\das colunas} }
+        };
+\end{tikzpicture}

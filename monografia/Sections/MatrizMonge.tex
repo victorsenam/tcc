@@ -64,18 +64,13 @@ Note que o máximo de uma linha (ou coluna) foi definido como o maior índice qu
 
 Dada uma matriz, encontrar estes vetores é um problema central para este trabalho. Neste momento é interessante classificar algumas matrizes de acordo com propriedades que vão nos ajudar a calcular os vetores de mínimos e máximos de maneira especialmente eficiente.   
 
-A Figura~\ref{table:ConvexMonotone} resume as relações de implicação da classificação que será realizada. Os conceitos ilustrados nela serão apresentados a seguir.
+A Figura~\ref{figure:ConvexMonotone} resume as relações de implicação da classificação que será realizada. Os conceitos ilustrados nela serão apresentados a seguir.
 
-\begin{table}[t]
-    \caption{Comportamento dos vetores de índices ótimos em relação à convexidade.} \label{table:ConvexMonotone}
-    \begin{tabular}{ c | c | c }
-        Se a matriz é & os índices de máximos são & e os de mínimos são \\
-        \hline
-        convexa       & decrescentes              & crescentes        \\
-        \hline
-        côncava       & crescentes                & decrescentes          \\
-    \end{tabular}
-\end{table}
+\begin{figure}[t]
+    \centering
+    \input{Figures/ClassificacaoDeMatrizesPorMonotonicidade.tikz}
+    \caption{Comportamento dos vetores de índices ótimos em relação à convexidade.} \label{figure:ConvexMonotone}
+\end{figure}
 
 \begin{defi}[Matriz monótona]
 Seja $A \in \B{Q}^{n \times m}$ uma matriz. Se $A$ tiver o vetor de índices de máximos das linhas monótono, $A$ é dita monótona nos máximos das linhas. 
