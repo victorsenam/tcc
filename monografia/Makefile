@@ -1,4 +1,4 @@
-SECTION_NAMES=Introducao MatrizMonge DivisaoEConquista
+SECTION_NAMES=Introducao MatrizMonge DivisaoEConquista SMAWK
 SECTION_PATHS=$(addprefix Sections/,${SECTION_NAMES})
 SECTION_TEX=$(addsuffix .tex,${SECTION_PATHS})
 SECTION_AUX=$(addsuffix .aux,${SECTION_PATHS})
@@ -17,7 +17,7 @@ tex: main.pdf
 clear: 
 	rm ${AUXFILES}
 
-main.pdf: main.tex ${SECTION_TEX} ${DEPENDENCIES} definitions.tex
+main.pdf: main.tex ${SECTION_TEX} ${DEPENDENCIES} definitions.tex main.bib
 	rm -f ${AUXFILES}
 	pdflatex main.tex
 	bibtex main.aux
