@@ -1,0 +1,22 @@
+\section{SMAWK}
+\label{SMAWK}
+
+%----------------------------------------------------------------------------------------
+
+Nesta seção será apresentado o algoritmo SMAWK. Este algoritmo pode ser usado para encontrar índices de mínimos das linhas numa matriz totalmente monótona cnvexa por linhas com~$n$ linhas e~$m$ colunas em tempo~$\Cl{O}(n+m)$. O algoritmo pode ser adaptado para encontrar máximos e trabalhar em colunas ou em matrizes totalmente monótonas côncavas.  
+
+Este algoritmo é conhecido por sua aplicação no problema de encontrar o vértice mais distante de cada vértice num políngono convexo em tempo linear~\cite{Aggarwal:1987}. Ao final desta seção discutiremos esta e outras aplicações deste algoritmo.
+%----------------------------------------------------------------------------------------
+
+\subsection{Técnica Primordial}
+Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a Divisão e Conquista apresentada na Seção~\ref{DivideAndConquer} e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
+
+Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o menor índice de mínimo de cada uma das linhas de~$A$. Se para uma dada linha~$i$ onde~$i > 0$ e~$i < n$ conhecermos os índices~$l$ e~$r$ de mínimos das linhas~$i-1$ e~$i+1$, respectivamente, já que~$A$ tem os índices de mínimos das linhas crescente (por ser totalmente monótona) basta buscar o índice de mínimo da linha~$i$ no intervalo entre~$l$ e~$r$ (inclusive). Além disso, se~$i$ é a primeira linha da matriz podemos considerar~$l = 1$ ou se~$i$ é a última linha da matriz podemos considerar~$r = n$ sem perder a validade do fato de que basta buscar entre~$l$ e~$r$.  
+
+Após realizar as observações acima note que, já que~$A$ é totalmente monótona, remover qualquer linha de~$A$ mantém a total monotonicidade e não altera o índice de mínimo de outra linha. Com esta observação, concluímos que podemos remover todas as linhas pares da matriz, resolver o problema recursivamente para a matriz resultante e utilizar este resultado para calcular os índices de interessa para as linhas pares da matriz.  
+
+Com uma análise similar à realizada para a técnica da Divisão e Conquista é fácil concluir que uma implementação desta técnica que consiga remover as linhas pares da matriz (e adicionar elas de volta) em tempo~$\Cl{O}(1)$ resolve o problema em tempo~$\Cl{O}((n+m)\lg(n))$, assim como a técnica da divisão e conquista.  
+%----------------------------------------------------------------------------------------
+
+\subsection{Reduce}
+
