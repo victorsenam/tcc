@@ -3,7 +3,21 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção será apresentada uma técnica que pode ser usada para encontrar máximos de linhas em matrizes monótonas crescentes nos máximos das linhas em tempo $\Cl{O}((m+n)\lg(n))$, onde $m$ é a quantidade de colunas e $n$ a quantidade de linhas da matriz. Ao final desta seção, apresentamos exemplos de aplicações desta ideia em programação dinâmica e elencamos generalizações diretas do que foi explicado.
+Nesta seção será apresentada uma técnica que chamamos de Divisão e Conquista. A ideia é brevemente citada em~\cite{needed} e é um tópico recorrente em competições de programação, sendo conhecida como ``Divide and Conquer Optimization''~\cite{needed} e geralmente aplicada a problemas de programação dinâmica. Além disso, as hipóteses deste algoritmo são mais fracas do que as do algoritmo SMAWK, apresentado na Seção~\ref{SMAWK}, portanto, todo problema para o qual aquela solução pode ser aplicada, esta também pode. Ao final desta seção, apresentamos exemplos de aplicações em programação dinâmica.  
+
+Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso deste algoritmo:
+\begin{itemize}
+    \item Se $A$ é monótona crescente nos mínimos das linhas podemos encontrar os índices de mínimos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona decrescente nos mínimos das linhas podemos encontrar os índices de mínimos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona crescente nos máximos das linhas podemos encontrar os índices de máximos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona decrescente nos máximos das linhas podemos encontrar os índices de máximos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona crescente nos mínimos das colunas podemos encontrar os índices de mínimos das colunas em tempo $\Cl{O}((n+m)\lg(m))$, 
+    \item se $A$ é monótona decrescente nos mínimos das colunas podemos encontrar os índices de mínimos das colunas em tempo $\Cl{O}((n+m)\lg(m))$, 
+    \item se $A$ é monótona crescente nos máximos das colunas podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$ e 
+    \item se $A$ é monótona decrescente nos máximos das colunas podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$.
+\end{itemize}
+
+Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. Na Subseção~\ref{DivisaoEConquista_Generalizacoes} explicamos como reduzir os problemas elencados para este caso.
 
 %----------------------------------------------------------------------------------------
 
@@ -70,8 +84,4 @@ Para implementar o Algoritmo~\ref{FindRowMax_DC} com a complexidade desejada, de
 A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, pode ser encontrada em \texttt{implementacao/FindRowMax\_DC.cpp}.
 
 \subsection{Generalizações} \label{DivisaoEConquista_Generalizacoes}
-Podemos manipular a matriz dada e usar o Algoritmo~\ref{FindRowMax_DC} como caixa preta para resolver vários problemas parecidos. Se a matriz $A \in \B{Q}^{n \times m}$ recebida tiver os índices de máximos decrescentes, podemos espelhar a matriz e aplicar o algoritmo nesta nova matriz, ou seja, na matriz $B$ onde $B[i][j] = A[i][m-j+1]$ para todo $i \in [n]$ e $j \in [m]$.  
-
-Se estivermos interessados no vetor de mínimos das linhas em uma matriz $A$ onde este é monótono, podemos trabalhar sobre a matriz $-A$ e teremos um problema que sabemos resolver usando a técnica original ou a transformação já apresentada. Ainda mais, se estivermos interessados nos vetores relativos às colunas, basta transpor a matriz recebida e aplicar os conhecimentos já discutidos, desde que as hipóteses necessárias tornem-se válidas.   
-
-Todas as adaptações exemplificadas aqui podem ser atingidas facilmente com adaptações realizadas diretamente no algoritmo ao invés de transformações na matriz de entrada.
+\todo[inline]{Isso é chato de ser escrito, não basta transformar a matriz e usar as coisas como caixa preta por causa da forma como índices de máximos e mínimos foram definidos}

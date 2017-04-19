@@ -3,9 +3,15 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção será apresentado o algoritmo SMAWK. Este algoritmo pode ser usado para encontrar índices de mínimos das linhas numa matriz totalmente monótona cnvexa por linhas com~$n$ linhas e~$m$ colunas em tempo~$\Cl{O}(n+m)$. O algoritmo pode ser adaptado para encontrar máximos e trabalhar em colunas ou em matrizes totalmente monótonas côncavas.  
+Nesta seção discutiremos o algoritmo SMAWK. Ele é conhecido pela sua aplicação no problema de encontrar o vértice mais distante de cada vértice num poígono convexo em tempo linear~\cite{Aggarwal:1987}. Ao final desta seção serão explicadas esta e outras aplicações deste algoritmo.  
 
-Este algoritmo é conhecido por sua aplicação no problema de encontrar o vértice mais distante de cada vértice num políngono convexo em tempo linear~\cite{Aggarwal:1987}. Ao final desta seção discutiremos esta e outras aplicações deste algoritmo.
+Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso deste algoritmo:
+\begin{itemize}
+    \item Se $A$ é totalmente monótona convexa ou côncava nas linhas podemos encontrar os índices de mínimos e máximos das linhas em tempo $\Cl{O}(n + m)$ e
+    \item se $A$ é totalmente monótona convexa ou côncava nas colunas podemos encontrar os índices de mínimos e máximos das colunas em tempo $\Cl{O}(n + m)$.
+\end{itemize}
+
+Apresentaremos o caso onde $A$ é totalmente monótona convexa nas linhas e estamos interessados nos índices de mínimos. Na Subseção~\ref{SMAWK_Generalizacoes} explicamos como reduzir os problemas elencados para este caso.
 %----------------------------------------------------------------------------------------
 
 \subsection{Técnica Primordial}
