@@ -15,7 +15,7 @@ Apresentaremos o caso onde $A$ é totalmente monótona convexa nas linhas e esta
 %----------------------------------------------------------------------------------------
 
 \subsection{Técnica Primordial}
-Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a Divisão e Conquista apresentada na Seção~\ref{DivideAndConquer} e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
+Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a Divisão e Conquista apresentada na Seção~\ref{DivisaoEConquista} e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
 
 Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o menor índice de mínimo de cada uma das linhas de~$A$. Se para uma dada linha~$i$ onde~$i > 0$ e~$i < n$ conhecermos os índices~$l$ e~$r$ de mínimos das linhas~$i-1$ e~$i+1$, respectivamente, já que~$A$ tem os índices de mínimos das linhas crescente (por ser totalmente monótona) basta buscar o índice de mínimo da linha~$i$ no intervalo entre~$l$ e~$r$ (inclusive). Além disso, se~$i$ é a primeira linha da matriz podemos considerar~$l = 1$ ou se~$i$ é a última linha da matriz podemos considerar~$r = n$ sem perder a validade do fato de que basta buscar entre~$l$ e~$r$.  
 
@@ -25,4 +25,18 @@ Com uma análise similar à realizada para a técnica da Divisão e Conquista é
 %----------------------------------------------------------------------------------------
 
 \subsection{Reduce}
+Queremos agilizar a técnica apresentada acima. Para isso, vamos adicionar uma nova hipótese. Vamos supor que a matriz~$A$ é quadrada, ou seja,~$n = m$. Lembre que a cada passo, removemos as~$\floor{n/2}$ linhas pares da matriz gerando uma nova matriz $A'$, resolvemos o problema recursivamente para~$A'$ e usamos a solução de~$A'$ para resolver para as linhas restantes de~$A$. O problema é que quando removemos linhas da nossa~$A$, ela deixa de ser quadrada e passa a ser uma matriz com mais colunas do que linhas, isto é,~$m \geq n$. Chamamos de interessantes as colunas que contém o índice de mínimo de pelo menos uma linha, queremos remover colunas não interessantes de uma matriz~$A$ com mais colunas do que linhas fazendo com que~$A$ se torne quadrada.  
 
+Primeiramente, note que sempre é possível remover pelo menos $m-n$ colunas da matriz, já que no máximo $n$ colunas podem ser interessantes (o mínimo de uma coluna não pode estar em duas colunas), assim, sempre podemos remover colunas de forma a deixar $A$ quadrada. 
+%----------------------------------------------------------------------------------------
+
+\subsection{SMAWK}
+%----------------------------------------------------------------------------------------
+
+\subsection{Análise}
+%----------------------------------------------------------------------------------------
+
+\subsection{Implementação}
+%----------------------------------------------------------------------------------------
+
+\subsection{Generalizações} \label{SMAWK_Generalizacoes}
