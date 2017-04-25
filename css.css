@@ -1,6 +1,9 @@
+/* Color pallete: http://www.colourlovers.com/palette/3002622/new_city */
+
 body {
-  margin-left: 5%;
-  margin-right: 5%;
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 2%;
   text-align: justify;
   color: black;
@@ -16,14 +19,49 @@ a:hover {
   text-decoration: none;
 }
 
-strong {
-  color: #585574;
+strong, em, th {
+  color: #6C81AE;
 }
 
 h1 {
   font-family: 'Merriweather', serif;
 }
 
-h2 {
+h1 {
   color: #585574;
+}
+
+h2, h3 {
+  color: #716589;
+}
+
+ol#atv {
+  counter-reset: section -1;
+}
+ol {
+  counter-reset: section;
+  list-style-type: none;
+}
+
+li::before {
+  counter-increment: section;
+  content: counters(section,".") ". ";
+}
+
+table {
+  border: 1px solid #bbb;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  text-align: center;
+  border-spacing: 0;
+  border-collapse: separate;
+}
+
+tr:nth-child(even) {
+  background-color: #c8b7a769;
+}
+
+td {
+  padding: 5px;
 }
