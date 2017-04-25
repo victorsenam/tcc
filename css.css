@@ -1,0 +1,29 @@
+body {
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 2%;
+  text-align: justify;
+  color: black;
+  font-family: 'Open Sans', sans-serif;
+}
+
+a {
+  text-decoration: underline dashed;
+  color: black;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+strong {
+  color: #585574;
+}
+
+h1 {
+  font-family: 'Merriweather', serif;
+}
+
+h2 {
+  color: #585574;
+}
