@@ -62,6 +62,14 @@ tr:nth-child(even) {
   background-color: #c8b7a769;
 }
 
+tr:hover {
+  background-color: #6c81ae69;
+}
+
+tr:hover:nth-child(1) {
+  background-color: #fff;
+}
+
 td {
   padding: 5px;
 }
