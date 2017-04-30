@@ -27,17 +27,62 @@ Com uma análise similar à realizada para a técnica da Divisão e Conquista é
 \subsection{Reduce}
 Queremos agilizar a técnica apresentada acima. Para isso, vamos adicionar uma nova hipótese. Vamos supor que a matriz~$A$ é quadrada, ou seja,~$n = m$. Lembre que a cada passo, removemos as~$\floor{n/2}$ linhas pares da matriz gerando uma nova matriz $A'$, resolvemos o problema recursivamente para~$A'$ e usamos a solução de~$A'$ para resolver para as linhas restantes de~$A$. O problema é que quando removemos linhas da nossa~$A$, ela deixa de ser quadrada e passa a ser uma matriz com mais colunas do que linhas, isto é,~$m \geq n$. Chamamos de ótimas as células da matriz que são mínimo de alguma linha e as colunas que contém o índice de mínimo de pelo menos uma linha. Note que uma matriz contém no máximo~$n$ colunas ótimas, pois cada linha faz com que exatamente uma célula seja ótima. Queremos remover colunas não ótimas de uma matriz~$A$ com mais colunas do que linhas fazendo com que~$A$ se torne quadrada.  
 
-Vamos desenvolver o algoritmo \textsc{Reduce} a partir de um índice de linha~$k \leq n$ e de uma invariante: Toda célula com índices de linha menor do que~$k$ e coluna menor ou igual a~$k$ não é ótima. Se o índice~$k$ representa uma coluna, a invariante nos diz que todas as células acima da diagonal principal que estão nesta coluna ou à esquerda dela são não ótimas. A Figura~\ref{figure:Reduce1} representa, em azul, a célula de índice~$k,k$ e, em preto, as células que, segundo a invariante, são não ótimas.
+Vamos desenvolver o algoritmo \textsc{Reduce} a partir de um índice de linha~$k$ e de algumas invariantes: 
+\begin{enumerate}
+    \item Vale~$1 \leq k \leq n$, \label{invar:Reduce0}
+    \item apenas colunas não ótimas foram removidas da matriz e \label{invar:Reduce1}
+    \item toda célula em uma coluna de índice menor ou igual a~$k$ que possua índice de linha menor do que índice de coluna é não ótima. A Figura~\ref{figure:Reduce1} representa, em azul, a célula de índice~$k,k$ e, em preto, as células que, segundo esta invariante, são não ótimas. \label{invar:Reduce2}
+\end{enumerate}
 
 \begin{figure}[h]
     \centering
     \input{Figures/SMAWK_Reduce1.tikz}
-    \caption{Invariante do \textsc{Reduce}.} \label{figure:Reduce1}
+    \caption{Invariante~\ref{invar:Reduce2} do \textsc{Reduce}.} \label{figure:Reduce1}
 \end{figure}
 
-Primeiramente, se~$k \leq n$ e a entrada~$A[k][k+1]$ não existir na matriz, ela não tem mais colunas do que linhas e não precisamos aplicar o \textsc{Reduce}. Se~$A[k][k] > A[k][k+1]$, toda a coluna~$k$ é não ótima e pode ser removida. Para demonstrar isso, escolhemos um índice de linha~$i$ qualquer e mostramos que $A[i][k]$ é não ótimo. Se~$i < k$ o fato segue da invariante e se~$i = k$ também é verdade pois $A[k][k+1]$ pertence à mesma linha e tem valor estritamente menor. Agora, se~$i > k$, pela definição de total monotonicidade temos~$A[i][k] \leq A[i][k+1]$ implica $A[k][k] \leq A[k][k+1]$, basta aplicar a contrapositiva nesta afirmação e observar que~$A[i][k] > A[i][k+1]$, portanto~$A[i][k]$ também é não ótima. Note que se removermos a coluna~$k$ da matriz e não alterarmos o índice~$k$, a invariante não será mantida, basta subtrair~$1$ de~$k$ para manter a invariante.
+Vamos comparar~$A[k][k]$ com~$A[k][k+1]$ e considerar dois casos. Em cada um dos casos, concluiremos que algumas células da matriz $A$ são não ótimas. A Figura~\ref{figure:Reduce2} mostra, hachuradas em vermelho, as células que são descobertas não ótimas quando~$A[k][k] > A[k][k+1]$ e, com linhas verticais verdes, as células que são descobertas não ótimas quando~$A[k][k] \leq A[k][k+1]$. Vamos provar estas implicações.
 
-Agora, se~$A[k][k] \leq A[k][k+1]$, vamos mostrar que todos os elementos da coluna $k+1$ que estão em uma linha maior ou igual à $k$-ésima são não ótimos.
+\begin{figure}[h]
+    \centering
+    \input{Figures/SMAWK_Reduce2.tikz}
+    \caption{Casos do \textsc{Reduce}.} \label{figure:Reduce2}
+\end{figure}
+
+Se~$A[k][k] > A[k][k+1]$, as entradas com índice de linha maior ou igual a~$k$ na coluna~$k$ são não ótimos. Primeiramente, a célula~$(k,k)$ é não ótima como consequência direta da desigualdade. Agora, suponha que existe alguma linha~$i>k$ tal que~$A[i][k] \leq A[i][k+1]$. Pela total monotonicidade convexa por linhas de $A$, isso implica em~$A[k][k] \leq A[k][k+1]$, um absurdo.  
+
+Se~$A[k][k] \leq A[k][k+1]$, as células da coluna~$k+1$ com índices de linha menores ou iguals a~$k$ são não ótimas. A célula~$(k,k+1)$ é não ótima pela desigualdade apresentada. Supojnha que existe alguma linha~$i<k$ tal que~$A[i][k] > A[i][k+1]$. Pela contrapositiva da total monotonicidade, temos~$A[k][k] > A[k][k+1]$, um absurdo.  
+
+Com estas observações estamos prontos para deduzir um algoritmo que elimina exatamente~$m-n$ colunas de~$A$. 
+
+\newcommand{\Reduce}{\textsc{Reduce}}
+\begin{algorithm}[H]
+\caption{Algoritmo $\Reduce$}
+\label{Reduce}
+\begin{algorithmic}[1]
+\Function{\Reduce}{A}
+    \State $k \rec 1$
+    \While{$A$ tem mais linhas do que colunas}
+        \If{$A[k][k] > A[k][k+1]$}
+            \State Remove a coluna~$k$
+            \State $k \rec \max(1,k-1)$
+        \Else
+            \If{$k = n$}
+                \State Remove a coluna~$k+1$
+            \Else
+                \State $k \rec k+1$
+            \EndIf
+        \EndIf
+    \EndWhile
+    \State \Return $A$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+É fácil ver que as invariantes são válidas neste algoritmo. Olhamos para o primeiro passo,~$k = 1$, nenhuma coluna foi removida ainda e não há elementos com índices de linha e coluna menores do que $k$, logo, as Invariantes~\ref{invar:Reduce0},~\ref{invar:Reduce1} e~\ref{invar:Reduce2} valem. Em todo passo do loop,~$A[k][k+1]$ existe, pois~$k \leq n$ e~$n \leq m$. Consideramos o caso onde~$A[k][k] > A[k][k+1]$, a Invariante~\ref{invar:Reduce0} sempre se mantém trivialmente, já provamos que a coluna~$k$ é não ótima neste caso, portanto, a Invariante~\ref{invar:Reduce1} se mantém mesmo após a remoção da coluna~$k$. Agora, se~$k=1$, vale a~\ref{invar:Reduce2} por vacuidade e, no caso contrário, já que a~$k$ decresce, a Invariante~\ref{invar:Reduce2} também se mantém. 
+
+Em outro caso, valem~$A[k][k] \leq A[k][k+1]$ e $k = n$. Foi provado que os elemntos de linhas menores ou iguals a~$k$ na coluna coluna~$k+1$ são não ótimos, porém, isto representa toda a coluna~$k+1$, assim, remover ela mantém a Invariante~\ref{invar:Reduce1}. As outras duas invariantes se mantém trivialmente. Agora, falta considerar o caso onde~$A[k][k] \leq A[k][k+1]$ e $k < n$. Neste caso, foi provado, novamente, que as células com índices menores ou iguais a~$k$ na coluna~$k+1$ são inválidos. Estes são exatemente os elementos com índices de linhas menores do que índices de colunas na coluna~$k+1$, o que faz com que a Invariante~\ref{invar:Reduce2} se mantenha ao incrementarmos o valor de~$k$. As outras duas invariantes se mantém trivialmente neste caso.
+
+Além disso, o algoritmo, a cada passo, incrementa~$k$ ou remove uma coluna de~$A$. Sabemos que~$k$ nunca passa de~$n$ e, já que a matriz tem~$m$ colunas, não podemos remover mais do que~$m$ colunas. Supondo que a cada remoção de coluna~$k$ seja decrementado, chegamos a uma quantidade máxima de~$2m + n$ passos. Supondo que as remoções sejam feitas em tempo constante, o tempo de cada passo é constante, portanto, atingimos uma complexidade de~$\Cl{O}(m)$ operações no algoritmo $\Reduce$, já que $n \leq m$.
 
 %----------------------------------------------------------------------------------------
 
