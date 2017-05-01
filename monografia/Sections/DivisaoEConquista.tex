@@ -17,7 +17,7 @@ Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso deste algor
     \item se $A$ é monótona decrescente nos máximos das colunas podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$.
 \end{itemize}
 
-Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. Na Subseção~\ref{DivisaoEConquista_Generalizacoes} explicamos como reduzir os problemas elencados para este caso.
+Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. É fácil manipular o algorimto para trabalhar com os outros casos.
 
 %----------------------------------------------------------------------------------------
 
@@ -83,5 +83,27 @@ Para implementar o Algoritmo~\ref{FindRowMax_DC} com a complexidade desejada, de
 
 A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, pode ser encontrada em \texttt{implementacao/FindRowMax\_DC.cpp}.
 
-\subsection{Generalizações} \label{DivisaoEConquista_Generalizacoes}
-\todo[inline]{Isso é chato de ser escrito, não basta transformar a matriz e usar as coisas como caixa preta por causa da forma como índices de máximos e mínimos foram definidos}
+\iffalse
+\subsection{Aplicação em programação dinâmica}
+Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. A prova em questão pode ser encontrada no link \url{http://maratona.ime.usp.br/hist/2016/resultados/contest.pdf}.  
+
+\begin{prob}
+Associamos para todo natural~$m$ e vetor~$v \in \B{N}^m$ a função de custo~$c$ do vetor definida~$c(v) = \sum \limits_{i=1}^m \min(i-1,m-i)v_i$. Sejam~$n$ e~$k$ inteiros onde~$1 \leq k \leq n$ e seja~$h \in \B{N}^n$ um vetor, queremos encontrar uma partição~$P$ de~$h$ em até~$k$ subvetores~$h_{P_1},h_{P_2},\dots,h_{P_k}$ de forma que~$\sum \limits_{i=1}^k c(h_{P_i})$.
+\end{prob}
+
+Podemos dar ao problema acima a interpretação do problema ``Internet Trouble'' citado. Temos várias cidades dispostas em uma linha e queremos escolher~$k + 1$ destas cidades para instalar torres de distribuição de energia de forma a minimizar o custo de alimentar todas as cidades com energia. Nesta adaptação, as cidades~$1$ e~$n$ são escolhas obrigatórias. Se na cidade de índice~$i$ existem~$h_i$ habitantes, o custo de tranferir energia de uma torre a~$d$ cidades de distância para esta cidade é dado por~$dh_i$. Note que, se há uma torre na própria cidade, o custo é considerado~$0$.  
+
+Definimos, para todo~$1 \leq i \leq j \leq n$ o custo~$A[i][j]$ de escolher o subvetor~$v[i \tdots j]$ como uma das partições. Os valores com índices de linhas maiores do que índices de colunas não fazem sentido na nossa modelagem, portanto, queremos torná-los inválidos, já o problema é de minimização definimos seus valores como~$+\infty$. Assim, para todo~$1 \leq i,j \leq n$,
+\begin{equation*}
+A[i][j] = \begin{cases}
+    c(v[i \tdots j]) & \text{, se } i < j \text{ e }\\
+    +\infty          & \text{, c.c.}
+\end{cases}
+\end{equation*}
+
+Queremos resolver o problema com programação dinâmica. Definimos, para todo~$\ell \leq k$ e~$i \leq n$ com $\ell \leq n - i + 1$ o problema de encontrar o melhor particionamento do subvetor~$v[i \tdots n]$ em~$\ell$ partes. Definimos como~$E[\ell][i]$ o valor ótimo atingido neste subproblema. Se~$\ell = 1$, escrevemos~$E[\ell][i] = A[i][n]$ e se~$1 < \ell \leq k$ escrevemos~$E[\ell][i] = \min \limits_{j=i}^{n-\ell+2} A[i][j] + E[\ell-1][j]$. Esta recorrência define um programa dinâmico que pode ser resolvido trivialmente em tempo~$\Cl{O}(kn^2)$.
+
+Com~$\ell > 1$, definindo~$B_\ell[i][j] = A[i][j] + E[\ell-1][j]$ podemos reescrever~$E[\ell][i] = \min \limits_{j=i}^{n-\ell+2} B[i][j]$ e, se definirmos~$B_\ell[i][j] = +\infty$ para todo~$i$ que desrespeite~$i \leq j$ ou~$\ell \leq n - i + 1$, teremos~$E[\ell][i] = \min \limits_{j=1}^{n} B_\ell[i][j]$. Esta formulação reduz o problema de programação dinâmica a encontrar, para todo~$1 \leq \ell \leq k$ fixo, os mínimos das linhas da matriz~$B_\ell$. Com isso, basta provar que~$B_\ell$ é monótona crescente nos mínimos das linhas e aplicar a técnica da divisão e conquista para resolver o problema em tempo~$\Cl{O}(kn\log(n))$.
+
+Vamos, primeiramente, provar que~$A$ é Monge convexa por linhas. Sejam~$i < i'$ índices de linhas e~$j < j'$ índices de colunas de~$A$. Queremos que valha~$A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$. Se~$j < i'$, $A[i'][j] = +\infty$, logo, já que~$A[i][j'] \geq 0$, a desigualdade vale. Consideramos que~$i < i' \leq j < j'$. 
+\fi
