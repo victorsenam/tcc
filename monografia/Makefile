@@ -18,7 +18,6 @@ clear:
 	rm ${AUXFILES}
 
 main.pdf: main.tex ${SECTION_TEX} ${DEPENDENCIES} definitions.tex main.bib
-	rm -f ${AUXFILES}
 	pdflatex main.tex
 	bibtex main.aux
 	pdflatex main.tex
