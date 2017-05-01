@@ -143,64 +143,69 @@ Vale~${A[i][j] + A[i+1][j+1] \geq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n]}
 \begin{proof}
 Seja~$A \in \B{Q}^{n \times m}$. Se~$A$ é Monge convexa, trivialmente vale que~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$. Vamos mostrar que se vale~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n-1]}$ e~${j \in [m-1]}$, a matriz é Monge convexa. 
 
-Sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$ para todo~${0 < a \leq n - i}$ com indução em~$a$. A base, onde~${a = 1}$ vale pela hipótese, quando~${a > 1}$ assumimos que a tese vale com~${a-1}$ e temos~${A[i][j] + A[i+a-1][j+1] \leq A[i][j+1] + A[i+a-1][j]}$ e, já que~${i + a - 1 \in [n-1]}$, vale~${A[i+a-1][j] + A[i+a][j+1] \leq A[i+a-1][j+1] + A[i+a][j]}$ e, somando as duas inequações, obtemos~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$. Isso conclui a prova proposta neste parágrafo.
+Sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$ para todo~${0 < a \leq n - i}$ com indução em~$a$. A base, onde~${a = 1}$ vale pela hipótese, quando~${a > 1}$ assumimos que a tese vale com~${a-1}$ e temos~${A[i][j] + A[i+a-1][j+1] \leq A[i][j+1] + A[i+a-1][j]}$ e, já que~${i + a - 1 \in [n-1]}$, vale~$A[i+a-1][j] + A[i+a][j+1] \leq A[i+a-1][j+1] + A[i+a][j]$ e, somando as duas inequações, obtemos~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$. Isso conclui a prova proposta neste parágrafo.
 
-Agora, sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b]}$ para todo~${0 < a \leq n-i}$ e~${0 < b \leq m-j}$ por indução~$b$. A base desta indução, onde~${b = 1}$, foi provada no parágrafo anterior. Se~${b > 1}$ assumimos que a tese vale para~${b-1}$, escrevemos~${A[i][j] + A[i+a][j+b-1] \leq A[i][j+b-1] + A[i+a][j]}$, pela prova do parágrafo anterior, vale~${A[i][j+b-1] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b-1]}$ e, mais uma vez, somando as duas equações provamos a desigualdade~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j]}$. Com isso provamos que~$A$ é Monge convexa.
+Agora, sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b]}$ para todo~${0 < a \leq n-i}$ e~${0 < b \leq m-j}$ por indução~$b$. A base desta indução, onde~${b = 1}$, foi provada no parágrafo anterior. Se~${b > 1}$ assumimos que a tese vale para~${b-1}$, escrevemos~${A[i][j] + A[i+a][j+b-1] \leq A[i][j+b-1] + A[i+a][j]}$, pela prova do parágrafo anterior, vale~$A[i][j+b-1] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b-1]$ e, mais uma vez, somando as duas equações provamos a desigualdade~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j]}$. Com isso provamos que~$A$ é Monge convexa.
 
 A prova para o caso côncavo segue análogamente.
 \end{proof}
 
-As matrizes Monge são usadas para resolver uma série de problemas que serão explorados aqui. A condição de Monge é a mais forte apresentada aqui. Alguns dos algoritmos apresentados não dependem dela, apenas da monotonicidade ou total monotonicidade, ainda assim, ela leva a resultados úteis que nos permitem provar a pertinência dos algoritmos a alguns problemas, mesmo que o algoritmo usado não se utilize da condição diretamente.  
+As matrizes Monge são usadas para resolver uma série de problemas que serão explorados aqui. A condição de Monge é a mais forte apresentada neste trabalho e alguns dos algoritmos apresentados não dependem dela, apenas da monotonicidade ou total monotonicidade, ainda assim, ela leva a resultados úteis que nos permitem provar a pertinência dos algoritmos a problemas, mesmo que o algoritmo usado não se utilize da condição diretamente.  
 
-Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento, utilizamos ele como caixa preta. Isto é motivado pelo fato de que o pensamento apresentado aqui não é útil somente para o algoritmo SMAWK, ele é útil também em vários dos outros momentos deste trabalho.  
+Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento, utilizamos ele como caixa preta. Desta forma, poderemos introduzir estes resultados que são importantes em vários momentos deste texto e na aplicação prática dos conhecimentos discutidos aqui de forma suave e motivada.   
 
 \begin{prob} \label{prob:Monge_ex}
-Dados dois inteiros~$k$ e~$n$ com~$k \leq n$, um vetor de pesos~$a \in \B{Q}_+^n$ e uma matriz de custos~${A[i][j] = \left(\sum\limits_{k=i+1}^{j} a_k\right)^2}$. Queremos particionar o vetor~$a$ em~$k$ partes não-vazias de forma a maximizar a soma dos custos das partes, isto é, queremos escolher um vetor~${r \in \B{N}^{[0 \tdots k]}}$ de índices tal que~${1 = r_0 < r_1 < r_2 < \dots < r_{k-1} < r_k = n}$ de forma que $\sum\limits_{i=1}^{k} A[r_{i-1}][r_i]$ seja máximo.
+Definimos a função de custo~$c$ de cada vetor~$v$ definida~$c(v) = \left( \sum \limits_{x \in v} x \right)^2$.  
+
+Dados dois inteiros~$k$ e~$n$ com~$k \leq n$, e um vetor~$v \in \B{Q}_+^n$, queremos particionar o vetor~$a$ em~$k$ subvetores não-vazios de forma a maximizar a soma dos custos das partes, isto é, se queremos escolher um particionamento~$P_1,P_2,\dots,P_k$ de~$v$ em subvetores de forma a minimizar~$\sum \limits_{i=1}^k c(v_{P_i})$.
 \end{prob}
 
-Podemos resolver este problema com programação dinâmica. Vamos preencher a matriz $E \in \B{Q}^{k \times n}$ definida recursivamente para todo $k' \in [k]$ e $n' \in [n]$: 
-$$ E[k'][n'] = \begin{cases}
-    A[1][n']                                               & \text{, se } k'= 1 \text{,} \\[2pt]
-    \max\limits_{i=k'-1}^{n'-1} E[k'-1][i] + A[i][n']     & \text{, se } k' \leq n' \text{,} \\[2pt]
-    \text{indefinida }                                    & \text{, caso contrário.}
-\end{cases} $$
+Definimos a matriz~$A \in \B{Q}^{n \times n}$ de forma que, para todo~$1 \leq i < j \leq n$ a entrada~$A[i][j]$ guarda o custo de manter o subvetor~$v[i \tdots j]$ em uma partição e todas as outras entradas guardam o valor~$-\infty$. Com esta matriz, podemos resolver o problema com programação dinâmica. Vamos resolver subproblemas de parâmetros~$i$ e~$\ell$ da forma: Melhor particionamento de um subvetor~$v[i+1 \tdots n]$ de~$v$ em~$k$ partes. Se~$E$ é uma matriz que guarda, na entrada~$0 \leq i < n$ e~$1 \leq \ell \leq n - i$ o valor ótimo do subproblema de parâmetros~$i$ e~$\ell$, poderemos descrever~$E$ com uma recorrência.
 
-A recorrência acima nos dá em cada entrada~$E[k'][n']$ o maior valor possível alcançado particionando o vetor~$a[1 \tdots n']$ em~$k'$ partes não vazias. Podemos preencher esta tabela trivialmente em tempo~$O(kn^2)$, basta iterarar primeiro pelos índices~$k'$ crescentemente. O caso onde~$k' = 1$ é resolvido trivialmente e os casos maiores podem ser resolvidos, um por vez, testando todas as possibilidades de máximo para todo~$n'$.  
+\begin{equation*}
+E[\ell][i] = \begin{cases}
+    A[i][n]                                                 & \text{, se } \ell = 1 \text{,} \\
+    \max\limits_{j=i+1}^{n-\ell+1} A[i][j] + E[\ell-1][j]   & \text{, se } n - i \geq \ell \text{ e } \\
+    -\infty                                                 & \text{, caso contrário.}
+\end{cases}
+\end{equation*}
 
-Fixamos um~$k' > 1$. Vamos utilizar o algoritmo SMAWK para agilizar a solução deste subproblema. Este algoritmo é capaz de resolver o Problema~\ref{prob:Monge_SMAWK} (descrito abaixo) em tempo $O(n)$. Precisamos provar, então, que o subproblema resolvido para cada~$k'$ é equivalente ao Problema~\ref{prob:Monge_SMAWK}.
+Chamamos de não triviais pares de~$\ell$ e~$i$ para os quais~$E[\ell][i] = \max\limits_{j=i+1}^{n-\ell+1} A[i][j] + E[\ell-1][j]$. 
 
-\begin{prob} \label{prob:Monge_SMAWK}
-Dada uma matriz $A \in \B{A}^{n \times n}$ totalmente monótona convexa nas colunas, encontrar o vetor de máximos das colunas de $A$.
-\end{prob}
+É fácil resolver o problema enunuciado em tempo~$\Cl{O}(kn^2)$, basta iterar crescentemente em~$\ell$, para cada~$\ell$, iterar decrescentemente nos valores de~$i$ para os quais~$\ell$ e~$i$ são não triviais e testar todos os valores possíveis para~$j$ em cada passo. Vamos transformar a definição de~$E$ para deixá-la mais simples. Fixe~$i$ e~$\ell$ para os quais~${E[\ell][i] = \max\limits_{j=i+1}^{n-\ell+1} A[i][j] + E[\ell-1][j]}$. Quando~$j < i+1$,~$A[i][j] = -\infty$ e quando~$j > n-\ell+1$,~$E[\ell][j] = -\infty$, portanto, podemos escrever~${E[\ell][i] = \max\limits_{j=1}^n A[i][j] + E[\ell-1][j]}$.  
 
-Definimos a matriz $B_{k'}$ para todo $i,n' \in \B{N}$ onde $k'-1 \leq i < n' \leq n$ como $B_{k'}[i][n'] = E[k'-1][i] + A[i][n']$. Note que já que $k'$ é fixo, já descobrimos os valores da entrada da matriz $E$ na linha $k'-1$. Encontrar o índice $i$ que atinge o máximo em $E[k'][n']$ é exatamente encontrar o índice de máximo da coluna $n'$ na matriz $B_{k'}$, formalmente, 
+Para todos os pares~$\ell$ e~$i$ não triviais e para todo~$j \in [n]$, definimos~$B_\ell[i][j] = A[i][j] + E[\ell-1][j]$. Além destas, definimos, para todo~$0 \leq i < n$ e~$j \in [n]$, $B_1[i][j] = A[i][n]$. Com isso, podemos reescrever a definição de~$E$.
 
-$$\max\limits_{i=k'-1}^{n'-1} B_{k'}[i][n'] = \max\limits_{i=k'-1}^{n'-1} E[k'-1][i] + A[i][n'] \text{.}$$
+\begin{equation*}
+E[\ell][i] = \begin{cases}
+    \max\limits_{j=1}^n B_\ell[i][j]                        & \text{, se } n - i \geq \ell \text{ e } \\
+    -\infty                                                 & \text{, caso contrário.}
+\end{cases}
+\end{equation*}
 
-Portanto, basta mostrar que $B_{k'}$ é monótona convexa nas colunas. Para isso, vamos mostrar, com a ajuda dos resultados abaixo, que $B_{k'}$ é Monge convexa.
-    
+Reduzimos o problema original para o problema de encontar máximos de linhas das matrizes~$B_\ell$ para todo~$\ell \in [n]$ e toda linha~$i$ tal que~$n - i \geq \ell$. O algoritmo SMAWK encontra máximos de linhas de matrizes totalmente monótonas convexas nas linhas em tempo~$\Cl{O}(n + m)$ onde~$n$ e~$m$ são as quantidades de linhas e colunas na matriz. Vamos mostrar que as matrizes~$B_\ell$ são totalmente monótonas convexas nas linhas para poder aplicar o SMAWK e resolver o Problema~\ref{prob:Monge_ex} eficientemente, isso será feito com a ajuda dos resultados abaixo.
 
-\begin{lema}
-Sejam~$A,B \in \B{Q}^{n \times m}$ matrizes e~$c \in \B{Q}^n$ um vetor tais que para todo~$i \in [n]$ e~$j \in [m]$,~${B[i][j] = A[i][j] + c[i]}$. Se~$A$ é Monge convexa,~$B$ é Monge convexa.  
+\begin{lema} \label{Monge:keepConvex}
+Sejam~$A,B \in \B{Q}^{n \times m}$ matrizes e~$c \in \B{Q}^m$ um vetor tais que para todo~$i \in [n]$ e~$j \in [m]$,~${B[i][j] = A[i][j] + c[j]}$. Se~$A$ é Monge convexa,~$B$ é Monge convexa.  
 
-O mesmo resultado vale se~$c \in \B{Q}^m$ e~${B[i][j] = A[i][j] + c[j]}$.
+O mesmo resultado vale se~$c \in \B{Q}^n$ e~${B[i][j] = A[i][j] + c[i]}$. O resultado análogo vale no caso da concavidade.
 \end{lema}
 
 \begin{proof}
-Sejam $A,B$ e $b$ definidos como no enunciado do teorema. Suponha que $A$ é Monge convexa. Vale, para quaisquer~${1 \leq i < i' \leq n}$ e~${1 \leq j < j' \leq m}$,~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$, logo, vale~${A[i][j] + b[i] + A[i'][j'] + b[i'] \leq A[i'][j] + b[i'] + A[i][j'] + b[i]}$ que é~${B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j']}$. A prova para o caso onde~$c \in \B{Q}^m$ e~${B[i][j] = A[i][j] + c[j]}$ é análoga.
+Sejam $A,B$ e $b$ definidos como no enunciado do teorema. Suponha que $A$ é Monge convexa. Vale, para quaisquer~${1 \leq i < i' \leq n}$ e~${1 \leq j < j' \leq m}$,~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$, logo, vale~${A[i][j] + b[i] + A[i'][j'] + b[i'] \leq A[i'][j] + b[i'] + A[i][j'] + b[i]}$ que é~${B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j']}$. A prova para o caso onde~$c \in \B{Q}^m$ e~${B[i][j] = A[i][j] + c[j]}$ é análoga, bem como as provas para os casos côncavos.
 \end{proof}
 
-Com este resultado, é fácil ver que, desde que $A$ seja Monge convexa, $B_1$ será Monge convexa e a Monge convexidade será mantida para todo $B_{k'}$ com $1 \leq k' \leq k$. O teorema a seguir nos ajuda a mostrar que $A$ é Monge convexa.
+Suponha que~$A$ é Monge convexa. Escrevemos, para toda entrada~$i,j$ de~$B_1$,~$B_1[i][j] = A[i][j] + A[j][n]$ e usamos o Lema~\ref{Monge:keepConvex} para mostar que~$B_1$ é Monge convexa. Além disso, para todo~$1 < \ell \leq k$, a matriz~$B_\ell$ cabe perfeitamente nas condições do Lema~\ref{Monge:keepConvex}, assim, basta provar que~$A$ é Monge convexa e provamos a pertinencia do algorimto SMAWK ao problema.
 
 \begin{theo} \label{theo:MongeConvex_and_Convex}
 Sejam~$A \in \B{Q}^{n \times n}$ uma matriz, $w \in \B{Q}_+^n$ um vetor e~${g : \B{Q} \to \B{Q}}$ uma fução tais que para todo~$i,j \in [n]$ vale~${A[i][j] = g\left(\sum\limits_{k=1}^j w_k - \sum\limits_{k=1}^i w_k\right)}$. Se~$g$ é convexa,~$A$ é Monge convexa. Similarmente, se~$g$ é côncava,~$A$ é Monge côncava.
 \end{theo}
 
-Antes de apresentar uma prova para o teorema acima, vamos mostrar a utilidade dele no nosso problema atual, o que deve ajudar na compreensão de seu enunciado.  
+Antes de demonstrar este teorema, vamos provar que~$A$ é Monge convexa utilizando o resultado. Para um certo vetor $v \in \B{Q}_+^n$, $A[i][j] = \left(\sum\limits_{k=(i+1)}^{j} v_k \right)^2 = \left(\sum\limits_{k=1}^{j} v_k - \sum\limits_{k=1}^{i} v_k \right)^2$, por definição. Assim, precisamos mostrar apenas que a função $g(x) = x^2$ é convexa, o que segue da Proposição~\ref{prop:sqConv}.
 
-Queremos mostrar que $A$ é Monge convexa, porém, para um certo vetor $a \in \B{Q}_+^n$, $A[i][j] = \left(\sum\limits_{k=(i+1)}^{j} a_k \right)^2 = \left(\sum\limits_{k=1}^{j} a_k - \sum\limits_{k=1}^{i} a_k \right)^2$, por definição. Assim, precisamos mostrar apenas que a função $g(x) = x^2$ é convexa, o que segue da Proposição~\ref{prop:sqConv}. Agora, como explicado acima, todas as matrizes $B_{k'}$ são Monge convexas e podemos aplicar o algoritmo SMAWK para todo $k'$, resolvendo o Problema~\ref{prob:Monge_ex} em tempo $O(kn)$.
+Com isso já que o nosso problema se reduziu a encontrar, para todos os~$\ell \in [k]$ os máximos das linhas da matriz~$B_\ell$ e estas são Monge convexas, estas também são totalmente monótonas convexas por linhas e podemos encontrar seus máximos em~$\Cl{O}(n)$, resolvendo o problema todo em~$\Cl{O}(kn)$.
 
-Agora, nos resta provar o Teorema~\ref{theo:MongeConvex_and_Convex}.
+Nos falta provar o Teorema~\ref{theo:MongeConvex_and_Convex}.
 
 \begin{proof}
 Sejam $A$ e $g$ quaisquer que respeitem as condições do enunciado. Sejam ainda~$i,i',j,j' \in [n]$ onde~$i < i'$ e~$j < j'$. Escrevemos~$a = \sum \limits_{k=1}^{i'} w_k - \sum \limits_{k=1}^{i} w_k$,~$b = \sum \limits_{k=1}^{j'} w_k - \sum \limits_{k=1}^{j} w_k$ e~$z = \sum \limits_{k=1}^{j} w_k - \sum \limits_{k=1}^{i'} w_k$. Desta forma, temos~$g(z) = A[i'][j]$,~$g(z+a+b) = A[i][j']$,~$g(z+a) = A[i][j]$ e~$g(z+b) = A[i'][j']$, portanto, $g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$ se e somente se $A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$ ($A$ é Monge convexa).
