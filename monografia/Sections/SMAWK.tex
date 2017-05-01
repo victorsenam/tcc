@@ -140,3 +140,8 @@ Agora, precisamos representar as colunas visitáveis em~$A$. Já que não há um
 No início do algoritmo, precisamos gerar a lista ligada original e, caso haja mais colunas do que linhas, aplicar uma vez o algoritmo~$\Reduce$. Caso a quantidade de linhas seja maior do que a de colunas, precisamos criar uma nova matriz com colunas a mais do que a original. Já que nossas matrizes são representadas por funções, suponha que o algoritmo recebe uma função~$f$ e dois inteiros~$n$, quantidade de linhas, e~$m$, quantidade de colunas. Podemos criar uma função~$h$ definida, para todo~$1 \leq i,j \leq n$ como~$f(i,j)$ se~$j \leq m$ e~$+\infty$ caso contrário e substituir~$f$ por esta no restante do algoritmo.
 
 A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, pode ser encontrada em \texttt{implementacao/SMAWK.cpp}.
+
+%----------------------------------------------------------------------------------------
+
+%\subsection{Aplicação em programação dinâmica} // comparar com DivConq
+%\subsection{Aplicação em geometria}            // all vertices furthest convex poly
