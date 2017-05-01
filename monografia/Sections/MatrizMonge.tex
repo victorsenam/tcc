@@ -132,6 +132,24 @@ Por outro lado, se vale, para certos $i,i' \in [n]$ e $j,j' \in [m]$ com $i < i'
 A prova para o caso côncavo é análoga.
 \end{proof}
 
+\begin{theo} \label{Monge:theo+1}
+Seja~$A \in \B{Q}^{n \times m}$.
+
+Vale~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n]}$ e~${j \in [m]}$ se e somente se~$A$ é Monge convexa.
+
+Vale~${A[i][j] + A[i+1][j+1] \geq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n]}$ e~${j \in [m]}$ se e somente se~$A$ é Monge côncava.
+\end{theo}
+
+\begin{proof}
+Seja~$A \in \B{Q}^{n \times m}$. Se~$A$ é Monge convexa, trivialmente vale que~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$. Vamos mostrar que se vale~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n-1]}$ e~${j \in [m-1]}$, a matriz é Monge convexa. 
+
+Sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$ para todo~${0 < a \leq n - i}$ com indução em~$a$. A base, onde~${a = 1}$ vale pela hipótese, quando~${a > 1}$ assumimos que a tese vale com~${a-1}$ e temos~${A[i][j] + A[i+a-1][j+1] \leq A[i][j+1] + A[i+a-1][j]}$ e, já que~${i + a - 1 \in [n-1]}$, vale~${A[i+a-1][j] + A[i+a][j+1] \leq A[i+a-1][j+1] + A[i+a][j]}$ e, somando as duas inequações, obtemos~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$. Isso conclui a prova proposta neste parágrafo.
+
+Agora, sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b]}$ para todo~${0 < a \leq n-i}$ e~${0 < b \leq m-j}$ por indução~$b$. A base desta indução, onde~${b = 1}$, foi provada no parágrafo anterior. Se~${b > 1}$ assumimos que a tese vale para~${b-1}$, escrevemos~${A[i][j] + A[i+a][j+b-1] \leq A[i][j+b-1] + A[i+a][j]}$, pela prova do parágrafo anterior, vale~${A[i][j+b-1] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b-1]}$ e, mais uma vez, somando as duas equações provamos a desigualdade~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j]}$. Com isso provamos que~$A$ é Monge convexa.
+
+A prova para o caso côncavo segue análogamente.
+\end{proof}
+
 As matrizes Monge são usadas para resolver uma série de problemas que serão explorados aqui. A condição de Monge é a mais forte apresentada aqui. Alguns dos algoritmos apresentados não dependem dela, apenas da monotonicidade ou total monotonicidade, ainda assim, ela leva a resultados úteis que nos permitem provar a pertinência dos algoritmos a alguns problemas, mesmo que o algoritmo usado não se utilize da condição diretamente.  
 
 Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento, utilizamos ele como caixa preta. Isto é motivado pelo fato de que o pensamento apresentado aqui não é útil somente para o algoritmo SMAWK, ele é útil também em vários dos outros momentos deste trabalho.  
