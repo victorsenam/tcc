@@ -83,10 +83,10 @@ Para implementar o Algoritmo~\ref{FindRowMax_DC} com a complexidade desejada, de
 
 A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, pode ser encontrada em \texttt{implementacao/FindRowMax\_DC.cpp}.
 
-\subsection{Aplicação em programação dinâmica}
+\subsection{Aplicação em programação dinâmica} \label{DivConq:DP}
 Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. A prova em questão pode ser encontrada no link \url{http://maratona.ime.usp.br/hist/2016/resultados/contest.pdf}.  
 
-\begin{prob}
+\begin{prob} \label{DivConq:InternetTrouble}
 Definimos a função de custo~$c$ de cada vetor~$v$ definida~$c(v) = \sum \limits_{i=1}^{|v|} \min(i-1,m-i)v_i$.  
 
 Sejam~$n$ e~$k$ inteiros onde~$1 \leq k \leq n$ e seja~$h \in \B{N}^n$ um vetor, queremos encontrar uma partição~$P$ de~$h$ em até~$k$ subvetores~$h_{P_1},h_{P_2},\dots,h_{P_k}$ de forma que~$\sum \limits_{i=1}^k c(h_{P_i})$.
@@ -112,4 +112,4 @@ Temos~$A[i][j] = \sum\limits_{k=i}^j \min(k-i,j-k)h_k = {\sum\limits_{k=i}^l (k-
 
 O parágrafo acima nos mostrou que~$A[i][j+1] = {A[i][j] + \sum\limits_{k=l+1}^j h_k}$. Com um raciocínio parecido, conseguiremos concluir~${A[i+1][j+1]} = {A[i+1][j] + \sum\limits_{k=r+1}^j h_k}$. Assim,~$A[i][j+1] - A[i+1][j+1] = A[i][j] + \sum\limits_{k=l+1}^j h_k - A[i+1][j] - \sum\limits_{k=r+1}^j h_k$. Sabemos que~$l \leq r$, portanto, obtivemos~${A[i][j+1] - A[i+1][j+1] \geq A[i][j] - A[i+1][j]}$, isto é~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$. Provamos que~$A$ é Monge convexa.
 
-Sabemos que~$A$ é Monge convexa, pelo Teorema~\ref{Monge:keepConvex} todas as matrizes~$B_\ell$ são Monge convexas e podemos aplicar o SMAWK para encontrar seus máximos de linhas em tempo~$\Cl{O}(n)$. Já que o problema consiste em encontrar estes máximos para todas as~$k$ matrizes~$B_\ell$, conseguimos resolver o problema em tempo~$\Cl{O}(kn)$.
+Sabemos que~$A$ é Monge convexa, pelo Teorema~\ref{Monge:keepConvex} todas as matrizes~$B_\ell$ são Monge convexas, portanto, monótonas decrescentes nos mínimos das linhas e podemos aplicar a técnica da Divisão e Conquista para encontrar seus máximos de linhas em tempo~$\Cl{O}(n)$. Já que o problema consiste em encontrar estes máximos para todas as~$k$ matrizes~$B_\ell$, conseguimos resolver o problema em tempo~$\Cl{O}(kn\lg(n))$. Vale notar que a Subseção~\ref{SMAWK:Appl} ensina a resolver este mesmo problema em tempo~$\Cl{O}(kn)$.
