@@ -83,12 +83,13 @@ Para implementar o Algoritmo~\ref{FindRowMax_DC} com a complexidade desejada, de
 
 A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, pode ser encontrada em \texttt{implementacao/FindRowMax\_DC.cpp}.
 
-\iffalse
 \subsection{Aplicação em programação dinâmica}
 Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. A prova em questão pode ser encontrada no link \url{http://maratona.ime.usp.br/hist/2016/resultados/contest.pdf}.  
 
 \begin{prob}
-Associamos para todo natural~$m$ e vetor~$v \in \B{N}^m$ a função de custo~$c$ do vetor definida~$c(v) = \sum \limits_{i=1}^m \min(i-1,m-i)v_i$. Sejam~$n$ e~$k$ inteiros onde~$1 \leq k \leq n$ e seja~$h \in \B{N}^n$ um vetor, queremos encontrar uma partição~$P$ de~$h$ em até~$k$ subvetores~$h_{P_1},h_{P_2},\dots,h_{P_k}$ de forma que~$\sum \limits_{i=1}^k c(h_{P_i})$.
+Definimos a função de custo~$c$ de cada vetor~$v$ definida~$c(v) = \sum \limits_{i=1}^{|v|} \min(i-1,m-i)v_i$.  
+
+Sejam~$n$ e~$k$ inteiros onde~$1 \leq k \leq n$ e seja~$h \in \B{N}^n$ um vetor, queremos encontrar uma partição~$P$ de~$h$ em até~$k$ subvetores~$h_{P_1},h_{P_2},\dots,h_{P_k}$ de forma que~$\sum \limits_{i=1}^k c(h_{P_i})$.
 \end{prob}
 
 Podemos dar ao problema acima a interpretação do problema ``Internet Trouble'' citado. Temos várias cidades dispostas em uma linha e queremos escolher~$k + 1$ destas cidades para instalar torres de distribuição de energia de forma a minimizar o custo de alimentar todas as cidades com energia. Nesta adaptação, as cidades~$1$ e~$n$ são escolhas obrigatórias. Se na cidade de índice~$i$ existem~$h_i$ habitantes, o custo de tranferir energia de uma torre a~$d$ cidades de distância para esta cidade é dado por~$dh_i$. Note que, se há uma torre na própria cidade, o custo é considerado~$0$.  
@@ -105,5 +106,10 @@ Queremos resolver o problema com programação dinâmica. Definimos, para todo~$
 
 Com~$\ell > 1$, definindo~$B_\ell[i][j] = A[i][j] + E[\ell-1][j]$ podemos reescrever~$E[\ell][i] = \min \limits_{j=i}^{n-\ell+2} B[i][j]$ e, se definirmos~$B_\ell[i][j] = +\infty$ para todo~$i$ que desrespeite~$i \leq j$ ou~$\ell \leq n - i + 1$, teremos~$E[\ell][i] = \min \limits_{j=1}^{n} B_\ell[i][j]$. Esta formulação reduz o problema de programação dinâmica a encontrar, para todo~$1 \leq \ell \leq k$ fixo, os mínimos das linhas da matriz~$B_\ell$. Com isso, basta provar que~$B_\ell$ é monótona crescente nos mínimos das linhas e aplicar a técnica da divisão e conquista para resolver o problema em tempo~$\Cl{O}(kn\log(n))$.
 
-Vamos, primeiramente, provar que~$A$ é Monge convexa por linhas. Sejam~$i < i'$ índices de linhas e~$j < j'$ índices de colunas de~$A$. Queremos que valha~$A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$. Se~$j < i'$, $A[i'][j] = +\infty$, logo, já que~$A[i][j'] \geq 0$, a desigualdade vale. Consideramos que~$i < i' \leq j < j'$. 
-\fi
+Vamos, primeiramente, provar que~$A$ é Monge convexa. Queremos mostrar que vale, para todo~$i,j \in [n]$, a desigualdade~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ e usar o Teorema~\ref{Monge:theo+1} para concluir que~$A$ é Monge convexa. Se~$j < i + 1$, $A[i'][j] = +\infty$, logo, já que~$A[i][j'] \geq 0$, a desigualdade vale. Consideramos que~$i < j$. Escrevemos~$l = \floor{\frac{i+j}{2}}$ e~$r = \ceil{\frac{i+j}{2}}$, note que~$r = \floor{\frac{i+j+1}{2}}$.  
+
+Temos~$A[i][j] = \sum\limits_{k=i}^j \min(k-i,j-k)h_k = {\sum\limits_{k=i}^l (k-i) h_k + \sum\limits_{k=l+1}^j (j-k) h_k}$ e~$A[i][j+1] = \sum\limits_{k=i}^{j+1} \min(k-i,j-k+1)h_k = {\sum\limits_{k=i}^r (k-i)h_k + \sum\limits_{k=r+1}^j (j-k+1)h_k}$. Se~$i+j$ é par,~$l=r$ e vale~$A[i][j+1] = {\sum\limits_{k=i}^l (k-i)h_k + \sum\limits_{k=l+1}^j (j-k)h_k} = {A[i][j] + \sum\limits_{k=l+1}^j h_k}$. Se~$i+j+1$ é ímpar,~$r-1=l$ e~$r=\frac{i+j+1}{2}$, logo~$r-i = j-r+1$ e teremos~$(k-r)h_r = (j-r+1)h_r$, o que leva a~$A[i][j+1] = {\sum_{k=i}^l (k-i)h_k + \sum_{k=l+1}^j (j-k+1)h_k} = {A[i][j] + \sum\limits_{k=l+1}^j h_k}$.  
+
+O parágrafo acima nos mostrou que~$A[i][j+1] = {A[i][j] + \sum\limits_{k=l+1}^j h_k}$. Com um raciocínio parecido, conseguiremos concluir~${A[i+1][j+1]} = {A[i+1][j] + \sum\limits_{k=r+1}^j h_k}$. Assim,~$A[i][j+1] - A[i+1][j+1] = A[i][j] + \sum\limits_{k=l+1}^j h_k - A[i+1][j] - \sum\limits_{k=r+1}^j h_k$. Sabemos que~$l \leq r$, portanto, obtivemos~${A[i][j+1] - A[i+1][j+1] \geq A[i][j] - A[i+1][j]}$, isto é~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$. Provamos que~$A$ é Monge convexa.
+
+Sabemos que~$A$ é Monge convexa, pelo Teorema~\ref{Monge:keepConvex} todas as matrizes~$B_\ell$ são Monge convexas e podemos aplicar o SMAWK para encontrar seus máximos de linhas em tempo~$\Cl{O}(n)$. Já que o problema consiste em encontrar estes máximos para todas as~$k$ matrizes~$B_\ell$, conseguimos resolver o problema em tempo~$\Cl{O}(kn)$.
