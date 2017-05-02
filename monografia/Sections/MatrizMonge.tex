@@ -1,9 +1,9 @@
-\section{Monotonicidade, convexidade e matrizes Monge}
+\section{Matrizes Monge e monotonicidade}
 \label{MatrizMonge}
 
 %----------------------------------------------------------------------------------------
 
-Aqui serão apresentados e explorados os conceitos de monotonicidade, convexidade e matrizes Monge, além disso, alguns resultados referentes a estes conceitos serão demonstrados. Estes conceitos são fundamentais para o desenvolvimento do restante do trabalho.
+Nesta seção serão apresentados e explorados os conceitos de monotonicidade, convexidade e matrizes Monge, além disso, alguns resultados referentes a estes conceitos serão demonstrados. As definições e os resultados desta seção são fundamentais para o desenvolvimento do restante do trabalho.  
 
 \begin{defi}[Vetor monótono]
 Seja $a \in \B{Q}^n$ um vetor, $a$ é dito monótono quando vale uma das propriedades abaixo.
@@ -23,7 +23,7 @@ Seja $g : \B{Q} \to \B{Q}$ uma função,
     \end{itemize}
 \end{defi}
 
-\begin{prop} \label{prop:sqConv}
+\begin{prop} \label{Monge:sqConv}
 A função $g(x) = x^2$ é convexa. 
 \end{prop}
 
@@ -60,7 +60,7 @@ Seja $A \in \B{Q}^{n \times m}$, definimos quatro vetores a seguir.
     \end{itemize}
 \end{defi}
 
-Note que o máximo de uma linha (ou coluna) foi definido como o maior índice que atinge o máximo e o de mínimo foi definido como o menor índice que atinge o mínimo. Esta escolha foi feita para simplificar o Lema~\ref{lema:MonotoneTotallyMonotone}.  
+Note que o máximo de uma linha (ou coluna) foi definido como o maior índice que atinge o máximo e o de mínimo foi definido como o menor índice que atinge o mínimo. Esta escolha foi feita para simplificar o Lema~\ref{lema:MonotoneTotallyMonotone}, porém, os algoritmos e resultados discutidos neste trabalho funcionam (com pequenas adaptações) para diversas definições distintas destes vetores.  
 
 Dada uma matriz, encontrar estes vetores é um problema central para este trabalho. Neste momento é interessante classificar algumas matrizes de acordo com propriedades que vão nos ajudar a calcular os vetores de mínimos e máximos de maneira especialmente eficiente.   
 
@@ -73,25 +73,25 @@ A Figura~\ref{figure:ConvexMonotone} resume as relações de implicação da cla
 \end{figure}
 
 \begin{defi}[Matriz monótona]
-Seja $A \in \B{Q}^{n \times m}$ uma matriz. Se $A$ tiver o vetor de índices de máximos das linhas monótono, $A$ é dita monótona nos máximos das linhas. 
+Seja $A \in \B{Q}^{n \times m}$ uma matriz. Se $A$ tiver o vetor de índices de mínimos das linhas monótono, $A$ é dita monótona nos mínimos das linhas. 
 
-Valem também as definições análogas para mínimos ou colunas e pode-se especificar monotonicidade crescente ou decrescente.
+Valem também as definições análogas para máximos ou colunas e pode-se especificar monotonicidade crescente ou decrescente.
 \end{defi}
 
 \begin{defi}[Matriz totalmente monótona]
 Seja $A \in \B{Q}^{n \times m}$ uma matriz.
     \begin{itemize}
-        \item Se $A[i'][j] \leq A[i'][j']$ implica $A[i][j] \leq A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas linhas.
-        \item Se $A[i][j'] \leq A[i'][j']$ implica $A[i][j] \leq A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona convexa nas colunas.
-        \item Se $A[i'][j] > A[i'][j']$ implica $A[i][j] > A[i][j']$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas linhas.
-        \item Se $A[i][j'] > A[i'][j']$ implica $A[i][j] > A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é monótona côncava nas colunas.
+        \item Se~$A[i'][j] \leq A[i'][j']$ implica~$A[i][j] \leq A[i][j']$ para todo~${i,i' \in [n]}$ e~${j,j' \in [m]}$ onde~${i<i'}$ e~${j<j'}$,~$A$ é monótona convexa nas linhas.
+        \item Se~$A[i][j'] \leq A[i'][j']$ implica~$A[i][j] \leq A[i'][j]$ para todo~${i,i' \in [n]}$ e~${j,j' \in [m]}$ onde~${i<i'}$ e~${j<j'}$,~$A$ é monótona convexa nas colunas.
+        \item Se~$A[i'][j] > A[i'][j']$ implica~$A[i][j] > A[i][j']$ para todo~${i,i' \in [n]}$ e~${j,j' \in [m]}$ onde~${i<i'}$ e~${j<j'}$,~$A$ é monótona côncava nas linhas.
+        \item Se~$A[i][j'] > A[i'][j']$ implica~$A[i][j] > A[i'][j]$ para todo~${i,i' \in [n]}$ e~${j,j' \in [m]}$ onde~${i<i'}$ e~${j<j'}$,~$A$ é monótona côncava nas colunas.
     \end{itemize}
 \end{defi}
 
 O motivo do uso dos termos ``convexa'' e ``côncava'' em relação a matrizes durante o texto são justificados pelo Teorema~\ref{theo:MongeConvex_and_Convex}. Note que se uma matriz é totalmente monótona, todas as suas submatrizes são totalmente monótonas no mesmo sentido.
 
 \begin{lema} \label{lema:MonotoneTotallyMonotone}
-Se $A \in \B{Q}^{n \times m}$ é uma matriz totalmente monótona convexa nas linhas, toda submatriz de $A$ é monótona decrescente nos máximos das linhas e monótona crescente nos mínimos das linhas.  
+Se $A \in \B{Q}^{n \times m}$ é uma matriz totalmente monótona convexa nas linhas, toda submatriz de $A$ é monótona crescente nos mínimos das linhas e monótona decrescente nos máximos das linhas.  
 
 Se $A$ é totalmente monótona côncava nas linhas, toda submatriz de $A$ é monótona decrescente nos mínimos das linhas e monótona crescente nos máximos das linhas.  
 
@@ -103,7 +103,7 @@ Considere uma matriz $A$ totalmente monótona convexa nas linhas. Sejam $i$ e $i
 
 Agora, considere novamente dois índices $i$ e $i'$ quaisquer de linhas de $A$ onde $i < i'$. Denotamos por $j$ o índice de mínimo da linha $i'$ e por $j'$ o índice de mínimo da linha $i$ (note e a inversão no uso de $'$). Vamos supor por absurdo que $j < j'$ e teremos $A[i'][j] \leq A[i'][j']$ e $A[i][j'] < A[i][j]$. E, novamente, usando o fato de que $A$ é monótona convexa nas linhas, obtivemos uma contradição.  
 
-Finalmente, se $A'$ é uma submatriz de $A$, então $A'$ é totalmente monótona convexa nas linhas, portanto monótona crescente nos máximos das linhas e monótona decrescente nos mínimos das linhas.
+Finalmente, se $A'$ é uma submatriz de $A$, então $A'$ é totalmente monótona convexa nas linhas, portanto monótona crescente nos mínimos das linhas e monótona decrescente nos máximos das linhas.
 
 As demonstrações no caso côncavo e nos casos relacionados a colunas são análogas.
 \end{proof}
@@ -111,12 +111,12 @@ As demonstrações no caso côncavo e nos casos relacionados a colunas são aná
 \begin{defi}[Monge Convexidade] \label{defi:MatrizMonge}
 Seja $A \in \B{Q}^{n \times m}$.
     \begin{enumerate}
-        \item Se vale $A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é dita Monge convexa.
-        \item Se vale $A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j]$ para todo $1 \leq i < i' \leq n$ e $1 \leq j < j' \leq m$, $A$ é dita Monge côncava.
+        \item Se vale $A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$ para todo~${i,i' \in [n]}$ e~${j,j' \in [m]}$ onde~${i<i'}$ e~${j<j'}$ então~$A$ é dita Monge convexa.
+        \item Se vale $A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j]$ para todo~${i,i' \in [n]}$ e~${j,j' \in [m]}$ onde~${i<i'}$ e~${j<j'}$ então~$A$ é dita Monge côncava.
     \end{enumerate}
 \end{defi}
 
-A desigualdade que define as matrizes Monge é conhecida também por ``Condição de Monge'' ou ``Desigualdade Quadrangular''\cite{Yao:1980}\cite{Bein:2009}.
+A desigualdade que define as matrizes Monge é conhecida pelos nomes ``Propriedade de Monge'' (em inglês, ``Monge Property'')~\cite{Burkard:1996} ou ``Desigualdade Quadrangular'' (em inglês, ``Quadrangle Inequality'')\cite{Yao:1980}\cite{Bein:2009}.
 
 \begin{lema}
 Se~$A$ é Monge convexa,~$A$ é totalmente monótona convexa tanto nas linhas quanto nas colunas.  
@@ -127,7 +127,7 @@ Se~$A$ é Monge côncava,~$A$ é totalmente monótona côncava tanto nas linhas 
 \begin{proof}
 Seja~$A$ uma matriz Monge convexa. Suponha que vale, para certos $i,i' \in [n]$ e $j,j' \in [m]$ onde $i < i'$ e $j < j'$, $A[i'][j] \leq A[i'][j']$, então, somamos esta desigualdade à definição de Monge convexa e obtemos $A[i][j] \leq A[i][j']$, ou seja, $A$ é totalmente monótona convexa nas linhas.  
 
-Por outro lado, se vale, para certos $i,i' \in [n]$ e $j,j' \in [m]$ com $i < i'$ e $j < j'$, $A[i][j'] \leq A[i'][j']$, somamos esta desigualdade à definição de Monge convexa e obtemos $A[i][j] \leq A[i'][j]$, assim, $A$ é totalmente monótona convexa nas colunas.  
+Por outro lado, se vale, para certos $i,i' \in [n]$ e $j,j' \in [m]$ com~${i < i'}$ e~${j < j'}$, $A[i][j'] \leq A[i'][j']$, somamos esta desigualdade à definição de Monge convexa e obtemos $A[i][j] \leq A[i'][j]$, assim, $A$ é totalmente monótona convexa nas colunas.  
 
 A prova para o caso côncavo é análoga.
 \end{proof}
@@ -135,17 +135,17 @@ A prova para o caso côncavo é análoga.
 \begin{theo} \label{Monge:theo+1}
 Seja~$A \in \B{Q}^{n \times m}$.
 
-Vale~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n]}$ e~${j \in [m]}$ se e somente se~$A$ é Monge convexa.
+Vale~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n-1]}$ e~${j \in [m-1]}$ se e somente se~$A$ é Monge convexa.
 
-Vale~${A[i][j] + A[i+1][j+1] \geq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n]}$ e~${j \in [m]}$ se e somente se~$A$ é Monge côncava.
+Vale~${A[i][j] + A[i+1][j+1] \geq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n-1]}$ e~${j \in [m-1]}$ se e somente se~$A$ é Monge côncava.
 \end{theo}
 
 \begin{proof}
-Seja~$A \in \B{Q}^{n \times m}$. Se~$A$ é Monge convexa, trivialmente vale que~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$. Vamos mostrar que se vale~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n-1]}$ e~${j \in [m-1]}$, a matriz é Monge convexa. 
+Seja~$A \in \B{Q}^{n \times m}$. Se~$A$ é Monge convexa, vale~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ para todo~${i \in [n-1]}$ e~${j \in [m-1]}$. Vamos mostrar o outro lado desta implicação.
 
-Sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$ para todo~${0 < a \leq n - i}$ com indução em~$a$. A base, onde~${a = 1}$ vale pela hipótese, quando~${a > 1}$ assumimos que a tese vale com~${a-1}$ e temos~${A[i][j] + A[i+a-1][j+1] \leq A[i][j+1] + A[i+a-1][j]}$ e, já que~${i + a - 1 \in [n-1]}$, vale~$A[i+a-1][j] + A[i+a][j+1] \leq A[i+a-1][j+1] + A[i+a][j]$ e, somando as duas inequações, obtemos~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$. Isso conclui a prova proposta neste parágrafo.
+Sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$ para todo~${0 < a \leq n - i}$ com indução em~$a$. A base, onde~${a = 1}$ vale pela hipótese. Quando~${1 < a \leq n-i}$ assumimos que a tese vale com~${a-1}$ e temos~${A[i][j] + A[i+a-1][j+1] \leq A[i][j+1] + A[i+a-1][j]}$ e, já que~${i + a - 1 \in [n-1]}$, vale~$A[i+a-1][j] + A[i+a][j+1] \leq A[i+a-1][j+1] + A[i+a][j]$ e, somando as duas inequações, obtemos~${A[i][j] + A[i+a][j+1] \leq A[i][j+1] + A[i+a][j]}$. Isso conclui a prova proposta neste parágrafo.
 
-Agora, sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b]}$ para todo~${0 < a \leq n-i}$ e~${0 < b \leq m-j}$ por indução~$b$. A base desta indução, onde~${b = 1}$, foi provada no parágrafo anterior. Se~${b > 1}$ assumimos que a tese vale para~${b-1}$, escrevemos~${A[i][j] + A[i+a][j+b-1] \leq A[i][j+b-1] + A[i+a][j]}$, pela prova do parágrafo anterior, vale~$A[i][j+b-1] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b-1]$ e, mais uma vez, somando as duas equações provamos a desigualdade~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j]}$. Com isso provamos que~$A$ é Monge convexa.
+Agora, sejam~${i \in [n-1]}$ e~${j \in [m-1]}$ quaisquer, vamos provar que~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b]}$ para todo~${0 < a \leq n-i}$ e~${0 < b \leq m-j}$ por indução~$b$. A base desta indução, onde~${b = 1}$, foi provada no parágrafo anterior. Se~${1 < b \leq m-j}$ assumimos que a tese vale para~${b-1}$, escrevemos~${A[i][j] + A[i+a][j+b-1] \leq A[i][j+b-1] + A[i+a][j]}$, pela prova do parágrafo anterior, vale~$A[i][j+b-1] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j+b-1]$ e, mais uma vez, somando as duas equações provamos a desigualdade~${A[i][j] + A[i+a][j+b] \leq A[i][j+b] + A[i+a][j]}$. Com isso provamos que~$A$ é Monge convexa.
 
 A prova para o caso côncavo segue análogamente.
 \end{proof}
@@ -154,63 +154,54 @@ As matrizes Monge são usadas para resolver uma série de problemas que serão e
 
 Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento, utilizamos ele como caixa preta. Desta forma, poderemos introduzir estes resultados que são importantes em vários momentos deste texto e na aplicação prática dos conhecimentos discutidos aqui de forma suave e motivada.   
 
-\begin{prob} \label{prob:Monge_ex}
-Definimos a função de custo~$c$ de cada vetor~$v$ definida~$c(v) = \left( \sum \limits_{x \in v} x \right)^2$.  
+\begin{prob} \label{Monge:example}
+Definimos a função de custo~$c$ de cada vetor~$v$ como~$c(v) = \left( \sum\limits_{i=1}^{|v|} v_i \right)^2$.  
 
-Dados dois inteiros~$k$ e~$n$ com~$k \leq n$, e um vetor~$v \in \B{Q}_+^n$, queremos particionar o vetor~$a$ em~$k$ subvetores não-vazios de forma a maximizar a soma dos custos das partes, isto é, se queremos escolher um particionamento~$P_1,P_2,\dots,P_k$ de~$v$ em subvetores de forma a minimizar~$\sum \limits_{i=1}^k c(v_{P_i})$.
+Dados dois inteiros~$k$ e~$n$ e um vetor~$v \in \B{Q}_+^n$, queremos particionar o vetor~$v$ em~$k$ subvetores de forma a minimizar a soma dos custos das partes. Formalmente, queremos escolher um particionamento~$P_1,P_2,\dots,P_k$ de~$v$ em subvetores que minimize~$\sum \limits_{i=1}^k c(v_{P_i})$.
 \end{prob}
 
-Definimos a matriz~$A \in \B{Q}^{n \times n}$ de forma que, para todo~$1 \leq i < j \leq n$ a entrada~$A[i][j]$ guarda o custo de manter o subvetor~$v[i \tdots j]$ em uma partição e todas as outras entradas guardam o valor~$-\infty$. Com esta matriz, podemos resolver o problema com programação dinâmica. Vamos resolver subproblemas de parâmetros~$i$ e~$\ell$ da forma: Melhor particionamento de um subvetor~$v[i+1 \tdots n]$ de~$v$ em~$k$ partes. Se~$E$ é uma matriz que guarda, na entrada~$0 \leq i < n$ e~$1 \leq \ell \leq n - i$ o valor ótimo do subproblema de parâmetros~$i$ e~$\ell$, poderemos descrever~$E$ com uma recorrência.
+Definimos a matriz~$A$ para todo~$i,j \in [0 \tdots n]$ onde~${A[i][j] = c(v[i+1 \tdots j])}$ para todo~$i \leq j$ e~$A[i][j] = +\infty$ caso contrário. A matriz não precisa ser explícitamente calculada, pré-calculamos em~$\Cl{O}(n)$ o vetor~$a$ tal que~${a_i = \sum_{k=1}^i v_k}$ para todo~${i \in [0 \tdots n]}$. Com o vetor~$a$ conseguimos calcular cada entrada da matriz~$A$ em~$\Cl{O}(1)$ quando necessário.
+
+Podemos resolver o Problema~\ref{Monge:example} com programação dinâmica. Um subproblema de parâmetros~$i$ e~$\ell$ é da forma: Melhor particionamento do vetor~${v[i+1 \tdots n]}$ em~$\ell$ partes. Definimos a matriz~${E \in \B{Q}^{[k] \times [0 \tdots n]}}$ de respostas desses subproblemas, assim, se~$\ell$ e~$i$ definem um subproblema o seu valor ótimo é guardado em~$E[\ell][i]$. Todas as outras entradas da matriz~$E$ têm valor~$+\infty$. Escrevemos~$E$ como uma recorrência, para todo~$\ell \in [k]$ e~$i \in [0 \tdots n]$,
 
 \begin{equation*}
 E[\ell][i] = \begin{cases}
-    A[i][n]                                                 & \text{, se } \ell = 1 \text{,} \\
-    \max\limits_{j=i+1}^{n-\ell+1} A[i][j] + E[\ell-1][j]   & \text{, se } n - i \geq \ell \text{ e } \\
-    -\infty                                                 & \text{, caso contrário.}
+    A[i][n]                                                     & \text{, se } \ell = 1 \text{, }\\
+    \min\limits_{j=i}^n A[i][j] + E[\ell-1][j]                  & \text{, se } \ell \leq k \text{ e }\\
+    +\infty                                                     & \text{, caso contrário.}
 \end{cases}
 \end{equation*}
 
-Chamamos de não triviais pares de~$\ell$ e~$i$ para os quais~$E[\ell][i] = \max\limits_{j=i+1}^{n-\ell+1} A[i][j] + E[\ell-1][j]$. 
+É fácil resolver a recorrência definida acima em tempo~$\Cl{O}(kn^2)$. Vamos simplificar a definição de~$E$. Fixados~${i \in [0 \tdots n]}$ e~${\ell \in [1 \tdots k]}$, se~$j < i$ então~${A[i][j] = +\infty}$ e podemos escrever~${E[\ell][i] = \min\limits_{j=0}^n A[i][j] + E[\ell-1][j]}$. Definimos a matriz~$B_\ell$ onde, para todo~${j \in [0 \tdots n]}$, a entrada~${B_\ell[i][j] = A[i][j] + E[\ell-1][j]}$. Além disso, definimos a matriz~$B_1$ onde, para todo~${i,j \in [0 \tdots n]}$ vale~${B_1[i][j] = A[i][j] + A[i][n]}$. Note que~${\min\limits_{j=0}^n B_1[i][j]} = {A[i][i] + A[i][n]} = {A[i][n]} = {E[1][i]}$. Desta forma, para todo~$\ell \in [k]$ e~$i \in [0 \tdots n]$ vale~${E[\ell][i] = \min\limits_{j=0}^n B_\ell[i][j]}$.
 
-É fácil resolver o problema enunuciado em tempo~$\Cl{O}(kn^2)$, basta iterar crescentemente em~$\ell$, para cada~$\ell$, iterar decrescentemente nos valores de~$i$ para os quais~$\ell$ e~$i$ são não triviais e testar todos os valores possíveis para~$j$ em cada passo. Vamos transformar a definição de~$E$ para deixá-la mais simples. Fixe~$i$ e~$\ell$ para os quais~${E[\ell][i] = \max\limits_{j=i+1}^{n-\ell+1} A[i][j] + E[\ell-1][j]}$. Quando~$j < i+1$,~$A[i][j] = -\infty$ e quando~$j > n-\ell+1$,~$E[\ell][j] = -\infty$, portanto, podemos escrever~${E[\ell][i] = \max\limits_{j=1}^n A[i][j] + E[\ell-1][j]}$.  
-
-Para todos os pares~$\ell$ e~$i$ não triviais e para todo~$j \in [n]$, definimos~$B_\ell[i][j] = A[i][j] + E[\ell-1][j]$. Além destas, definimos, para todo~$0 \leq i < n$ e~$j \in [n]$, $B_1[i][j] = A[i][n]$. Com isso, podemos reescrever a definição de~$E$.
-
-\begin{equation*}
-E[\ell][i] = \begin{cases}
-    \max\limits_{j=1}^n B_\ell[i][j]                        & \text{, se } n - i \geq \ell \text{ e } \\
-    -\infty                                                 & \text{, caso contrário.}
-\end{cases}
-\end{equation*}
-
-Reduzimos o problema original para o problema de encontar máximos de linhas das matrizes~$B_\ell$ para todo~$\ell \in [n]$ e toda linha~$i$ tal que~$n - i \geq \ell$. O algoritmo SMAWK encontra máximos de linhas de matrizes totalmente monótonas convexas nas linhas em tempo~$\Cl{O}(n + m)$ onde~$n$ e~$m$ são as quantidades de linhas e colunas na matriz. Vamos mostrar que as matrizes~$B_\ell$ são totalmente monótonas convexas nas linhas para poder aplicar o SMAWK e resolver o Problema~\ref{prob:Monge_ex} eficientemente, isso será feito com a ajuda dos resultados abaixo.
+Com esta formulação, reduzimos o problema original a encontrar os mínimos das linhas de~$B_\ell$ para todo~$l \in [k]$. O algoritmo SMAWK encontra mínimos de linhas de matrizes~$n+1 \times n+1$ totalmente monótonas por linhas em tempo~$\Cl{O}(n)$. Vamos mostrar que as matrizes~$B_\ell$ são totalmente monótonas convexas por linhas para podermos aplicar o SMAWK.
 
 \begin{lema} \label{Monge:keepConvex}
 Sejam~$A,B \in \B{Q}^{n \times m}$ matrizes e~$c \in \B{Q}^m$ um vetor tais que para todo~$i \in [n]$ e~$j \in [m]$,~${B[i][j] = A[i][j] + c[j]}$. Se~$A$ é Monge convexa,~$B$ é Monge convexa.  
 
-O mesmo resultado vale se~$c \in \B{Q}^n$ e~${B[i][j] = A[i][j] + c[i]}$. O resultado análogo vale no caso da concavidade.
+O mesmo resultado vale se~$c \in \B{Q}^n$ e~${B[i][j] = A[i][j] + c[i]}$. Os resultados análogos valem nos casos de concavidade.
 \end{lema}
 
 \begin{proof}
-Sejam $A,B$ e $b$ definidos como no enunciado do teorema. Suponha que $A$ é Monge convexa. Vale, para quaisquer~${1 \leq i < i' \leq n}$ e~${1 \leq j < j' \leq m}$,~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$, logo, vale~${A[i][j] + b[i] + A[i'][j'] + b[i'] \leq A[i'][j] + b[i'] + A[i][j'] + b[i]}$ que é~${B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j']}$. A prova para o caso onde~$c \in \B{Q}^m$ e~${B[i][j] = A[i][j] + c[j]}$ é análoga, bem como as provas para os casos côncavos.
+Sejam $A,B$ e $b$ definidos como no enunciado do teorema. Suponha que $A$ é Monge convexa. Vale, para quaisquer~${1 \leq i < i' \leq n}$ e~${1 \leq j < j' \leq m}$,~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$, logo, vale~${A[i][j] + b[j] + A[i'][j'] + b[j'] \leq A[i'][j] + b[j'] + A[i][j'] + b[j]}$ que é~${B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j']}$. A prova para o caso onde~$c \in \B{Q}^n$ e~${B[i][j] = A[i][j] + c[i]}$ é análoga, bem como as provas para os casos côncavos.
 \end{proof}
 
-Suponha que~$A$ é Monge convexa. Escrevemos, para toda entrada~$i,j$ de~$B_1$,~$B_1[i][j] = A[i][j] + A[j][n]$ e usamos o Lema~\ref{Monge:keepConvex} para mostar que~$B_1$ é Monge convexa. Além disso, para todo~$1 < \ell \leq k$, a matriz~$B_\ell$ cabe perfeitamente nas condições do Lema~\ref{Monge:keepConvex}, assim, basta provar que~$A$ é Monge convexa e provamos a pertinencia do algorimto SMAWK ao problema.
+Suponha que~$A$ é Monge convexa. Todas as matrizes~$B_\ell$ se encaixam perfeitamente nas hipóteses do Lema~\ref{Monge:keepConvex} e, por isso, são Monge convexas, portanto, totalmente monótonas convexas por linhas. Basta provar que~$A$ é Monge convexa.
 
 \begin{theo} \label{theo:MongeConvex_and_Convex}
 Sejam~$A \in \B{Q}^{n \times n}$ uma matriz, $w \in \B{Q}_+^n$ um vetor e~${g : \B{Q} \to \B{Q}}$ uma fução tais que para todo~$i,j \in [n]$ vale~${A[i][j] = g\left(\sum\limits_{k=1}^j w_k - \sum\limits_{k=1}^i w_k\right)}$. Se~$g$ é convexa,~$A$ é Monge convexa. Similarmente, se~$g$ é côncava,~$A$ é Monge côncava.
 \end{theo}
 
-Antes de demonstrar este teorema, vamos provar que~$A$ é Monge convexa utilizando o resultado. Para um certo vetor $v \in \B{Q}_+^n$, $A[i][j] = \left(\sum\limits_{k=(i+1)}^{j} v_k \right)^2 = \left(\sum\limits_{k=1}^{j} v_k - \sum\limits_{k=1}^{i} v_k \right)^2$, por definição. Assim, precisamos mostrar apenas que a função $g(x) = x^2$ é convexa, o que segue da Proposição~\ref{prop:sqConv}.
+Antes de demonstrar este teorema, vamos provar que~$A$ é Monge convexa utilizando o resultado. Considere a função~$g$ tal que~$g(x) = x^2$ se~$x \geq 0$ e~$g(x) = +\infty$ caso contrário. Vale, para todo~$i,j \in [n]$,~${A[i][j] = g\left(\sum\limits_{k=1}^j v_k - \sum\limits_{k=1}^i v_k \right)}$. Vamos provar que~$g$ é convexa. Sejam~$x \leq y \in \B{Q}$ e~$\lambda \in [0,1]$, escrevemos~$z = \lambda x + (1-\lambda)y$. Se~$0 \leq x$, pela Proposição~\ref{Monge:sqConv}, sabemos~$g(z) \leq \lambda g(x) + (1-\lambda) g(y)$. Se~$x < 0$, vale~$\lambda g(x) + (1-\lambda)g(y) = +\infty \geq g(z)$, independente do valor de~$g(z)$. Assim,~$g$ é convexa e aplicamos o teorema para concluir que~$A$ é Monge convexa.
 
-Com isso já que o nosso problema se reduziu a encontrar, para todos os~$\ell \in [k]$ os máximos das linhas da matriz~$B_\ell$ e estas são Monge convexas, estas também são totalmente monótonas convexas por linhas e podemos encontrar seus máximos em~$\Cl{O}(n)$, resolvendo o problema todo em~$\Cl{O}(kn)$.
+Com isso já que o nosso problema se reduziu a encontrar, para todos os~$\ell \in [k]$ os mínimos das linhas da matriz~$B_\ell$ e estas são Monge convexas, elas também são totalmente monótonas convexas por linhas e podemos encontrar seus máximos em~$\Cl{O}(n)$, resolvendo o problema todo em~$\Cl{O}(kn)$.
 
 Nos falta provar o Teorema~\ref{theo:MongeConvex_and_Convex}.
 
 \begin{proof}
 Sejam $A$ e $g$ quaisquer que respeitem as condições do enunciado. Sejam ainda~$i,i',j,j' \in [n]$ onde~$i < i'$ e~$j < j'$. Escrevemos~$a = \sum \limits_{k=1}^{i'} w_k - \sum \limits_{k=1}^{i} w_k$,~$b = \sum \limits_{k=1}^{j'} w_k - \sum \limits_{k=1}^{j} w_k$ e~$z = \sum \limits_{k=1}^{j} w_k - \sum \limits_{k=1}^{i'} w_k$. Desta forma, temos~$g(z) = A[i'][j]$,~$g(z+a+b) = A[i][j']$,~$g(z+a) = A[i][j]$ e~$g(z+b) = A[i'][j']$, portanto, $g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$ se e somente se $A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]$ ($A$ é Monge convexa).
 
-Com isso, vamos provar que se $g$ é convexa, $A$ é Monge convexa. Sejam~$i,i',j,j' \in [n]$ onde~$i < i'$ e~$j < j'$. Definimos~$a$,~$b$ e~$z$ como acima. Sabemos~$0 \leq a$ e~$0 \leq b$. Consideramos o caso onde~$0 < a \leq b$. Temos~$0 < a \leq b < a+b$, ou seja,~$z < z+a \leq z+b < z+a+b$. Definimos~$\lambda = \frac{a}{a+b}$. Já que~$z+a = \lambda z + (1-\lambda)(z+a+b)$ e~$z+b = (1-\lambda)z + \lambda(z+a+b)$, por convexidade de~$g$, obtemos~$g(z+a) \leq \lambda g(z) + (1 - \lambda) g(z+a+b)$ e~$g(z+b) \leq \lambda g(z+a+b) + (1 - \lambda) g(z)$. Somando, obtemos~$g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$.  
+Consideramos o caso onde~$0 < a \leq b$. Temos~$0 < a \leq b < a+b$, ou seja,~$z < z+a \leq z+b < z+a+b$. Definimos~$\lambda = \frac{a}{a+b}$. Já que~$z+a = \lambda z + (1-\lambda)(z+a+b)$ e~$z+b = (1-\lambda)z + \lambda(z+a+b)$, por convexidade de~$g$, obtemos~$g(z+a) \leq \lambda g(z) + (1 - \lambda) g(z+a+b)$ e~$g(z+b) \leq \lambda g(z+a+b) + (1 - \lambda) g(z)$. Somando, obtemos~$g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$.  
 
 Se considerarmos o caso onde~$0 < b \leq a$, seguimos o mesmo raciocínio e obtemos, novamente,~$g(z+a) + g(z+b) \leq g(z) + g(z+a+b)$. Falta considerar o caso onde~$0 = a = b$, neste caso,~$g(z) = g(z+a) = g(z+b) = g(z+a+b)$ e vale~$(z+a) + g(z+b) \leq g(z) + g(z+a+b)$. Portanto, $A$ é Monge convexa.
 \end{proof}
