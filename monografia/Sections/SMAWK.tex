@@ -143,5 +143,7 @@ A implementação em C++ do algoritmo apresentado, levando em conta as considera
 
 %----------------------------------------------------------------------------------------
 
-%\subsection{Aplicação em programação dinâmica} // comparar com DivConq
-%\subsection{Aplicação em geometria}            // all vertices furthest convex poly
+\subsection{Aplicações} \label{SMAWK:Appl}
+O problema apresentado na Subseção~\ref{DivConq:DP} foi resolvido utilizando a técnica da divisão e conquista, porém, as matrizes para as quais aplicamos a técnica naquele exemplo são Monge convexas, portanto, totalmente monótonas convexas nas linhas, já que estavamos interessados em mínimos de linhas podemos aplicar o SMAWK ao invés da divisão e conquista para resolver estes problemas, conseguindo uma solução~$\Cl{O}(kn)$.  
+
+Como mencionado no início desta seção, a técnica apresentada aqui pode ser usada para resolver o problema de encontrar todos os pares de pontos mais distantes num polígono convexo em tempo~$\Cl{O}(n)$. Além disso, Aggarwal~\cite{Aggarwal:1987} mostrou a aplicação deste algoritmo em vários problemas de geometria computacional.
