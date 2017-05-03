@@ -16,7 +16,7 @@ Apresentaremos o caso onde $A$ é totalmente monótona convexa nas linhas e esta
 %----------------------------------------------------------------------------------------
 
 \subsection{Técnica Primordial} \label{SMAWK:primordial}
-Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a Divisão e Conquista apresentada na Seção~\ref{DivisaoEConquista} e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
+Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a Divisão e Conquista apresentada na Seção~\ref{DivConq} e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
 
 Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o índice de mínimo de cada uma das linhas de~$A$. Se para uma dada linha~$i$ onde~$i > 0$ e~$i < n$ conhecermos os índices~$\ell$ e~$r$ de mínimos das linhas~$i-1$ e~$i+1$, respectivamente, já que~$A$ tem os índices de mínimos das linhas crescente (por ser totalmente monótona) basta buscar o índice de mínimo da linha~$i$ no intervalo entre~$\ell$ e~$r$ (inclusive). Além disso, se~$i$ é a primeira linha da matriz podemos considerar~$\ell = 1$ ou se~$i$ é a última linha da matriz podemos considerar~$r = n$ sem perder a validade do fato de que basta buscar entre~$\ell$ e~$r$.  
 
