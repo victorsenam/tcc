@@ -3,7 +3,7 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção discutiremos o algoritmo SMAWK. Ele é conhecido pela sua aplicação no problema de encontrar o vértice mais distante de cada vértice num poígono convexo em tempo linear~\cite{Aggarwal:1987}. Ao final desta seção serão explicadas esta e outras aplicações deste algoritmo.  
+Nesta seção discutiremos o algoritmo SMAWK. Ele é conhecido pela sua aplicação no problema de encontrar o vértice mais distante de cada vértice num polígono convexo em tempo linear~\cite{Aggarwal:1987}. Ao final desta seção serão citadas esta e outras aplicações deste algoritmo.  
 
 Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso deste algoritmo:
 \begin{itemize}
@@ -18,7 +18,7 @@ Apresentaremos o caso onde $A$ é totalmente monótona convexa nas linhas e esta
 \subsection{Técnica Primordial} \label{SMAWK:primordial}
 Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a Divisão e Conquista apresentada na Seção~\ref{DivisaoEConquista} e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
 
-Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o menor índice de mínimo de cada uma das linhas de~$A$. Se para uma dada linha~$i$ onde~$i > 0$ e~$i < n$ conhecermos os índices~$l$ e~$r$ de mínimos das linhas~$i-1$ e~$i+1$, respectivamente, já que~$A$ tem os índices de mínimos das linhas crescente (por ser totalmente monótona) basta buscar o índice de mínimo da linha~$i$ no intervalo entre~$l$ e~$r$ (inclusive). Além disso, se~$i$ é a primeira linha da matriz podemos considerar~$l = 1$ ou se~$i$ é a última linha da matriz podemos considerar~$r = n$ sem perder a validade do fato de que basta buscar entre~$l$ e~$r$.  
+Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o índice de mínimo de cada uma das linhas de~$A$. Se para uma dada linha~$i$ onde~$i > 0$ e~$i < n$ conhecermos os índices~$\ell$ e~$r$ de mínimos das linhas~$i-1$ e~$i+1$, respectivamente, já que~$A$ tem os índices de mínimos das linhas crescente (por ser totalmente monótona) basta buscar o índice de mínimo da linha~$i$ no intervalo entre~$\ell$ e~$r$ (inclusive). Além disso, se~$i$ é a primeira linha da matriz podemos considerar~$\ell = 1$ ou se~$i$ é a última linha da matriz podemos considerar~$r = n$ sem perder a validade do fato de que basta buscar entre~$\ell$ e~$r$.  
 
 Após realizar as observações acima note que, já que~$A$ é totalmente monótona, remover qualquer linha de~$A$ mantém a total monotonicidade e não altera o índice de mínimo de outra linha. Com esta observação, concluímos que podemos remover todas as linhas pares da matriz, resolver o problema recursivamente para a matriz resultante e utilizar este resultado para calcular os índices de interesse para as linhas pares da matriz. Vamos provar que encontrar estes índices de mínimos custa tempo~$\Cl{O}(m)$. 
 
@@ -29,7 +29,9 @@ Agora, com uma análise similar à realizada para a técnica da Divisão e Conqu
 %----------------------------------------------------------------------------------------
 
 \subsection{Reduce} \label{SMAWK:reduce}
-Queremos agilizar a técnica apresentada acima. Para isso, vamos adicionar uma nova hipótese. Vamos supor que a matriz~$A$ é quadrada, ou seja,~$n = m$. Lembre que a cada passo, removemos as~$\floor{n/2}$ linhas pares da matriz gerando uma nova matriz $A'$, resolvemos o problema recursivamente para~$A'$ e usamos a solução de~$A'$ para resolver para as linhas restantes de~$A$. O problema é que quando removemos linhas da nossa~$A$, ela deixa de ser quadrada e passa a ser uma matriz com mais colunas do que linhas, isto é,~$m \geq n$. Chamamos de ótimas as células da matriz que são mínimo de alguma linha e as colunas que contém o índice de mínimo de pelo menos uma linha. Note que uma matriz contém no máximo~$n$ colunas ótimas, pois cada linha faz com que exatamente uma célula seja ótima. Queremos remover colunas não ótimas de uma matriz~$A$ com mais colunas do que linhas fazendo com que~$A$ se torne quadrada.  
+Chamamos de ótimas as células de uma matriz que são mínimo de alguma linha e as colunas que contém o índice de mínimo de pelo menos uma linha. Note que uma matriz contém no máximo~$n$ colunas ótimas, pois cada linha faz com que exatamente uma célula seja ótima. 
+
+Queremos agilizar a técnica apresentada acima. Para isso, vamos adicionar a nova hipótese de que a matriz~$A$ é quadrada, ou seja,~$n = m$. Lembre que a cada passo, removemos as~$\floor{n/2}$ linhas pares da matriz gerando uma nova matriz $A'$, resolvemos o problema recursivamente para~$A'$ e usamos a solução de~$A'$ para resolver para as linhas restantes de~$A$. Quando removemos linhas da nossa~$A$, ela deixa de ser quadrada e passa a ser uma matriz com mais colunas do que linhas, isto é,~$m \geq n$. Queremos remover colunas não ótimas da matriz~$A$ com mais colunas do que linhas fazendo com que~$A$ se torne quadrada.  
 
 Vamos desenvolver o algoritmo \textsc{Reduce} a partir de um índice de linha~$k$ e de algumas invariantes: 
 \begin{enumerate}
@@ -52,9 +54,9 @@ Vamos comparar~$A[k][k]$ com~$A[k][k+1]$ e considerar dois casos. Em cada um dos
     \caption{Casos do \textsc{Reduce}.} \label{figure:Reduce2}
 \end{figure}
 
-Se~$A[k][k] > A[k][k+1]$, as entradas com índice de linha maior ou igual a~$k$ na coluna~$k$ são não ótimos. Primeiramente, a célula~$(k,k)$ é não ótima como consequência direta da desigualdade. Agora, suponha que existe alguma linha~$i>k$ tal que~$A[i][k] \leq A[i][k+1]$. Pela total monotonicidade convexa por linhas de $A$, isso implica em~$A[k][k] \leq A[k][k+1]$, um absurdo.  
+Se~$A[k][k] > A[k][k+1]$, as entradas com índice de linha maior ou igual a~$k$ na coluna~$k$ são não ótimas. Primeiramente, a célula~$(k,k)$ é não ótima como consequência direta da desigualdade. Agora, suponha que existe alguma linha~$i>k$ tal que~$A[i][k] \leq A[i][k+1]$. Pela total monotonicidade convexa por linhas de $A$, isso implica em~$A[k][k] \leq A[k][k+1]$, um absurdo.  
 
-Se~$A[k][k] \leq A[k][k+1]$, as células da coluna~$k+1$ com índices de linha menores ou iguals a~$k$ são não ótimas. A célula~$(k,k+1)$ é não ótima pela desigualdade apresentada. Supojnha que existe alguma linha~$i<k$ tal que~$A[i][k] > A[i][k+1]$. Pela contrapositiva da total monotonicidade, temos~$A[k][k] > A[k][k+1]$, um absurdo.  
+Se~$A[k][k] \leq A[k][k+1]$, as células da coluna~$k+1$ com índices de linha menores ou iguals a~$k$ são não ótimas. A célula~$(k,k+1)$ é não ótima pela desigualdade apresentada. Suponha que existe alguma linha~$i<k$ tal que~$A[i][k] > A[i][k+1]$. Pela contrapositiva da total monotonicidade, temos~$A[k][k] > A[k][k+1]$, um absurdo.  
 
 Com estas observações estamos prontos para deduzir um algoritmo que elimina exatamente~$m-n$ colunas de~$A$. 
 
@@ -95,9 +97,7 @@ Além disso, o algoritmo, a cada passo, incrementa~$k$ ou remove uma coluna de~$
 
 Recebemos uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas. Primeiramente, vamos transformar a matriz $A$ em uma matriz quadrada. Se~$A$ tem mais colunas do que linhas, basta aplicar o algorimto~$\Reduce$ em~$A$ para fazer com que ela fique quadrada e tenha os mesmos índices de mínimos. Se~$A$ tem mais linhas do que colunas, basta adicionar colunas sem que os mínimos ou a total monotonicidade sejam prejudicados, para isso, adicionamos, ao final da matriz, colunas~$n-m$ com entradas infinitas. 
 
-Agora estamos prontos para descrever e aplicar o algoritmo~$\SMAWK$ na matriz modificada. Vamos misturar as ideias apresentadas da técnica primordial, apresentada na Subseção~\ref{SMAWK:primordial}, e do~$\Reduce$, apresentado na Subseção~\ref{SMAWK:reduce}. Em cada passo, removemos as linhas pares da matriz, aplicamos o algoritmo $\Reduce$ para manter esta nova matriz quadrada e resolvemos o problema recursivamente para a nova matriz. Com a solução desta instância, descobrimos os resultados para as linhas restantes da matriz original. O Algoritmo~\ref{SMAWK:algo:SMAWK} descreve este processo.
-
-\begin{algorithm}[H]
+\begin{algorithm}[b]
 \caption{Algoritmo $\SMAWK$}
 \label{SMAWK:algo:SMAWK}
 \begin{algorithmic}[1]
@@ -122,6 +122,8 @@ Agora estamos prontos para descrever e aplicar o algoritmo~$\SMAWK$ na matriz mo
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
+
+Agora estamos prontos para descrever e aplicar o algoritmo~$\SMAWK$ na matriz modificada. Vamos misturar as ideias apresentadas da técnica primordial, apresentada na Subseção~\ref{SMAWK:primordial}, e do~$\Reduce$, apresentado na Subseção~\ref{SMAWK:reduce}. Em cada passo, removemos as linhas pares da matriz, aplicamos o algoritmo $\Reduce$ para manter esta nova matriz quadrada e resolvemos o problema recursivamente para a nova matriz. Com a solução desta instância, descobrimos os resultados para as linhas restantes da matriz original. O Algoritmo~\ref{SMAWK:algo:SMAWK} descreve este processo.
 
 %----------------------------------------------------------------------------------------
 
