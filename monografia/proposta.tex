@@ -1,0 +1,72 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND SETTINGS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt]{amsart}
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+
+\usepackage[noend]{algpseudocode}
+\usepackage[section]{algorithm}
+\usepackage{listings}
+
+\usepackage[color=green!40]{todonotes}
+
+\usepackage[authoryear]{natbib}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,positioning,shadows,trees,patterns}
+
+\sloppy
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+% \input{declarations.tex}
+
+%----------------------------------------------------------------------------------------
+%	LISTS
+%----------------------------------------------------------------------------------------
+
+%\tableofcontents
+%\listoffigures
+%\listoftables
+
+%----------------------------------------------------------------------------------------
+%   DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+\input{definitions.tex}
+
+%----------------------------------------------------------------------------------------
+%	CONTENT
+%----------------------------------------------------------------------------------------
+
+\include{Sections/Proposta}
+\include{Sections/MatrizMonge}
+\include{Sections/DivisaoEConquista}
+\include{Sections/SMAWK}
+% \include{Sections/OnlineOptimization}
+% \include{Sections/StaircaseOnlineOptimization}
+% \include{Sections/ConvexHullTrick}
+% \include{Sections/KnuthYao}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{main}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}  
