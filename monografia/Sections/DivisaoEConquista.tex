@@ -3,18 +3,16 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção será apresentada uma técnica que chamamos de Divisão e Conquista. A ideia é citada em~\cite{Aggarwal:1987} e é um tópico recorrente em competições de programação, sendo conhecida como ``Divide and Conquer Optimization''~\cite{Quora:DivConq}~\cite{CF:Optm} e geralmente aplicada a problemas de programação dinâmica. Além disso, as hipóteses deste algoritmo são mais fracas do que as do algoritmo SMAWK, apresentado na Seção~\ref{SMAWK}, portanto, todo problema para o qual aquela solução pode ser aplicada, esta também pode. Ao final desta seção, apresentamos exemplos de aplicações em programação dinâmica.  
+Nesta seção será apresentada uma técnica que chamamos de Divisão e Conquista. A ideia é citada por Aggarwal~\cite{Aggarwal:1987} e é um tópico recorrente em competições de programação, sendo conhecida como ``Divide and Conquer Optimization''~\cite{Quora:DivConq}~\cite{CF:Optm} e geralmente aplicada a problemas de programação dinâmica. 
+
+Além disso, as hipóteses deste algoritmo são mais fracas do que as do algoritmo SMAWK, apresentado na Seção~\ref{SMAWK}, portanto, todo problema para o qual aquela solução pode ser aplicada, esta também pode. Ao final desta seção, apresentamos exemplos de aplicações em programação dinâmica.  
 
 Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso deste algoritmo:
 \begin{itemize}
-    \item Se $A$ é monótona crescente nos mínimos das linhas podemos encontrar os índices de mínimos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
-    \item se $A$ é monótona decrescente nos mínimos das linhas podemos encontrar os índices de mínimos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
-    \item se $A$ é monótona crescente nos máximos das linhas podemos encontrar os índices de máximos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
-    \item se $A$ é monótona decrescente nos máximos das linhas podemos encontrar os índices de máximos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
-    \item se $A$ é monótona crescente nos mínimos das colunas podemos encontrar os índices de mínimos das colunas em tempo $\Cl{O}((n+m)\lg(m))$, 
-    \item se $A$ é monótona decrescente nos mínimos das colunas podemos encontrar os índices de mínimos das colunas em tempo $\Cl{O}((n+m)\lg(m))$, 
-    \item se $A$ é monótona crescente nos máximos das colunas podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$ e 
-    \item se $A$ é monótona decrescente nos máximos das colunas podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$.
+    \item Se $A$ é monótona nos mínimos das linhas podemos encontrar os índices de mínimos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona nos máximos das linhas podemos encontrar os índices de máximos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona nos mínimos das colunas podemos encontrar os índices de mínimos das colunas em tempo $\Cl{O}((n+m)\lg(m))$ e 
+    \item se $A$ é monótona nos máximos das colunas podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$.
 \end{itemize}
 
 Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. É fácil manipular o algorimto para trabalhar com os outros casos.
@@ -22,32 +20,34 @@ Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. É fácil
 %----------------------------------------------------------------------------------------
 
 \subsection{Técnica}
-Dada uma matriz $A \in \B{Q}^{n \times m}$ monótona crescente nos máximos das linhas, queremos encontrar o vetor de índices de máximos das linhas de $A$. Isto é, para todo $i \in [n]$, queremos encontrar
-$$ R[i] = \min\{j \mid A[i][j] \geq A[i][j'] \text{ para todo } j' \in [n]\} \text{.}$$  
+Dada uma matriz $A \in \B{Q}^{n \times m}$ monótona crescente nos mínimos das linhas, queremos encontrar o vetor de índices de mínimos das linhas de $A$. Isto é, para todo $i \in [n]$, queremos encontrar
+$$ R[i] = \min\{j \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in [n]\} \text{.}$$  
 
-Se, para alguma linha $i$, encontrarmos o valor $R[i]$, sabemos, já que $A$ é monótona convexa, que para todo $i' < i$, $R[i'] \leq R[i]$ e, para todo $i' > i$, $R[i'] \geq R[i]$, isto é, sabemos que os máximos de menor índice das outras linhas se encontram nas submatrizes $A[1 \tdots i-1][1 \tdots R[i]]$ e $A[i+1 \tdots n][R[i] \tdots m]$. Basta, agora, seguindo o paradigma de divisão e conquista, resolver o mesmo problema para estas submatrizes e conseguimos resolver o problema original. 
+Se, para alguma linha $i$, encontrarmos o valor $R[i]$, sabemos que para todo $i' < i$, $R[i'] \leq R[i]$ e, para todo $i' > i$, $R[i'] \geq R[i]$, isto é, sabemos que os mínimos de menor índice das outras linhas se encontram nas submatrizes $A[1 \tdots i-1][1 \tdots R[i]]$ e $A[i+1 \tdots n][R[i] \tdots m]$. Seguindo o paradigma de divisão e conquista, vamos resolver o mesmo problema para estas submatrizes e, consequentemente, resolver o problema original. 
 
-\newcommand{\FRMDC}{\textsc{FindRowMax\_DC}}
+\newcommand{\FRMDC}{\textsc{FindRowMin\_DC}}
 \begin{algorithm}[H]
 \caption{Mínimos das linhas com divisão e conquista}
-\label{FindRowMax_DC}
+\label{DivConq:algo}
 \begin{algorithmic}[1]
 \Function{\FRMDC}{A, r_s, r_t, c_s, c_t}
     \State $\ell \rec \ceil{(r_s+r_t)/2}$
-    \State $R[\ell] \rec \min\{j \mid A[i][j] \geq A[i][j'] \text{ para todo } j' \in [c_s \tdots c_t]\}$
+    \State $R[\ell]$ índice de mínimo da linha~$\ell$. \label{DivConq:algo:findmin}
     \If{$i > r_s$}
-        \State $R[r_s \tdots \ell-1] \rec \FRMDC(A, r_s, \ell-1, c_s, R[\ell])$ \label{FindRowMax_DC:Div_left}
+        \State $R[r_s \tdots \ell-1] \rec \FRMDC(A, r_s, \ell-1, c_s, R[\ell])$ \label{DivConq:algo:left}
     \EndIf
     \If{$i < r_t$}
-        \State $R[\ell+1 \tdots r_t] \rec \FRMDC(A, \ell+1, r_t, R[\ell], c_t)$ \label{FindRowMax_DC:Div_right}
+        \State $R[\ell+1 \tdots r_t] \rec \FRMDC(A, \ell+1, r_t, R[\ell], c_t)$ \label{DivConq:algo:right}
     \EndIf
     \State \Return $R$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
+Note que na linha~\ref{DivConq:algo:findmin} o mínimo só precisa ser buscado entre os índices~$c_s$ e~$c_t$, inclusive, pois estamos resolvendo o problema para a submatriz~$A[r_s \tdots r_t][c_s \tdots c_t]$.
+
 \subsection{Análise}
-Será feita uma análise do tempo de execução do algoritmo acima no pior caso assumindo que as atribuições feitas nas linhas~\ref{FindRowMax_DC:Div_left} e~\ref{FindRowMax_DC:Div_right} custam tempo constante, futuramente, em \ref{DivisaoEConquista_Implementacao}, iremos apresentar uma implementação em C++ que está de acordo com a análise realizada.  
+Será feita uma análise do tempo de execução do algoritmo acima no pior caso assumindo que as atribuições feitas nas linhas~\ref{DivConq:algo:left} e~\ref{DivConq:algo:right} custam tempo constante, futuramente, na Subseção~\ref{DivisaoEConquista_Implementacao}, iremos apresentar uma implementação em C++ que está de acordo com a análise realizada.  
 
 Se $A$ é uma matriz e $r_s,r_t,c_s$ e $c_t$ são índices tais que $r_t-r_s = n > 0$ e $c_t-c_s = m > 0$, o tempo gasto por $\FRMDC(A,r_s,r_t,c_s,c_t)$ pode ser expresso pela seguinte recorrência:
 \begin{equation*}
@@ -65,7 +65,7 @@ T(n,m) = \left\{
 \end{equation*}
 
 \begin{prop}
-Para todo $n,m \geq 1$, $T(n,m) \leq (m+n)\lg(2n)$ e, portanto, a técnica da divisão e conquista consegue encontrar o máximo de todas as linhas em tempo $\Cl{O}((m+n)\lg(n))$
+Para todo $n,m \geq 1$, $T(n,m) \leq (m+n)\lg(2n)$ e, portanto, a técnica da divisão e conquista consegue encontrar o mínimo de todas as linhas em tempo $\Cl{O}((m+n)\lg(n))$
 \end{prop}
 
 \begin{proof}
@@ -79,7 +79,7 @@ Assumimos para $1 \leq n' < n$ e $m' \geq 1$ que $T(n',m') \leq (m'+n')\lg(2n')$
 \end{proof}
 
 \subsection{Implementação} \label{DivisaoEConquista_Implementacao}
-Para implementar o Algoritmo~\ref{FindRowMax_DC} com a complexidade desejada, devemos tomar cuidado com as atribuições feitas nas linhas~\ref{FindRowMax_DC:Div_left} e~\ref{FindRowMax_DC:Div_right}. A forma como elas foram apresentadas sugere que os vetores $R$ recebidos pelas funções sejam recebidos e copiados para o vetor $R$. Ao invés de fazer isso, passaremos o endereço do vetor $R$ recursivamente e garantir que cada chamada só complete o subvetor $R[r_c \tdots r_t]$, referente a seu subproblema. Além disso, como explicado na Seção~\ref{Introducao_Implementacao}, a matriz $A$ será passada como uma função e não como uma matriz.
+Para implementar o Algoritmo~\ref{DivConq:algo} com a complexidade desejada, devemos tomar cuidado com as atribuições feitas nas linhas~\ref{DivConq:algo:left} e~\ref{DivConq:algo:right}. A forma como elas foram apresentadas sugere que os vetores $R$ recebidos pelas funções sejam recebidos e copiados para o vetor $R$. Ao invés de fazer isso, passaremos o endereço do vetor $R$ recursivamente e garantir que cada chamada só complete o subvetor $R[r_c \tdots r_t]$, referente a seu subproblema. Além disso, como explicado na Subseção~\ref{Intro:impl}, a matriz $A$ será passada como uma função e não como uma matriz.
 
 A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, pode ser encontrada em \texttt{implementacao/FindRowMax\_DC.cpp}.
 
@@ -87,9 +87,9 @@ A implementação em C++ do algoritmo apresentado, levando em conta as considera
 Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. A prova em questão pode ser encontrada no link \url{http://maratona.ime.usp.br/hist/2016/resultados/contest.pdf}.  
 
 \begin{prob} \label{DivConq:InternetTrouble}
-Definimos a função de custo~$c$ de cada vetor~$v$ definida~$c(v) = \sum \limits_{i=1}^{|v|} \min(i-1,m-i)v_i$.  
+Definimos a função de custo~$c$ de cada vetor~$v$ como~$c(v) = \sum \limits_{i=1}^{|v|} \min(i-1,m-i)v_i$.  
 
-Sejam~$n$ e~$k$ inteiros onde~$1 \leq k \leq n$ e seja~$h \in \B{N}^n$ um vetor, queremos encontrar uma partição~$P$ de~$h$ em até~$k$ subvetores~$h_{P_1},h_{P_2},\dots,h_{P_k}$ de forma que~$\sum \limits_{i=1}^k c(h_{P_i})$.
+Sejam~$n$ e~$k$ inteiros onde~$1 \leq k \leq n$ e seja~$h \in \B{N}^n$ um vetor, queremos encontrar uma partição~$P$ de~$h$ em até~$k$ subvetores~$h_{P_1},h_{P_2},\dots,h_{P_k}$ não vazios de forma que~$\sum \limits_{i=1}^k c(h_{P_i})$.
 \end{prob}
 
 Podemos dar ao problema acima a interpretação do problema ``Internet Trouble'' citado. Temos várias cidades dispostas em uma linha e queremos escolher~$k + 1$ destas cidades para instalar torres de distribuição de energia de forma a minimizar o custo de alimentar todas as cidades com energia. Nesta adaptação, as cidades~$1$ e~$n$ são escolhas obrigatórias. Se na cidade de índice~$i$ existem~$h_i$ habitantes, o custo de tranferir energia de uma torre a~$d$ cidades de distância para esta cidade é dado por~$dh_i$. Note que, se há uma torre na própria cidade, o custo é considerado~$0$.  
@@ -97,19 +97,21 @@ Podemos dar ao problema acima a interpretação do problema ``Internet Trouble''
 Definimos, para todo~$1 \leq i \leq j \leq n$ o custo~$A[i][j]$ de escolher o subvetor~$v[i \tdots j]$ como uma das partições. Os valores com índices de linhas maiores do que índices de colunas não fazem sentido na nossa modelagem, portanto, queremos torná-los inválidos, já o problema é de minimização definimos seus valores como~$+\infty$. Assim, para todo~$1 \leq i,j \leq n$,
 \begin{equation*}
 A[i][j] = \begin{cases}
-    c(v[i \tdots j]) & \text{, se } i < j \text{ e }\\
+    c(v[i \tdots j]) & \text{, se } i \leq j \text{ e }\\
     +\infty          & \text{, c.c.}
 \end{cases}
 \end{equation*}
 
-Queremos resolver o problema com programação dinâmica. Definimos, para todo~$\ell \leq k$ e~$i \leq n$ com $\ell \leq n - i + 1$ o problema de encontrar o melhor particionamento do subvetor~$v[i \tdots n]$ em~$\ell$ partes. Definimos como~$E[\ell][i]$ o valor ótimo atingido neste subproblema. Se~$\ell = 1$, escrevemos~$E[\ell][i] = A[i][n]$ e se~$1 < \ell \leq k$ escrevemos~$E[\ell][i] = \min \limits_{j=i}^{n-\ell+2} A[i][j] + E[\ell-1][j]$. Esta recorrência define um programa dinâmico que pode ser resolvido trivialmente em tempo~$\Cl{O}(kn^2)$.
+Perceba que, se criarmos em tempo~$\Cl{O}(n)$ dois vetores~$p,q \in \B{N}^{[0 \tdots n]}$ onde, para todo~$i \in [0 \tdots n]$,~${p_i = \sum\limits_{k=1}^i v_k}$ e~${q_i = \sum\limits_{k=1}^i kv_k}$, podemos calcular cada entrada de~$A$ em~$\Cl{O}(1)$ quando necessário.
 
-Com~$\ell > 1$, definindo~$B_\ell[i][j] = A[i][j] + E[\ell-1][j]$ podemos reescrever~$E[\ell][i] = \min \limits_{j=i}^{n-\ell+2} B[i][j]$ e, se definirmos~$B_\ell[i][j] = +\infty$ para todo~$i$ que desrespeite~$i \leq j$ ou~$\ell \leq n - i + 1$, teremos~$E[\ell][i] = \min \limits_{j=1}^{n} B_\ell[i][j]$. Esta formulação reduz o problema de programação dinâmica a encontrar, para todo~$1 \leq \ell \leq k$ fixo, os mínimos das linhas da matriz~$B_\ell$. Com isso, basta provar que~$B_\ell$ é monótona crescente nos mínimos das linhas e aplicar a técnica da divisão e conquista para resolver o problema em tempo~$\Cl{O}(kn\log(n))$.
+Queremos resolver o problema com programação dinâmica. Definimos para todo~$\ell \in [k]$ e~$i \in [n]$ com $\ell \leq n - i + 1$ o problema de encontrar o melhor particionamento do subvetor~$v[i \tdots n]$ em~$\ell$ partes. Definimos como~$E[\ell][i]$ o valor ótimo atingido neste subproblema. Se~$\ell = 1$, escrevemos~$E[\ell][i] = A[i][n]$ e se~$1 < \ell \leq k$ escrevemos~$E[\ell][i] = \min \limits_{j=i}^{n-\ell+2} A[i][j] + E[\ell-1][j]$. Esta recorrência define um programa dinâmico que pode ser resolvido trivialmente em tempo~$\Cl{O}(kn^2)$.
 
-Vamos, primeiramente, provar que~$A$ é Monge convexa. Queremos mostrar que vale, para todo~$i,j \in [n]$, a desigualdade~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ e usar o Teorema~\ref{Monge:theo+1} para concluir que~$A$ é Monge convexa. Se~$j < i + 1$, $A[i'][j] = +\infty$, logo, já que~$A[i][j'] \geq 0$, a desigualdade vale. Consideramos que~$i < j$. Escrevemos~$l = \floor{\frac{i+j}{2}}$ e~$r = \ceil{\frac{i+j}{2}}$, note que~$r = \floor{\frac{i+j+1}{2}}$.  
+Com~$\ell > 1$, definindo~$B_\ell[i][j] = A[i][j] + E[\ell-1][j]$ podemos reescrever~$E[\ell][i] = \min \limits_{j=i}^{n-\ell+2} B[i][j]$ e, se definirmos~$B_\ell[i][j] = +\infty$ para todo~$i$ que desrespeite~$i \leq j$ ou~$\ell \leq n - i + 1$, teremos~$E[\ell][i] = \min \limits_{j=1}^{n} B_\ell[i][j]$. Esta formulação reduz o problema de programação dinâmica a encontrar, para todo~$1 < \ell \leq k$ fixo, os mínimos das linhas da matriz~$B_\ell$. Com isso, basta provar que~$B_\ell$ é monótona crescente nos mínimos das linhas e aplicar a técnica da divisão e conquista para resolver o problema em tempo~$\Cl{O}(kn\log(n))$.
 
-Temos~$A[i][j] = \sum\limits_{k=i}^j \min(k-i,j-k)h_k = {\sum\limits_{k=i}^l (k-i) h_k + \sum\limits_{k=l+1}^j (j-k) h_k}$ e~$A[i][j+1] = \sum\limits_{k=i}^{j+1} \min(k-i,j-k+1)h_k = {\sum\limits_{k=i}^r (k-i)h_k + \sum\limits_{k=r+1}^j (j-k+1)h_k}$. Se~$i+j$ é par,~$l=r$ e vale~$A[i][j+1] = {\sum\limits_{k=i}^l (k-i)h_k + \sum\limits_{k=l+1}^j (j-k)h_k} = {A[i][j] + \sum\limits_{k=l+1}^j h_k}$. Se~$i+j+1$ é ímpar,~$r-1=l$ e~$r=\frac{i+j+1}{2}$, logo~$r-i = j-r+1$ e teremos~$(k-r)h_r = (j-r+1)h_r$, o que leva a~$A[i][j+1] = {\sum_{k=i}^l (k-i)h_k + \sum_{k=l+1}^j (j-k+1)h_k} = {A[i][j] + \sum\limits_{k=l+1}^j h_k}$.  
+Vamos, primeiramente, provar que~$A$ é Monge convexa. Queremos mostrar que vale, para todo~$i,j \in [n]$, a desigualdade~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$ e usar o Teorema~\ref{Monge:theo+1} para concluir que~$A$ é Monge convexa. Se~$j \leq i$, $A[i+1][j] = +\infty$, logo, já que~$A[i][j+1] \geq 0$, a desigualdade vale. Consideramos que~$i < j$. Escrevemos~$a = \floor{\frac{i+j}{2}}$ e~$b = \ceil{\frac{i+j}{2}}$, note que~$b = \floor{\frac{i+j+1}{2}}$.  
 
-O parágrafo acima nos mostrou que~$A[i][j+1] = {A[i][j] + \sum\limits_{k=l+1}^j h_k}$. Com um raciocínio parecido, conseguiremos concluir~${A[i+1][j+1]} = {A[i+1][j] + \sum\limits_{k=r+1}^j h_k}$. Assim,~$A[i][j+1] - A[i+1][j+1] = A[i][j] + \sum\limits_{k=l+1}^j h_k - A[i+1][j] - \sum\limits_{k=r+1}^j h_k$. Sabemos que~$l \leq r$, portanto, obtivemos~${A[i][j+1] - A[i+1][j+1] \geq A[i][j] - A[i+1][j]}$, isto é~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$. Provamos que~$A$ é Monge convexa.
+Temos~$A[i][j] = \sum\limits_{k=i}^j \min(k-i,j-k)h_k = {\sum\limits_{k=i}^a (k-i) h_k + \sum\limits_{k=a+1}^j (j-k) h_k}$ e~$A[i][j+1] = \sum\limits_{k=i}^{j+1} \min(k-i,j-k+1)h_k = {\sum\limits_{k=i}^b (k-i)h_k + \sum\limits_{k=b+1}^j (j-k+1)h_k}$. Se~$i+j$ é par,~$a=b$ e vale~$A[i][j+1] = {\sum\limits_{k=i}^a (k-i)h_k + \sum\limits_{k=a+1}^j (j-k)h_k} = {A[i][j] + \sum\limits_{k=a+1}^j h_k}$. Se~$i+j+1$ é ímpar,~$b-1=a$ e~$b=\frac{i+j+1}{2}$, logo~$b-i = j-b+1$ e teremos~$(k-b)h_b = (j-b+1)h_b$, o que leva a~$A[i][j+1] = {\sum_{k=i}^a (k-i)h_k + \sum_{k=a+1}^j (j-k+1)h_k} = {A[i][j] + \sum\limits_{k=a+1}^j h_k}$.  
 
-Sabemos que~$A$ é Monge convexa, pelo Teorema~\ref{Monge:keepConvex} todas as matrizes~$B_\ell$ são Monge convexas, portanto, monótonas decrescentes nos mínimos das linhas e podemos aplicar a técnica da Divisão e Conquista para encontrar seus máximos de linhas em tempo~$\Cl{O}(n)$. Já que o problema consiste em encontrar estes máximos para todas as~$k$ matrizes~$B_\ell$, conseguimos resolver o problema em tempo~$\Cl{O}(kn\lg(n))$. Vale notar que a Subseção~\ref{SMAWK:Appl} ensina a resolver este mesmo problema em tempo~$\Cl{O}(kn)$.
+O parágrafo acima nos mostrou que~$A[i][j+1] = {A[i][j] + \sum\limits_{k=a+1}^j h_k}$. Com um raciocínio parecido, conseguiremos concluir~${A[i+1][j+1]} = {A[i+1][j] + \sum\limits_{k=b+1}^j h_k}$. Assim,~$A[i][j+1] - A[i+1][j+1] = A[i][j] + \sum\limits_{k=a+1}^j h_k - A[i+1][j] - \sum\limits_{k=b+1}^j h_k$. Sabemos que~$a \leq b$, portanto, obtivemos~${A[i][j+1] - A[i+1][j+1] \geq A[i][j] - A[i+1][j]}$, isto é~${A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j]}$. Provamos que~$A$ é Monge convexa.
+
+Sabemos que~$A$ é Monge convexa, pelo Teorema~\ref{Monge:keepConvex} todas as matrizes~$B_\ell$ são Monge convexas, portanto, monótonas decrescentes nos mínimos das linhas e podemos aplicar a técnica da Divisão e Conquista para encontrar seus mínimos de linhas em tempo~$\Cl{O}(n)$. Já que o problema consiste em encontrar estes mínimos para todas as matrizes~$B_\ell$ com~$\ell \in [k]$, conseguimos resolver o problema em tempo~$\Cl{O}(kn\lg(n))$. Vale notar que a Subseção~\ref{SMAWK:Appl} ensina a resolver este mesmo problema em tempo~$\Cl{O}(kn)$.
