@@ -1,242 +1,36 @@
 \section{Otimização de Knuth-Yao}
-\label{Knuth-Yao}
+\label{KY}
 
 %----------------------------------------------------------------------------------------
 
-\todo[inline]{
-Eu estou usando algumas notações que eu não tenho certeza se são razoáveis. \newline
-\newline
-$[i..j] := \{k \in \B{N} \mid i \leq k \leq j\}$ (um intervalo) \newline
-$[n] := [1..n]$ (o intervalo de 1 até n) \newline
-$[[n]] := \{[i..j] \mid i,j \in \B{N} \text{ e } 1 \leq i \leq j \leq n\}$ (todos os subintervalos de $[1..n]$) \newline
-\newline
-Além disso, eu defino funções sobre intervalos (exemplo: $f : [[n]] \to \B{R}$) e depois uso elas como se fossem funções sobre $\B{N}^2$ (exemplo: $f(i,j)$ ao invés de $f([i..j])$). Tudo bem?
-}
+O problema da árvore de busca binária ótima~\cite{CLRS} é um exemplo clássico de aplicação de programação dinâmica sendo fácilmente resolvido em tempo~$\Cl{O}(n^3)$. Aproveitando algumas propriedades do problema, Knuth~\cite{Knuth:1971} mostrou que ele pode ser resolvido em tempo~$\Cl{O}(n^2)$ sem que se mude muito o pensamento por trás da solução trivial. 
+
+Mais tarde, a solução apresentada por Knuth foi estudada por Yao~\cite{Yao:1980,Yao:1982} que relacionou a otimização realizada com o fato de que a recorrência utilizada para resolver o problema descrevia uma matriz Monge e, com isso, mostrou que várias outras recorrências poderiam ser agilizadas utilizando a mesma técnica.  
+
+Após as descobertas de Yao, a otimização de Knuth foi utilizada para melhorar a solução de vários outros problemas em programação dinâmica. Bein, Golin, Larmore e Zhang~\cite{Bein:2009} buscaram enfraquecer a condição encontrada por Yao e mostraram que as matrizes descritas pelos problemas agilizados com a otimização Knuth-Yao podem ser decompostas de 3 maneiras diferentes em matrizes totalmente monótonas. Esta introdução foi baseada no artigo citado neste parágrafo.
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Concatenação de Custo Mínimo}
+\subsection{Quebrando Strings}
 
-Para apresentar a técnica da otimização de Knuth-Yao, vamos introduzir o problema da \textit{Concatenação de Custo Mínimo}. O problema consiste em um inteiro $n$, um vetor $v \in \B{R}^n_+$ e duas operações:
+Para explicar a técnica desenvolvida por Knuth. Iremos nos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
 
-\begin{enumerate}
-\item Criar um novo vetor unitário $x \in \B{R}_+$. Esta operação tem custo $x$.
-\item Concatenar dois vetores $a \in \B{R}^p$ e $b \in \B{R}^q$ já existentes. Esta operação tem custo $\sum \limits_{i=1}^p a_i + \sum \limits_{i=1}^q b_i$.
-\end{enumerate}
+Considere uma linguagem de processamento de strings que consegue quebrar uma string~$s$ de tamanho~$n > 1$ em qualquer posição~$t \in [n-1]$, ou seja, gerar duas strings~$s[1 \tdots t]$ e~$s[t+1 \tdots n]$. Um programador quer usar este programa para separar uma string~$m-1$ vezes, nas posições~$p_1 < p_2 < \dots < p_{m-1}$, porém, para quebrar uma string de tamanho~$n$ em qualquer posição, a linguagem gasta tempo~$n$. Queremos descobrir qual é a melhor ordem de realizar estes cortes. 
 
-Queremos realizar uma sequência destas operações de forma a obter um vetor idêntico a $v$. Dentre todas as possíveis, queremos a sequência de menor custo possível. \\
+Suponha, por exemplo, que estamos interessados em quebrar uma string de tamanho 26 nas posições 3, 14, poderíamos fazer isso de duas maneiras. Podemos quebrar e uma de 3 e outra de 23 e, depois disso, quebrar a de 23 em uma de 11 e outra de 12, o que custaria tempo 49, e podemos quebrar a inicial em uma de 14 e outra de 9, separando a de 14 em uma de 3 e outra de 11 após a primeira operação, nos dando uma solução de tempo 30, que é a solução ótima. Vamos resolver o problema de encontrar a ordem ótima para este particionamento com programação dinâmica.
 
-Precisamos de duas observações, qualquer vetor de tamanho 1 deve ser gerado com a primeira operação e qualquer vetor de tamanho maior do que 1 deve ser obtido pela concatenação de dois outros vetores um prefixo dele e outro sufixo dele. Isso nos diz que todos os vetores intermediários necessários para gerar $v$ de maneira ótima são subvetores\footnote{Um vetor $v$ é dito subvetor de um vetor $u$ se existem índices $i$,$j$ tais que $u[i..j] = v$} de $v$, já que se um vetor não é subvetor de $v$ ele nunca vai ajudar a gerar $v$. Com isso, concluímos uma recorrência que nos dá o custo mínimo necessário para gerar $v$. 
+Supomos que nos são dados os valores~$n$,~$m$ e os pontos~$p_1 < p_2 < \dots < p_{m-1}$ dos cortes desejados. Chamamos de~$s$ a string que desejamos separar, note que o conteúdo da string é irrelevante para a solução do problema. Definimos~$p_0 = 0$ e~$p_m = n$ e a matriz~$A$ por uma recorrência que nos dá, em toda entrada~$i<j$ o tempo ótimo para resolver o subproblema que recebe como entrada a string~$s[p_i + 1 \tdots p_j]$ e só realiza os cortes pertencentes a esta string, desta forma, a entrada~$A[0][m]$ nos dá a solução ótima para o nosso subproblema. 
 
-$$
-f(i,j) = \begin{cases}
-    v_i & \text{se } i = j, \\
-    \min\limits_{i \leq k < j} \Big\{ f(i,k) + f(k+1,j) \Big\} + \sum\limits_{k=i}^j v_k & \text{c.c.} \\
+\begin{equation*}
+A[i][j] = \begin{cases}
+    +\infty                                                     & \text{, se } i \geq j \text{,} \\
+    0                                                           & \text{, se } i + 1 = j \text{ e } \\
+    p_j - p_i + 1 + \min\limits_{i < k < j} (A[i][k] + A[k][j]) & \text{, caso contrário. }
 \end{cases}
-$$
+\end{equation*}
 
-A recorrência acima pode ser resolvida facilmente com programação dinâmica em tempo $O(n^3)$. Consideramos que os valores de $\sum\limits_{k=1}^j v_k$ estão pré calculados para todo $j \leq n$, assim, conseguimos calcular $\sum\limits_{k=i}^j v_k$ para todo par $i,j$ onde $1 \leq i \leq j \leq n$ em tempo $O(1)$.
-\begin{algorithm}[H]
-\caption{Concatenação de Custo Mínimo $O(n^3)$}
-\label{MinCostConcat}
-\begin{algorithmic}[1]
-\Function{MinCostConcat}{v, n}
-    \For{$i$ de $1$ até $n$}
-        \State $f(i,i) = v_i$
-    \EndFor
-    \For{$i$ de $1$ até $n$}
-        \For{$j$ de $i+1$ até $n$}
-            \State $f(i,j) = \inf$
-            \For{$k$ de $i$ até $j-1$}
-                \State $f(i,j) = \min\{f(i,j), f(i,k)+f(k+1,j)\}$
-            \EndFor
-            \State $f(i,j) += \sum\limits_{k=i}^j v_k$
-        \EndFor
-    \EndFor
-    \State \Return $f(1,n)$
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-Vamos apresentar uma técnica que nos ajuda a resolver este problema em tempo $O(n^2)$ e pode ser adaptada para vários outros problemas. Para ajudar nisso, vamos escrever $f$ de uma maneira mais genérica. \\
-
-\begin{defi}[Recorrência de Intervalos] \label{rec_int}
-Dizemos que uma recorrência $f : [[n]] \to \B{R}$ é de intervalos se existe, para todo $k \in [1..n]$, uma função $f_k : \{[i..j] \in \B{N}^2 \mid 1 \leq i \leq k < j \leq n \} \to \B{R}$ que depende apenas de $f_{k'}(i',j')$ onde $[i'..j'] \subset [i..j]$ e $i' \leq k' < j'$ e uma função $f_\bullet : [[n]] \to \B{R}$ tais que
-
-$$
-f(i,j) = \begin{cases}
-    f_\bullet (i,j) & \text{se } i = j, \\
-    \min\limits_{i \leq k < j} \Big\{ f_k(i,j) \Big\} + f_\bullet (i,j) & \text{c.c.} \\
-\end{cases}
-$$
-
-Além disso, chamamos as funções $f_k(i,j)$ de funções de corte da recorrência e a função $f_\bullet$ de função custo da recorrência.
-\end{defi}
-
-Se definirmos $f_\bullet : [i..j] \in [[n]] \mapsto \sum\limits_{k=i}^j v_k$ e, para todo $k \in [n]$, $f_k : [i..j] \in \{ \B{N}^2 \mid 1 \leq i \leq k < j \leq n \} \mapsto f(i,k) + f(k+1,j)$, temos $f$ escrita como recorrência de intervalos.
-
-\begin{defi}[Corte Ótimo]
-Se $f : [[n]] \to \B{R}$ é uma recorrência de intervalos, a função $f_* : [i..j] \in [[n]] \mapsto \min\limits_{i \leq k < j} \Big\{ k \mid f(i,j) = f_k(i,j) \Big\}$ é chamada de corte ótimo de $f$. Ela representa, para cada estado $[i..j]$, o ponto de corte que gera uma resposta ótima e tem o menor índice. 
-\end{defi}
-
-Para poder otimizar o código que usamos para calcular $f$, queremos rovar e explorar a seguinte propriedade sobre os cortes ótimos da recorrência.
-
-\begin{defi}[Knuth-Yao Otimizável] \label{knuthyao}
-Uma recorrência de intervalos $f$ é Knuth-Yao otimizável se a sua função de cortes ótimos $f_*$ é tal que
-$$f_*(i,j') \leq f_*(i,j) \leq f_*(i',j) \text{, para todo } [i'..j'] \subseteq [i..j] \in [[n]] \text{.}$$
-\end{defi}
-
-Queremos conseguir provar que $f$ é Knuth-Yao Otimizável para podermos alterar o algorimto \ref{MinCostConcat} gerando um novo algoritmo de complexidade $O(n^2)$ para calcular $f$. Para ajudar nesta prova, vamos apresentar a desigualdade quadrangular e alguns resultados sobre ela. \\
+É fácil resolver o problema descrito em tempo~$\Cl{O}(m^3)$. Vamos melhorar a solução para um tempo~$\Cl{O}(m^2)$.
 
 %----------------------------------------------------------------------------------------
 
-\subsection{A Desigualdade Quadrangular}
-
-\begin{defi}[Desigualdade Quadrangular] \label{qi}
-Dizemos que uma função $w : [[n]] \to \B{R}$ respeita a desigualdade quadrangular se para todo \todo{O Yao usa $i \leq i' \leq j \leq j'$, eu acho que em termos de intervalos fica bem menos confuso} $[i',j'] \subseteq [i,j] \in [[n]]$ tais que $1 \leq i \leq i' \leq j \leq j' \leq n$ vale
-$$ w(i',j) + w(i,j') \leq w(i,j) + w(i',j') $$
-\end{defi}
-
-Foram appresentados em \cite{Yao:1980} alguns fatos sobre a Desigualdade Quadrangular que serão enunciados e provados aqui.
-
-\begin{theo} \label{qi_to_knuthyao}
-Se uma recorrência $f$ é uma recorrência de intervalos que respeita a Desigualdade Quadrangular, vale \ref{knuthyao}.
-\end{theo}
-
-\begin{proof}
-Seja $f$ uma recorrência de intervalos que respeita a Desigualdade Quadrangular. Sejam $[i',j'] \subseteq [i,j] \in [[n]]$.\\
-Vamos provar que vale $f_*(i,j') \leq f_*(i,j)$. Suponha que vale $j' > c = f_*(i,j') > f_*(i,j) = b \geq i$, temos
-$$ f_c(i,j') = f(i,c) + f(c+1,j') < f(i,b) + f(b+1,j') = f_b(i,j') \text{ e } $$
-$$ f(i,b) + f(b+1,j) \leq f(i,c) + f(c+1,j) \text{.} $$
-Somando as duas equações, obtemos
-$$ f(b+1,j) + f(c+1,j') < f(b+1,j') + f(c+1,j) \text{, }$$
-porém, já que $[c+1,j'] \subseteq [b+1,j] \in [[n]]$, esta afirmação contradiz a Desigualdade Quadrangular. Portanto, por absurdo, vale $f_*(i,j') \leq f_*(i,j)$. \\
-De forma parecida, vamos provar que vale $f_*(i,j) \leq f_*(i',j)$. Suponha que vale $j > c = f_*(i,j) > f_*(i',j) = b \geq i'$, temos
-$$ f_c(i,j) = f(i,c) + f(c+1,j) < f(i,b) + f(b+1,j) = f_b(i,j) \text{ e } $$
-$$ f_b(i',j) = f(i',b) + f(b+1,j) \leq f(i',c) + f(c+1,j) = f_c(i',j) \text{.} $$
-Somamos as duas, obtendo
-$$ f(i',b) + f(i,c) < f(i,b) + f(i',c) \text{, }$$
-mas $[i',b] \subseteq [i,c] \in [[n]]$, portanto, esta afirmaçào contradiz a Desigualdade Quadrangular. Por absurdo, vale $f_*(i,j) \leq f_*(i',j)$.
-\end{proof}
-
-\begin{defi}[Monótono nos Intervalos] \label{mon_int}
-Dizemos que uma função $w : [[n]] \to \B{R}$ é monótona nos intervalos se, para todo $[i'..j'] \subseteq [i..j] \in [[n]]$,
-$$ w(i',j') \leq w(i,j). $$
-\end{defi}
-
-\begin{theo} \label{qi_cost_to_rec}
-Se $f$ é uma recorrência de intervalos com função de custo $f_\bullet$, $f$ é monótona nos intervalos e $f_\bullet$ respeita a Desigualdade Quadrangular, então, $f$ respeita a Desigualdade Quadrangular.
-\end{theo}
-
-\begin{proof}
-Prova vazia.
-\end{proof}
-
-%----------------------------------------------------------------------------------------
-
-\subsection{Otimização}
-
-Agora, com os teoremas sobre desigualdade quadrangular, podemos provar que $f$ é Knuth-Yao Otimizável.
-
-\begin{prop}
-$f$ é monótona nos intervalos.
-\end{prop}
-
-\begin{proof}
-É fácil ver que $f_\bullet$ é monótona nos intervalos, pois todos os elementos de $v$ são positivos. \\
-Queremos provar que, para todo intervalo $[i..j] \in [[n]]$ vale que se $[i'..j'] \subseteq [i..j]$, então $f(i',j') \leq f(i,j)$. Vamos usar indução no tamanho do intervalo, ou seja, indução no valor de $j - i + 1$. Inicialmente, assumimos $j - i + 1 = 1$, isto é, $j = i$. Já que o único intervalo contido num intervalo de tamanho 1 é ele mesmo, vale a tese. Agora, assuma que $j - i + 1 = d > 1$. \\
-A ultima operação feita para gerar $v[i..j]$ é do tipo 2, já que $v[i..j]$ tem tamanho maior do que 1, ou seja, existe um $k \in [i..j-1]$ tal que $f(i,j) = f(i,k) + f(k+1,j) + f_\bullet(i,j)$. Temos três casos. Se $j' \leq k$, então $[i'..j'] \subseteq [i..k]$, já que $k - i + 1 < j - i + 1$, aplicamos a hipótese de indução e podemos afirmar que $f(i',j') \leq f(i,k)$, portanto, $f(i',j') \leq f(i',j') + f(k+1,j) + f_\bullet(i,j) \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$. O caso onde $i' > k$ implica em $[i'..j'] \subseteq [k+1..j]$ e, de maneira análoga, obtemos $f(i',j') \leq f(k+1,j)$ e, portanto, $f(i',j') \leq f(i,j)$. \\
-No último caso, $i' \leq k < j'$. Mas, então, uma forma válida de gerar o vetor $v[i'..j']$ é concatenar os vetores $v[i'..k]$ e $v[k+1..j']$. Isso quer dizer que $f(i',j') \leq f(i',k) + f(k+1,j') + f_\bullet(i',j')$. Podemos aplicar a hipótese de indução para afirmar que $f(i',k) \leq f(i,k)$ e $f(k+1,j') \leq f(k+1,j)$. Além disso, já que $f_\bullet$ é monótona nos intervalos, $f_\bullet(i',j') \leq f_\bullet(i,j)$, portanto, $f(i',k) + f(k+1,j') + f_\bullet(i',j') \leq f(i,k) + f(k+1,j) + f_\bullet(i,j) = f(i,j)$.
-\end{proof}
-
-\begin{prop}
-$f$ é Knuth-Yao otimizável.
-\end{prop}
-
-\begin{proof}
-Primeiramente, vamos mostrar que vale a desigualdade quadrangular para $f_\bullet$. Sejam $[i',j'] \subseteq [i,j] \in [[n]]$,
-$$
-f_\bullet(i,j') + f_\bullet(i',j) = 
-\sum\limits_{k=i}^{j'} v_k + \sum\limits_{k=i'}^j v_k =
-\sum\limits_{k=i}^j v_k + \sum\limits_{k=i'}^{j'} v_k =
-f_\bullet(i,j) + f_\bullet(i'j') \text{.} 
-$$
-Pelo Teorema \ref{qi_cost_to_rec}, a desigualdade quadrangular vale para $f$. Pelo Teorema \ref{qi_to_knuthyao}, $f$ é Knuth-Yao otimizável.
-\end{proof}
-
-Se calcularmos, junto com $f$, os valores de $f_*$, podemos limitar os testes feitos para calcular cada estado de $f$. É importante notar que para todos estados $(i,j)$ com $i < j$, precisamos conhecer o valor de $f_*(i+1, j)$ e $f_*(i,j-1)$ antes de calcular $f(i,j)$, ou seja, os estados $(i+1,j)$ e $(i,j-1)$ devem ser calculados antes de $(i,j)$. Essa restrição não ocorria na ultima versão deste algoritmo. Para resolver isso, basta iterar pelos estados em ordem de tamanho, ou seja, primeiro calculamos todos os estados $(i,j)$ onde $j-i = 1$, depois aqueles onde $j-i = 2$ e assim por diante.
-
-\begin{algorithm}[H]
-\caption{Concatenação de Custo Mínimo $O(n^2)$}
-\label{alg_MinCostConcatOpt}
-\begin{algorithmic}[1]
-\Function{MinCostConcatOpt}{v, n}
-    \For{$i$ de $1$ até $n$}
-        \State $f(i,i) = v_i$
-        \State $f_*(i,i) = i$
-    \EndFor
-    \For{$d$ de $1$ até $n-1$}
-        \For{$i$ de $1$ até $n-d$}
-            \State $j = i+d$
-            \State $f(i,j) = \inf$
-            \For{$k$ de $f_*(i,j-1)$ até $\min\{f_*(i+1,j), j-1\}$}
-                \State $l = f(i,k) + f(k+1,j)$
-                \If{$l < f(i,j)$}
-                    \State $f(i,j) = l$
-                    \State $f_*(i,j) = k$
-                \EndIf
-            \EndFor
-            \State $f(i,j) += \sum\limits_{k=i}^j v_k$
-        \EndFor
-    \EndFor
-    \State \Return $f(1,n)$
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-Note que já que as observações feitas para o problema da Concatenação de Custo Mínimo foram feitas em termos de recorrências de intervalos, qualquer $f$ que seja uma reccorência de intervalos e respeite \ref{knuthyao} pode ser resolvida com uma versão adaptada do algoritmo \ref{alg_MinCostConcatOpt}. Consideramos então tal $f$ com funções de corte $f_k$ e contantes $f_\bullet$.
-
-\begin{algorithm}[H]
-\caption{Otimização de Knuth-Yao}
-\label{alg_KnuthYao}
-\begin{algorithmic}[1]
-\Function{KnuthYao}{f_\bullet, f_k \forall k \in [n], n}
-    \For{$i$ de $1$ até $n$}
-        \State $f(i,i) = v_i$
-        \State $f_*(i,i) = i$
-    \EndFor
-    \For{$d$ de $1$ até $n-1$}
-        \For{$i$ de $1$ até $n-d$}
-            \State $j = i+d$
-            \State $f(i,j) = \inf$
-            \For{$k$ de $f_*(i,j-1)$ até $\min\{f_*(i+1,j), j-1\}$}
-                \If{$f_k(i,j) < f(i,j)$} \label{alg_KnuthYao:fk}
-                    \State $f(i,j) = f_k(i,j)$ \label{alg_KnuthYao:fk2}
-                    \State $f_*(i,j) = k$
-                \EndIf
-            \EndFor
-            \State $f(i,j) += f_\bullet(i,j)$ \label{alg_KnuthYao:fbullet}
-        \EndFor
-    \EndFor
-    \State \Return $f(1,n)$
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-\begin{prop}
-O algoritmo \ref{alg_KnuthYao} faz $O(n^2)$ chamadas a $f_\bullet$ e qualquer das $f_k$.
-\end{prop}
-
-\begin{proof}
-As chamdas a $f_\bullet$ estão todas na linha \ref{alg_KnuthYao:fbullet}. Podemos expressar a quantidade de ocorrências desta linha da seguinte maneira
-$$ \sum\limits_{d=1}^{n-1} \sum\limits_{i=1}^{n-d} 1 = n(n-1) - \sum\limits_{d=1}^{n-1} d = O(n^2). $$
-As chamdas a $f_k$, para todo $k$, estão todas nas linhas \ref{alg_KnuthYao:fk}, \ref{alg_KnuthYao:fk2}. Podemos expressar a quantidade máxima de ocorrências destas linhas da seguinte maneira:
-\begin{multline*} 
-\sum\limits_{d=1}^{n-1} \sum\limits_{i=1}^{n-d} \sum\limits_{k=f_*(i,i+d-1)}^{f_*(i+1,i+d)} 2 =
-\sum\limits_{d=1}^{n-1} \sum\limits_{i=1}^{n-d} 2(f_*(i+1,i+d) - f_*(i,i+d-1) + 1) \leq \\
-\sum\limits_{d=1}^{n-1} 4n = O(n^2)
-\end{multline*}
-\end{proof}
-
-Já que o algoritmo \ref{alg_MinCostConcatOpt} é uma especificação de \ref{alg_KnuthYao}, ele tem complexidade $O(n^2)$ já que cada chamada a $f_\bullet$ tem custo $O(1)$, assim como as chamadas a $f_*$ e $f$ que são memorizadas.
-
+%\subsection{

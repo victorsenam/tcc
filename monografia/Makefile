@@ -1,4 +1,4 @@
-SECTION_NAMES=Proposta Cronograma Introducao MatrizMonge DivisaoEConquista SMAWK
+SECTION_NAMES=Proposta Cronograma Introducao MatrizMonge DivisaoEConquista SMAWK KnuthYao
 SECTION_PATHS=$(addprefix Sections/,${SECTION_NAMES})
 SECTION_TEX=$(addsuffix .tex,${SECTION_PATHS})
 SECTION_AUX=$(addsuffix .aux,${SECTION_PATHS})
@@ -12,7 +12,7 @@ AUXFILES=main.aux main.toc main.loc main.bbl main.blg main.lot main.log main.pdf
 
 all: main.pdf
 
-tex: proposta.pdf
+tex: main.pdf
 
 clear: 
 	rm ${AUXFILES}
