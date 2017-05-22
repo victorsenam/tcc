@@ -21,22 +21,20 @@ Uma matriz~$A \in \B{Q}^{n \times n}$ é considerada uma recorrência de interva
 \begin{equation*}
 A[i][j] = \begin{cases}
 C[i][j]                                                           & \text{, se } i = j \text{, }  \\
-C[i][j] + \min\limits_{i \leq k \leq j}(A[i][k-1] + A[k+1][j])    & \text{, se } i \leq j \text{ e } \\
-0                                                                 & \text{ caso contrário. }
+C[i][j] + \min\limits_{i < k \leq j}(A[i][k-1] + A[k][j])         & \text{, se } i \leq j \text{ e } \\
++\infty                                                           & \text{ caso contrário. }
 \end{cases}
 \end{equation*}
 
 A matriz~$C$ é chamada matriz de custos de~$A$.
 \end{defi}
 
-É possível resolver uma recorrência desta forma de forma simples em tempo~$\Cl{O}(n^3)$. 
+É fácil resolver uma recorrência desta forma em tempo~$\Cl{O}(n^3)$. 
 
 \begin{defi}[Matriz de cortes ótimos]
-Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos com matriz de custos~$C$, definimos a matriz de cortes ótimos~$P$ de~$A$. Para todo~$i,j \in [n]$ com~$i < j$, 
+Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos com matriz de custos~$C$, definimos a matriz de cortes ótimos~$P$ de~$A$. Para todo~$i \in [n]$,~$P[i][i] = i$ e para todo~$j \in [n]$ com~$i < j$, 
 
-$$P[i][j] = \min\{k \mid i < k < j \text{ e } A[i][j] = C[i][j] + A[i][k] + A[k][j]\} \text{.}$$
-
-Por conveniência, definimos~$P[i][i] = i$ para todo~$i \in [n]$.
+$$P[i][j] = \min\{k \mid i < k \leq j \text{ e } A[i][j] = C[i][j] + A[i][k-1] + A[k][j]\} \text{.}$$
 \end{defi}
 
 Assim, a matriz~$P$ guarda, para cada~$i < j$, o ponto de menor índice onde o mínimo dentro da definição de~$A$ atinge seu valor ótimo. Note que, enquanto descobrimos os valores da matriz~$A$ em tempo~$\Cl{O}(n^3)$, descobrimos também os valores de~$P$.
@@ -49,20 +47,66 @@ Vamos mostrar que se~$A \in \B{Q}^{n \times n}$ é Knuth-Yao otimizável, tanto~
 
 %----------------------------------------------------------------------------------------
 
+\subsection{Técnica}
+
+\newcommand{\KY}{\textsc{KnuthYao}}
+\begin{algorithm}[h]
+\caption{Otimização Knuth-Yao}
+\label{KY:algo}
+\begin{algorithmic}[1]
+\Function{\KY}{C, n}
+    \State $A \in \B{Q}^{n \times n}$ e $P \in \B{N}^{n \times n}$
+    \For{$i$ de $1$ até $n$}
+        \State $A[i][i] \rec C[i][i]$
+        \State $P[i][i] \rec i$
+    \EndFor
+    \For{$d$ de $1$ até $n-1$}
+        \For{$i$ de $1$ até $n-d$}
+            \State $j \rec i+d$
+            \State $A[i][j] \rec +\infty$
+            \For{$k$ de $P[i][j-1]$ até $P[i+1][j]$} \label{KY:algo:loop}
+                \State $v \rec C[i][j] + A[i][k-1] + A[k][j]$
+                \If{$v < A[i][j]$} 
+                    \State $A[i][j] \rec v$
+                    \State $P[i][j] \rec k$
+                \EndIf
+            \EndFor
+        \EndFor
+    \EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Seja~$A \in \B{Q}^{n \times n}$ uma matriz Knuth-Yao otimizável. Vamos calcular as entradas~$A[i][j]$ onde~$i \leq j$ em ordem crescente de~$j - i$, ou seja, as entradas~$A[i][i]$ serão calculadas para todo~$i$, seguidas das~$A[i][i+1]$,~$A[i][i+2]$ e assim por diante. É possível calcular as entradas nesta ordem pois ela respeita as relações de dependência da matriz~$A$, isto é, ao calcular uma entrada~$A[i][j]$ qualquer, todas as entradas~$A[i][k-1]$ e~$A[k][j]$ com~$i < k \leq j$ já estarão disponíveis e, portanto, será possível descobrir o valor de~$A[i][j]$.
+
+Se calcularmos também as entradas da matriz~$P$ enquanto calculamos as da~$A$, poderemos aproveitar o fato de que~$A$ é Knuth-Yao otimizável para buscar o valor de uma entrada de~$A$ em um intervalo menor do que o trivial, isto é, podemos escrever, para todo~$i,j \in [n]$ com~$i < j$, a igualdade
+
+\begin{equation} \label{KY:eq}
+{A[i][j] = C[i][j] + \min\limits_{\substack{i < k \leq j \\ P[i][j-1] \leq k \leq P[i+1][j]}} (A[i][k-1] + A[k][j])} \text{.}
+\end{equation}
+
+Esta observação induz o Algoritmo~\ref{KY:algo} para calcular as entradas das matrizes~$A$ e~$P$. Perceba que na linha~\ref{KY:algo:loop} a variável~$k$ varia de~$P[i][j-1]$ até~$P[i+1][j]$ e não de~$\max(i+1,P[i][j-1])$ até~$\min(j,P[i+1][j])$ como indica a igualdade~\eqref{KY:eq}. Primeiramente, perceba que~$P[i+1][j] \leq j$, portanto~$\min(j,P[i+1][j]) = P[i+1][j]$. Além disso, sabemos~$P[i][j-1] \geq i$, separamos em dois casos, no primeiro~$P[i][j-1] > i$ e~$\max(i+1,P[i][j-1]) = P[i][j-1]$ e no outro, onde~$P[i][j-1] = i$, a iteração onde~$k=i$ ocorre indevidamente. Note que quando~$k = i$,~$i > k-1$ e~$A[i][k-1] = +\infty$, portanto~$C[i][j] + A[i][k-1] + A[k][j] = +\infty$ e esta iteração será irrelevante para a resposta final do algoritmo. 
+
+%----------------------------------------------------------------------------------------
+
+\subsection{Análise}
+
+Vamos analisar a complexidade do Algoritmo~\ref{KY:algo}. Podemos escrever a quantidade de iterações do laço da linha~\ref{KY:algo:loop} como
+
+\begin{equation} \label{KY:comp}
+{\sum\limits_{d = 1}^{n-1} \sum\limits_{i=1}^{n-d} \sum\limits_{k=P[i][i+d-1]}^{P[i+1][i+d]} 1 = \sum\limits_{d = 1}^{n-1} \sum\limits_{i=1}^{n-d} P[i+1][i+d] - P[i][i+d-1] + 1} \text{, }
+\end{equation}
+com um~$d$ fixo, a soma~$\sum\limits_{i=1}^{n-d} P[i+1][i+d] - P[i][i+d-1]$ é uma soma telescópica e tem valor igual a~$P[n-d+1][n] - P[1][1+d] = \Cl{O}(n)$, com isso, escrevemos~\eqref{KY:comp} como~$\sum\limits_{d=1}^{n-1} \Cl{O}(n) + n = \Cl{O}(n^2)$.
+
+%----------------------------------------------------------------------------------------
+
 \subsection{Quebrando strings}
 
 Para exemplificar a otimização de Knuth. Iremos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
 
-Considere uma linguagem de processamento de strings que consegue quebrar uma string~$s$ de tamanho~$m > 1$ em qualquer posição~$t \in [m-1]$, ou seja, gerar duas strings~$s[1 \tdots t]$ e~$s[t+1 \tdots m]$. Um programador quer usar este programa para separar uma string~$n-1$ vezes, nas posições~$p_1 < p_2 < \dots < p_{n-1}$, porém, para quebrar uma string de tamanho~$m$ em qualquer posição, a linguagem gasta tempo~$m$. Queremos descobrir qual é a melhor ordem de realizar estes cortes. 
+Considere uma linguagem de processamento de strings que consegue quebrar uma string~$s$ de tamanho~$m > 1$ em qualquer posição~$t \in [m-1]$, ou seja, gerar duas strings~$s[1 \tdots t]$ e~$s[t+1 \tdots m]$. Um programador quer usar este programa para separar uma string~$n$ vezes, nas posições~${p_1 < p_2 < \dots < p_{n}}$, porém, para quebrar uma string de tamanho~$m$ em qualquer posição, a linguagem gasta tempo~$m$. Queremos descobrir qual é a melhor ordem de realizar estes cortes. 
 
 Suponha, por exemplo, que estamos interessados em quebrar uma string de tamanho 26 nas posições 3, 14, poderíamos fazer isso de duas maneiras. Podemos quebrar e uma de 3 e outra de 23 e, depois disso, quebrar a de 23 em uma de 11 e outra de 12, o que custaria tempo 49, e podemos quebrar a inicial em uma de 14 e outra de 9, separando a de 14 em uma de 3 e outra de 11 após a primeira operação, nos dando uma solução de tempo 30, que é a solução ótima. Vamos resolver o problema de encontrar a ordem ótima para este particionamento com programação dinâmica.
 
-Supomos que nos são dados os valores~$n$,~$m$ e os pontos~$p_1 < p_2 < \dots < p_{n-1}$ dos cortes desejados. Chamamos de~$s$ a string que desejamos separar e definimos~$p_0 = 0$ e~$p_n = m$. Assim, se~$A \in \B{Q}^{[0 \tdots m] \times [0 \tdots m]}$ guarda em toda posição~$A[i][j]$ com~$i < j$ a melhor solução para o subproblema que recebe a string~$s[p_i + 1 \tdots p_j]$ e as posições de corte~$p_{i+1},p_{i+2},\dots,p_{j-1}$ como entrada, podemos concluir facilmente que~$A$ é uma matriz de recorrência de intervalos com matriz de custo~$C$ onde~$C[i][j] = p_j - p_i$. O valor de~$A[0][n]$ nos dará o tempo mínimo de concluir a tarefa desejada e a ordem ótima das quebras pode ser reconstruída através da matriz de cortes ótimos de~$A$.
+Dados os valores~$n$,~$m$ e os pontos~$p_1 < p_2 < \dots < p_{n}$ dos cortes desejados, chamamos de~$s$ a string que desejamos separar e definimos~$p_0 = 0$ e~$p_{n+1} = m$. Assim, se~$A \in \B{Q}^{n \times n}$ guarda em toda posição~$A[i][j]$ com~$i \leq j$ a melhor solução para o subproblema que recebe a string~${s[p_{i-1} + 1 \tdots p_{j+1}]}$ e as posições de corte~$p_{i},p_{i+1},\dots,p_{j}$ como entrada, podemos concluir facilmente que~$A$ é uma matriz de recorrência de intervalos com matriz de custo~$C$ onde~$C[i][j] = p_{j+1} - p_{i-1}$. O valor de~$A[1][n]$ nos dará o tempo mínimo de concluir a tarefa desejada e a ordem ótima das quebras pode ser reconstruída através da matriz de cortes ótimos de~$A$.
 
-%----------------------------------------------------------------------------------------
-
-\subsection{Técnica}
-
-Seja~$A \in \B{Q}^{n \times n}$ uma matriz Knuth-Yao otimizável. Vamos calcular as entradas~$A[i][j]$ onde~$i \leq j$ em ordem crescente de~$j - i$, ou seja, as entradas~$A[i][i]$ serão calculadas para todo~$i$, seguidas das~$A[i][i+1]$,~$A[i][i+2]$ e assim por diante. É possível calcular as entradas nesta ordem pois ela respeita as relações de dependência da matriz~$A$, isto é, ao calcular uma entrada~$A[i][j]$ qualquer, todas as entradas~$A[i][k]$ e~$A[k][j]$ com~$i < k < j$ já estarão disponíveis e, portanto, será possível descobrir o valor de~$A[i][j]$.
-
-Se calcularmos também as entradas da matriz~$P$ enquanto calculamos as da~$A$, poderemos aproveitar o fato de que~$A$ é Knuth-Yao otimizável para buscar o valor de uma entrada de~$A$ em um intervalo menor do que o trivial, isto é, podemos escrever, para todo~$i,j \in [n]$ com~$i < j$, a igualdade~${A[i][j] = C[i][j] + \min\limits_{P[i][j-1] \leq k \leq P[i+1][j]} (A[i][k] + A[k][j])}$.
