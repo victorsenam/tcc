@@ -3,34 +3,66 @@
 
 %----------------------------------------------------------------------------------------
 
-O problema da árvore de busca binária ótima~\cite{CLRS} é um exemplo clássico de aplicação de programação dinâmica sendo fácilmente resolvido em tempo~$\Cl{O}(n^3)$. Aproveitando algumas propriedades do problema, Knuth~\cite{Knuth:1971} mostrou que ele pode ser resolvido em tempo~$\Cl{O}(n^2)$ sem que se mude muito o pensamento por trás da solução trivial. 
+O problema da árvore de busca binária ótima~\cite{CLRS} é um exemplo clássico de aplicação de programação dinâmica que é fácilmente resolvido em tempo~$\Cl{O}(n^3)$ com uma modelagem que representa custo de cada subárvore a uma entrada de uma matriz, reduzindo o problema a encontrar estes valores. Aproveitando algumas propriedades da matriz, Knuth~\cite{Knuth:1971} apresentou uma solução que calcula suas entradas em tempo~$\Cl{O}(n^2)$, resolvendo o problema original nesta complexidade.
 
-Mais tarde, a solução apresentada por Knuth foi estudada por Yao~\cite{Yao:1980,Yao:1982} que relacionou a otimização realizada com o fato de que a recorrência utilizada para resolver o problema descrevia uma matriz Monge e, com isso, mostrou que várias outras recorrências poderiam ser agilizadas utilizando a mesma técnica.  
+Mais tarde, a solução de Knuth foi estudada por Yao~\cite{Yao:1980,Yao:1982} que mostrou que a matriz utilizada para resolver o problema era uma matriz Monge e, por isso, valiam as propriedades observadas por Knuth. Este fato faz com que recorrências descritas por uma matriz Monge sejam resolvidas em tempo mais rápido do que o trivial.
 
 Após as descobertas de Yao, a otimização de Knuth foi utilizada para melhorar a solução de vários outros problemas em programação dinâmica. Bein, Golin, Larmore e Zhang~\cite{Bein:2009} buscaram enfraquecer a condição encontrada por Yao e mostraram que as matrizes descritas pelos problemas agilizados com a otimização Knuth-Yao podem ser decompostas de 3 maneiras diferentes em matrizes totalmente monótonas. Esta introdução foi baseada no artigo citado neste parágrafo.
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Quebrando Strings}
+\subsection{Definições básicas}
 
-Para explicar a técnica desenvolvida por Knuth. Iremos nos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
+Vamos apresentar a otimização de Knuth-Yao em termos de problemas de minimização. É fácil adaptar as definições para problemas de maximização.
 
-Considere uma linguagem de processamento de strings que consegue quebrar uma string~$s$ de tamanho~$n > 1$ em qualquer posição~$t \in [n-1]$, ou seja, gerar duas strings~$s[1 \tdots t]$ e~$s[t+1 \tdots n]$. Um programador quer usar este programa para separar uma string~$m-1$ vezes, nas posições~$p_1 < p_2 < \dots < p_{m-1}$, porém, para quebrar uma string de tamanho~$n$ em qualquer posição, a linguagem gasta tempo~$n$. Queremos descobrir qual é a melhor ordem de realizar estes cortes. 
-
-Suponha, por exemplo, que estamos interessados em quebrar uma string de tamanho 26 nas posições 3, 14, poderíamos fazer isso de duas maneiras. Podemos quebrar e uma de 3 e outra de 23 e, depois disso, quebrar a de 23 em uma de 11 e outra de 12, o que custaria tempo 49, e podemos quebrar a inicial em uma de 14 e outra de 9, separando a de 14 em uma de 3 e outra de 11 após a primeira operação, nos dando uma solução de tempo 30, que é a solução ótima. Vamos resolver o problema de encontrar a ordem ótima para este particionamento com programação dinâmica.
-
-Supomos que nos são dados os valores~$n$,~$m$ e os pontos~$p_1 < p_2 < \dots < p_{m-1}$ dos cortes desejados. Chamamos de~$s$ a string que desejamos separar, note que o conteúdo da string é irrelevante para a solução do problema. Definimos~$p_0 = 0$ e~$p_m = n$ e a matriz~$A$ por uma recorrência que nos dá, em toda entrada~$i<j$ o tempo ótimo para resolver o subproblema que recebe como entrada a string~$s[p_i + 1 \tdots p_j]$ e só realiza os cortes pertencentes a esta string, desta forma, a entrada~$A[0][m]$ nos dá a solução ótima para o nosso subproblema. 
+\begin{defi}[Recorrência de intervalos]
+Uma matriz~$A \in \B{Q}^{n \times n}$ é considerada uma recorrência de intervalos se existe uma matriz~$C \in \B{Q}^{n \times n}$ tal que, para todo~$i,j \in [n]$,
 
 \begin{equation*}
 A[i][j] = \begin{cases}
-    +\infty                                                     & \text{, se } i \geq j \text{,} \\
-    0                                                           & \text{, se } i + 1 = j \text{ e } \\
-    p_j - p_i + 1 + \min\limits_{i < k < j} (A[i][k] + A[k][j]) & \text{, caso contrário. }
+C[i][j]                                                           & \text{, se } i = j \text{, }  \\
+C[i][j] + \min\limits_{i \leq k \leq j}(A[i][k-1] + A[k+1][j])    & \text{, se } i \leq j \text{ e } \\
+0                                                                 & \text{ caso contrário. }
 \end{cases}
 \end{equation*}
 
-É fácil resolver o problema descrito em tempo~$\Cl{O}(m^3)$. Vamos melhorar a solução para um tempo~$\Cl{O}(m^2)$.
+A matriz~$C$ é chamada matriz de custos de~$A$.
+\end{defi}
+
+É possível resolver uma recorrência desta forma de forma simples em tempo~$\Cl{O}(n^3)$. 
+
+\begin{defi}[Matriz de cortes ótimos]
+Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos com matriz de custos~$C$, definimos a matriz de cortes ótimos~$P$ de~$A$. Para todo~$i,j \in [n]$ com~$i < j$, 
+
+$$P[i][j] = \min\{k \mid i < k < j \text{ e } A[i][j] = C[i][j] + A[i][k] + A[k][j]\} \text{.}$$
+
+Por conveniência, definimos~$P[i][i] = i$ para todo~$i \in [n]$.
+\end{defi}
+
+Assim, a matriz~$P$ guarda, para cada~$i < j$, o ponto de menor índice onde o mínimo dentro da definição de~$A$ atinge seu valor ótimo. Note que, enquanto descobrimos os valores da matriz~$A$ em tempo~$\Cl{O}(n^3)$, descobrimos também os valores de~$P$.
+
+\begin{defi}[Knuth-Yao otimizável]
+Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos e~$P$ é sua matriz de cortes ótimos. Dizemos que~$A$ é Knuth-Yao otimizável se, para todo~$i,j \in [n]$ com~$i < j$, vale~${P[i][j-1] \leq P[i][j] \leq P[i+1][j]}$.
+\end{defi}
+
+Vamos mostrar que se~$A \in \B{Q}^{n \times n}$ é Knuth-Yao otimizável, tanto~$A$ quanto sua matriz de cortes ótimos~$P$ podem ser calculados em~$\Cl{O}(n^2)$.
 
 %----------------------------------------------------------------------------------------
 
-%\subsection{
+\subsection{Quebrando strings}
+
+Para exemplificar a otimização de Knuth. Iremos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
+
+Considere uma linguagem de processamento de strings que consegue quebrar uma string~$s$ de tamanho~$m > 1$ em qualquer posição~$t \in [m-1]$, ou seja, gerar duas strings~$s[1 \tdots t]$ e~$s[t+1 \tdots m]$. Um programador quer usar este programa para separar uma string~$n-1$ vezes, nas posições~$p_1 < p_2 < \dots < p_{n-1}$, porém, para quebrar uma string de tamanho~$m$ em qualquer posição, a linguagem gasta tempo~$m$. Queremos descobrir qual é a melhor ordem de realizar estes cortes. 
+
+Suponha, por exemplo, que estamos interessados em quebrar uma string de tamanho 26 nas posições 3, 14, poderíamos fazer isso de duas maneiras. Podemos quebrar e uma de 3 e outra de 23 e, depois disso, quebrar a de 23 em uma de 11 e outra de 12, o que custaria tempo 49, e podemos quebrar a inicial em uma de 14 e outra de 9, separando a de 14 em uma de 3 e outra de 11 após a primeira operação, nos dando uma solução de tempo 30, que é a solução ótima. Vamos resolver o problema de encontrar a ordem ótima para este particionamento com programação dinâmica.
+
+Supomos que nos são dados os valores~$n$,~$m$ e os pontos~$p_1 < p_2 < \dots < p_{n-1}$ dos cortes desejados. Chamamos de~$s$ a string que desejamos separar e definimos~$p_0 = 0$ e~$p_n = m$. Assim, se~$A \in \B{Q}^{[0 \tdots m] \times [0 \tdots m]}$ guarda em toda posição~$A[i][j]$ com~$i < j$ a melhor solução para o subproblema que recebe a string~$s[p_i + 1 \tdots p_j]$ e as posições de corte~$p_{i+1},p_{i+2},\dots,p_{j-1}$ como entrada, podemos concluir facilmente que~$A$ é uma matriz de recorrência de intervalos com matriz de custo~$C$ onde~$C[i][j] = p_j - p_i$. O valor de~$A[0][n]$ nos dará o tempo mínimo de concluir a tarefa desejada e a ordem ótima das quebras pode ser reconstruída através da matriz de cortes ótimos de~$A$.
+
+%----------------------------------------------------------------------------------------
+
+\subsection{Técnica}
+
+Seja~$A \in \B{Q}^{n \times n}$ uma matriz Knuth-Yao otimizável. Vamos calcular as entradas~$A[i][j]$ onde~$i \leq j$ em ordem crescente de~$j - i$, ou seja, as entradas~$A[i][i]$ serão calculadas para todo~$i$, seguidas das~$A[i][i+1]$,~$A[i][i+2]$ e assim por diante. É possível calcular as entradas nesta ordem pois ela respeita as relações de dependência da matriz~$A$, isto é, ao calcular uma entrada~$A[i][j]$ qualquer, todas as entradas~$A[i][k]$ e~$A[k][j]$ com~$i < k < j$ já estarão disponíveis e, portanto, será possível descobrir o valor de~$A[i][j]$.
+
+Se calcularmos também as entradas da matriz~$P$ enquanto calculamos as da~$A$, poderemos aproveitar o fato de que~$A$ é Knuth-Yao otimizável para buscar o valor de uma entrada de~$A$ em um intervalo menor do que o trivial, isto é, podemos escrever, para todo~$i,j \in [n]$ com~$i < j$, a igualdade~${A[i][j] = C[i][j] + \min\limits_{P[i][j-1] \leq k \leq P[i+1][j]} (A[i][k] + A[k][j])}$.

@@ -1,4 +1,4 @@
-SECTION_NAMES=Proposta Cronograma Introducao MatrizMonge DivisaoEConquista SMAWK KnuthYao
+SECTION_NAMES=Introducao MatrizMonge DivisaoEConquista SMAWK KnuthYao
 SECTION_PATHS=$(addprefix Sections/,${SECTION_NAMES})
 SECTION_TEX=$(addsuffix .tex,${SECTION_PATHS})
 SECTION_AUX=$(addsuffix .aux,${SECTION_PATHS})
@@ -22,9 +22,3 @@ main.pdf: main.tex ${SECTION_TEX} ${DEPENDENCIES} definitions.tex main.bib
 	bibtex main.aux
 	pdflatex main.tex
 	pdflatex main.tex
-
-proposta.pdf: proposta.tex ${SECTION_TEX} ${DEPENDENCIES} definitions.tex main.bib
-	pdflatex proposta.tex
-	bibtex proposta.aux
-	pdflatex proposta.tex
-	pdflatex proposta.tex
