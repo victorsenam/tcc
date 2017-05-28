@@ -6,7 +6,7 @@ SECTION_AUX=$(addsuffix .aux,${SECTION_PATHS})
 DEPENDENCIES=Figures/MatrizMonge_Classificacao.tikz Figures/SMAWK_Reduce1.tikz Figures/SMAWK_Reduce2.tikz
 
 
-AUXFILES=main.aux main.toc main.loc main.bbl main.blg main.lot main.log main.pdf main.out main-blx.bib main.lof main.dvi main.run.xml ${SECTION_AUX} proposta.aux proposta.toc proposta.loc proposta.bbl proposta.blg proposta.lot proposta.log proposta.pdf proposta.out proposta-blx.bib proposta.lof proposta.dvi proposta.run.xml
+AUXFILES=main.aux main.toc main.loc main.bbl main.blg main.lot main.log main.pdf main.out main-blx.bib main.lof main.dvi main.run.xml ${SECTION_AUX} 
 
 .PHONY: clear tex
 
