@@ -21,7 +21,7 @@ Uma matriz~$A \in \B{Q}^{n \times n}$ é considerada uma recorrência de interva
 \begin{equation*}
 A[i][j] = \begin{cases}
 C[i][j]                                                           & \text{, se } i = j \text{, }  \\
-C[i][j] + \min\limits_{i < k \leq j}(A[i][k-1] + A[k][j])         & \text{, se } i \leq j \text{ e } \\
+C[i][j] + \min\limits_{i < k \leq j}(A[i][k-1] + A[k][j])         & \text{, se } i < j \text{ e } \\
 +\infty                                                           & \text{ caso contrário. }
 \end{cases}
 \end{equation*}
@@ -146,5 +146,8 @@ Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos com matriz de cu
 \end{lema}
 
 \begin{proof}
+Sejam~$i,i',j$ e $j' \in [n]$ onde~$i \leq i'$ e $j \leq j'$. Queremos mostrar que sempre vale a desigualdade de Monge, isto é~${A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]}$. Definimos~$l = j' - i$ e usamremos indução em~$l$. Se~${l < 0}$, vale ${j > i'}$ e, portanto~${A[i'][j] = +\infty}$ o que faz valer a desigualdade.
+
+Fixamos~$l \geq 1$ assumindo que a desigualdade vale nos casos onde~${j' - i < l}$. Note que se~${i = i'}$ ou~${j = j'}$ a desigualdade vale trivialmente, bem como no caso onde~${j > i'}$, analisado acima. Podemos assumir~$i < i' \leq j < j'$ e separamos isso em dois casos, quando~$i' = j$ e quando~$i' < j$.
 
 \end{proof}
