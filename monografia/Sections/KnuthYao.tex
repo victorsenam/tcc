@@ -102,7 +102,7 @@ com um~$d$ fixo, a soma~$\sum\limits_{i=1}^{n-d} P[i+1][i+d] - P[i][i+d-1]$ é u
 
 \subsection{Quebrando strings}
 
-Para exemplificar a otimização de Knuth e apresentar a relação das matrizes Monge com as definições do início da Subseção~\ref{KY:defs}, iremos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
+Para exemplificar a otimização de Knuth e apresentar a relação das matrizes Monge com as definições da Subseção~\ref{KY:defs}, iremos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
 
 Considere uma linguagem de processamento de strings que consegue quebrar uma string~$s$ de tamanho~$m > 1$ em qualquer posição~$t \in [m-1]$, ou seja, gerar duas strings~$s[1 \tdots t]$ e~$s[t+1 \tdots m]$. Um programador quer usar este programa para separar uma string~$n$ vezes, nas posições~${p_1 < p_2 < \dots < p_{n}}$, porém, para quebrar uma string de tamanho~$m$ em qualquer posição, a linguagem gasta tempo~$m$. Queremos descobrir qual é a melhor ordem de realizar estes cortes. 
 
@@ -110,11 +110,7 @@ Suponha, por exemplo, que estamos interessados em quebrar uma string~\texttt{str
 
 Dados os valores~$n$,~$m$ e os pontos~$p_1 < p_2 < \dots < p_{n}$ dos cortes desejados, chamamos de~$s$ a string que desejamos separar e definimos~$p_0 = 0$ e~$p_{n+1} = m$. Assim, se~$A \in \B{Q}^{n \times n}$ guarda em toda posição~$A[i][j]$ com~$i \leq j$ a melhor solução para o subproblema que recebe a string~${s[p_{i-1} + 1 \tdots p_{j+1}]}$ e as posições de corte~$p_{i},p_{i+1},\dots,p_{j}$ como entrada, podemos concluir facilmente que~$A$ é uma matriz de recorrência de intervalos com matriz de custo~$C$ onde~$C[i][j] = p_{j+1} - p_{i-1}$. O valor de~$A[1][n]$ nos dará o tempo mínimo de concluir a tarefa desejada e a ordem ótima das quebras pode ser reconstruída através da matriz de cortes ótimos de~$A$.
 
-Se~$A$ é uma recorrência de intervalos, como observado, ela pode ser calculada em tempo~$\Cl{O}(n^3)$. Vamos provar~$C$ é uma matriz Monge convexa e os resultados provados por Yao~\cite{Yao:1980} para mostrar que~$A$ é Knuth-Yao otimizável.
-
-\begin{prop}
-$C$ é Monge convexa.
-\end{prop}
+Se~$A$ é uma recorrência de intervalos, como observado, ela pode ser calculada em tempo~$\Cl{O}(n^3)$. Pretendemos aproveitar propriedades da matriz~$C$ e alguns resultados apresentados por Yao~\cite{Yao:1980} para provar que~$A$ é Knuth-Yao otimizável e aplicar a otimização apresentada nesta seção para calcular~$A$ em tempo~$\Cl{O}(n^2)$. Vamos provar~$C$ é uma matriz Monge convexa.
 
 \begin{proof}
 Sejam~$i,j \in [n-1]$ quaisquer. Temos 
@@ -133,21 +129,49 @@ $$A[i'][j] \leq A[i][j'] \text{.}$$
 
 A Definição~\ref{KY:MonInt} relaciona o a distância entre os índices de linha e coluna da matriz com a magnitude do valor da matriz. Aplicando ao problema discutido nesta subseção, dizer que a matriz~$C$ é monótona nos intervalos é equivalente a dizer que quanto maior a string que está sendo cortada, mais caro o corte. Vamos provar que esta propriedade vale.
 
-\begin{prop}
-$C$ é monótona nos invervalos.
-\end{prop}
-
 \begin{proof}
 Sejam~$i,i',j,j' \in [n]$ tais que~$i \leq i' \leq j \leq j'$, vale~$C[i'][j] = p_{i'+1} - p_{j-1}$, já que~${p_{i'+1} \geq p_{i+1}}$ e~${-p_{j-1} \geq -p_{j'-1}}$, temos~$p_{i'+1} - p_{j-1} \geq p_{i+1} - p_{j'-1} = C[i][j']$.
 \end{proof}
 
-\begin{lema}
+\begin{lema} \label{KY:CtoA}
 Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos com matriz de custos~$C$ Monge convexa e monótona nos intervalos, então~$A$ é Monge convexa.
 \end{lema}
 
 \begin{proof}
-Sejam~$i,i',j$ e $j' \in [n]$ onde~$i \leq i'$ e $j \leq j'$. Queremos mostrar que sempre vale a desigualdade de Monge, isto é~${A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]}$. Definimos~$l = j' - i$ e usamremos indução em~$l$. Se~${l < 0}$, vale ${j > i'}$ e, portanto~${A[i'][j] = +\infty}$ o que faz valer a desigualdade.
+Sejam~$A$ e~$B$ matrizes que respeitam as condições do enunciado e~$P$ a matriz de cortes ótimos de~$A$. Sejam ainda~$i,i',j$ e $j' \in [n]$ onde~$i \leq i'$ e $j \leq j'$. Queremos mostrar que sempre vale a desigualdade de Monge, isto é~${A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]}$. Definimos~$l = j' - i$ e usamremos indução em~$l$. Se~${l < 0}$, vale ${j > i'}$ e, portanto~${A[i'][j] = +\infty}$ o que faz valer a desigualdade.
 
-Fixamos~$l \geq 1$ assumindo que a desigualdade vale nos casos onde~${j' - i < l}$. Note que se~${i = i'}$ ou~${j = j'}$ a desigualdade vale trivialmente, bem como no caso onde~${j > i'}$, analisado acima. Podemos assumir~$i < i' \leq j < j'$ e separamos isso em dois casos, quando~$i' = j$ e quando~$i' < j$.
+Fixamos~$l \geq 0$ assumindo que a desigualdade vale nos casos onde~${j' - i < l}$. Note que se~${i = i'}$ ou~${j = j'}$ a desigualdade vale trivialmente, bem como no caso onde~${j > i'}$, analisado acima. Podemos assumir~$i < i' \leq j < j'$ e separamos isso em dois casos, quando~$i' = j$ e quando~$i' < j$.
+
+Olhamos para o caso onde~${i' = j}$. Seja~${x = P[i][j']}$ o ponto de corte ótimo do estado~$A[i][j']$, ou seja,~${A[i][j'] = C[i'][j] + A[i'][x-1] + A[x][j]}$. Assumimos que~${x \leq j}$ e teremos
+
+\begin{align}
+A[i][j] + A[i'][j'] - A[i'][j] &= A[i][j] + A[j][j'] - A[j][j] \nonumber \\
+                               &\leq C[i][j] + A[i][x-1] + A[x][j] + A[j][j'] - A[j][j] \label{KY:CtoA:1} \\
+                               &\leq C[i][j] + A[i][x-1] + A[x][j'] \label{KY:CtoA:2} \\
+                               &\leq C[i][j'] + A[i][x-1] + A[x][j'] \label{KY:CtoA:3} \\
+                               &= A[i][j']  \nonumber
+\end{align}
+onde~\eqref{KY:CtoA:1} vale pois~${i < x \leq j}$ e~${A[i][j] = C[i][j] + \min\limits_{i < k \leq j}(A[i][k-1] + A[k][j])}$, a desigualdade~\eqref{KY:CtoA:2} vale pois temos~${x \leq j \leq j \leq j'}$ e~$j' - x < l$, portanto, pela hipótese de indução, vale~${A[x][j] + A[j][j'] \leq A[x][j'] + A[j][j]}$ e, finalmente, também vale~\eqref{KY:CtoA:3} pois~$C$ é monótona nos intervalos. Com isso, provamos~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$. No caso onde~${x > j}$, basta utilizar~${A[j][j'] \leq C[j][j'] + A[j][x-1] + A[x][j']}$ ao invés do que foi utilizado em~\eqref{KY:CtoA:1} e adaptar os passo~\eqref{KY:CtoA:2} para aplicar a hipótese de indução em~${i \leq j \leq j \leq x-1}$.
+
+Agora, vamos resolver o caso onde~${i' < j}$. Definimos os pontos ótimos de corte~${x = P[i][j']}$ e~${y = P[i'][j]}$ e seguimos um raciocício parecido com o caso anterior. Assumindo que~${x \leq y}$, temos 
+
+\begin{align}
+A[i][j] + A[i'][j'] &\leq C[i][j] + C[i'][j'] + A[i][x-1] + A[x][j] + A[i'][y-1] + A[y][j'] \label{KY:CtoA:4} \\
+                    &\leq C[i][j] + C[i'][j'] + A[x][j'] + A[y][j] + A[i][x-1] + A[i'][y-1] \label{KY:CtoA:5} \\
+                    &\leq C[i][j'] + A[i][x-1] + A[x][j'] + C[i'][j] + A[i'][y-1] + A[y][j] \label{KY:CtoA:6} \\
+                    &= A[i][j'] + A[i'][j] \nonumber
+\end{align}
+onde~\eqref{KY:CtoA:4} se justifica pois~${i < x \leq j}$ e~${i' < y \leq j'}$, a hipótese de indução é aplicada em~\eqref{KY:CtoA:5} pois~${x \leq y \leq j \leq j'}$ e~${j' - x < l}$ e, por fim, o passo~\eqref{KY:CtoA:6} é válido pelo fato de que~$C$ é Monge convexa. O caso onde~${x > y}$ é similar, basta observar que vale~${i' < x \leq j'}$ e~${i < y \leq j}$ o que implica em~${A[i][j] + A[i'][j'] \leq C[i][j] + C[i'][j'] + A[i][y-1] + A[y][j] + A[i'][x-1] + A[x][j']}$ e substituir o passo~\eqref{KY:CtoA:4} por essa desigualdade, adaptando o passo~\eqref{KY:CtoA:5} de acordo, usando indução em~${i \leq i' \leq y - 1 \leq x - 1}$.
+\end{proof}
+
+Com o Lema~\ref{KY:CtoA} percebemos que a matriz~$A$ que representa o nosso problema atual é Monge convexa.
+
+\begin{lema} \label{KY:TMtoKY}
+Uma recorrência de intervalos~$A$ totalmente monótona convexa tanto nas linhas quanto nas colunas é Knuth-Yao otimizável.
+\end{lema}
+
+\begin{proof}
 
 \end{proof}
+
+Com os Lemas~\ref{Monge:MCtoTM} e~\ref{KY:TMtoKY} vale que~$A$ é Knuth-Yao otimizável e podemos aplicar a técnica de Knuth-Yao para resolver o problema em tempo~$\Cl{O}(n^2)$.
