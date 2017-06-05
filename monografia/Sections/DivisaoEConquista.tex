@@ -25,7 +25,7 @@ $$ R[i] = \min\{j \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in [n]\} \te
 
 Se, para alguma linha $i$, encontrarmos o valor $R[i]$, sabemos que para todo $i' < i$, $R[i'] \leq R[i]$ e, para todo $i' > i$, $R[i'] \geq R[i]$, isto é, sabemos que os mínimos de menor índice das outras linhas se encontram nas submatrizes $A[1 \tdots i-1][1 \tdots R[i]]$ e $A[i+1 \tdots n][R[i] \tdots m]$. Seguindo o paradigma de divisão e conquista, vamos resolver o mesmo problema para estas submatrizes e, consequentemente, resolver o problema original. 
 
-\newcommand{\FRMDC}{\textsc{FindRowMin\_DC}}
+\newcommand{\FRMDC}{\textsc{DivConq}}
 \begin{algorithm}[H]
 \caption{Mínimos das linhas com divisão e conquista}
 \label{DivConq:algo}
