@@ -1,7 +1,6 @@
-/* Implementação do Algoritmo SMAWK */
-#include "smawk.h"
+#include "SMAWK.h"
 
-std::list<int> smawk_reduce (std::function< int(int,int) > w, int n, int p, std::list<int> col) {
+std::list<int> Reduce (std::function< int(int,int) > w, int n, int p, std::list<int> col) {
     int k = 0;
     std::list<int>::iterator it = col.begin();
 
@@ -28,11 +27,11 @@ std::list<int> smawk_reduce (std::function< int(int,int) > w, int n, int p, std:
     return col;
 }
 
-void smawk (std::function< int(int,int) > w, int n, int p, const std::list<int> & col, std::vector<int> & res) {
+void SMAWK (std::function< int(int,int) > w, int n, int p, const std::list<int> & col, std::vector<int> & res) {
     if (p >= n) {
         res[0] = *(col.begin());
     } else {
-        smawk(w, n, p+p, smawk_reduce(w, n, p+p, col), res);
+        SMAWK(w, n, p+p, Reduce(w, n, p+p, col), res);
 
         std::list<int>::const_iterator it = col.begin();
         for (int i = p; i < n; i += p+p) {
@@ -47,13 +46,13 @@ void smawk (std::function< int(int,int) > w, int n, int p, const std::list<int> 
     }
 }
 
-std::vector<int> smawk (std::function< int(int,int) > w, int n, int m) {
+std::vector<int> SMAWK (std::function< int(int,int) > w, int n, int m) {
     std::vector<int> res(n);
 
     std::list<int> col;
     for (int i = 0; i < m; i++)
         col.push_back(i);
 
-    smawk(w, n, 1, smawk_reduce(w, n, 1, col), res);
+    smawk(w, n, 1, Reduce(w, n, 1, col), res);
     return res;
 }

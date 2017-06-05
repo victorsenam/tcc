@@ -1,5 +1,5 @@
-#ifndef TCC_divisaoeconquista
-#define TCC_divisaoeconquista
+#ifndef TCC_DivConq
+#define TCC_DivConq
 
 #include <vector>
 #include <functional>
