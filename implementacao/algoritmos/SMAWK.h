@@ -14,7 +14,6 @@
 #include <vector>
 #include <list>
 #include <functional>
-#include <climits>
 
 /**
     Remove colunas inúteis de uma matriz
@@ -34,7 +33,7 @@
     - Matriz (A,n,p,res) devolvida é totalmente monótona convexa nas linhas
     e tem índices de mínimos de linhas iguais às da matriz recebida.
 **/
-std::list<int> Reduce (std::function< int(int,int) > A, int n, int p, std::list<int> col);
+std::list<int> Reduce (std::function< double(int,int) > A, int n, int p, std::list<int> col);
 
 /**
     Encontra os índices de mínimos das linhas de uma matriz
@@ -50,7 +49,7 @@ std::list<int> Reduce (std::function< int(int,int) > A, int n, int p, std::list<
     - Matriz (A,n,p,col) recebida é quadrada e totalmente monótona convexa
     nas linhas.
 **/
-void SMAWK (std::function< int(int,int) > A, int n, int p, const std::list<int> & col, std::vector <int> & res);
+void SMAWK (std::function< double(int,int) > A, int n, int p, const std::list<int> & col, std::vector <int> & res);
 
 /**
     Encontra os índices de mínimos das linhas de uma matriz
@@ -62,6 +61,6 @@ void SMAWK (std::function< int(int,int) > A, int n, int p, const std::list<int> 
     Assume:
     - Matriz (A,n,m) recebida é totalmente monótona convexa.
 **/
-std::vector<int> SMAWK (std::function< int(int,int) > A, int n, int m);
+std::vector<int> SMAWK (std::function< double(int,int) > A, int n, int m);
 
 #endif

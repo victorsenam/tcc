@@ -1,9 +1,9 @@
+#include "gtest/gtest.h"
 #include "../algoritmos/DivConq.h"
 #include "../algoritmos/SMAWK.h"
 #include "aux/FindRowMin.h"
-#include "gtest/gtest.h"
 
-int dataA[7][5] = {
+double dataA[7][5] = {
     {10, 17, 13, 28, 23},
     {17, 22, 16, 29, 23},
     {24, 28, 22, 34, 24},
@@ -13,19 +13,19 @@ int dataA[7][5] = {
     {75, 66, 51, 53, 34}
 };
 
-void TestGetRowMin (std::function< int(int,int) > f, int n, int m) {
+void TestGetRowMin (std::function< double(int,int) > f, int n, int m) {
     std::vector<int> ans = FindRowMin(f,n,m);
-    EXPECT_EQ(ans,DivConq(f,n,m)) << "FindRowMin and DivConq should return equal vectors";
-    EXPECT_EQ(ans,SMAWK(f,n,m)) << "FindRowMin and SMAWK should return equal vectors";
+    EXPECT_EQ(ans,DivConq(f,n,m)) << "FindRowMin e DivConq devem retornar vetores iguais.";
+    EXPECT_EQ(ans,SMAWK(f,n,m)) << "FindRowMin e SMAWK devem retornar vetores iguais.";
 }
 
 
-TEST(GetRowMin, SquareMatrix) {
+TEST(RowMinima, SquareMatrix) {
     TestGetRowMin([] (int i, int j) { return dataA[i][j]; }, 5, 5);
 }
-TEST(GetRowMin, WideMatrix) {
+TEST(RowMinima, WideMatrix) {
     TestGetRowMin([] (int i, int j) { return dataA[i][j]; }, 4, 5);
 }
-TEST(GetRowMin, NarrowMatrix) {
+TEST(RowMinima, NarrowMatrix) {
     TestGetRowMin([] (int i, int j) { return dataA[i][j]; }, 7, 5);
 }

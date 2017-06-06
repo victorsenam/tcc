@@ -1,7 +1,7 @@
 #include "SMAWK.h"
 #include <iostream>
     
-std::list<int> Reduce (std::function< int(int,int) > A, int n, int p, std::list<int> col) {
+std::list<int> Reduce (std::function< double(int,int) > A, int n, int p, std::list<int> col) {
     int k = 0;
     std::list<int>::iterator it = col.begin();
 
@@ -23,7 +23,7 @@ std::list<int> Reduce (std::function< int(int,int) > A, int n, int p, std::list<
     return col;
 }
 
-void SMAWK (std::function< int(int,int) > A, int n, int p, const std::list<int> & col, std::vector<int> & res) {
+void SMAWK (std::function< double(int,int) > A, int n, int p, const std::list<int> & col, std::vector<int> & res) {
     if (p >= n) {
         res[0] = *(col.begin());
     } else {
@@ -45,15 +45,15 @@ void SMAWK (std::function< int(int,int) > A, int n, int p, const std::list<int> 
     }
 }
 
-std::vector<int> SMAWK (std::function< int(int,int) > A, int n, int m) {
+std::vector<int> SMAWK (std::function< double(int,int) > A, int n, int m) {
     std::vector<int> res(n);
 
     if (n > m) {
-        std::function< int(int,int) > sA = A;
+        std::function< double(int,int) > sA = A;
         int sm = m;
         A = [sA, sm] (int i, int j) {
             if (j >= sm)
-                return INT_MAX;
+                return 1./0.;
             else
                 return sA(i,j);
         };

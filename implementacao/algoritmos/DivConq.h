@@ -26,7 +26,7 @@
     Assume:
     - Matriz (A,rs,rt,cs,ct) monótona crescente nos mínimos das linhas.
 **/
-void DivConq (std::function< int(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & r);
+void DivConq (std::function< double(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & r);
 
 /**
     Encontra os índices de mínimos das linhas de uma matriz
@@ -38,6 +38,6 @@ void DivConq (std::function< int(int,int) > A, int rs, int rt, int cs, int ct, s
     Assume:
     - Matriz (A,n,m) recebida é totalmente monótona convexa.
 **/
-std::vector<int> DivConq (std::function< int(int,int) > A, int n, int m);
+std::vector<int> DivConq (std::function< double(int,int) > A, int n, int m);
 
 #endif

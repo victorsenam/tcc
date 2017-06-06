@@ -1,6 +1,6 @@
 #include "DivConq.h"
 
-void DivConq (std::function< int(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & res) {
+void DivConq (std::function< double(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & res) {
     if (rs > rt)
         return;
 
@@ -16,7 +16,7 @@ void DivConq (std::function< int(int,int) > A, int rs, int rt, int cs, int ct, s
     DivConq(A, l+1, rt, res[l], ct, res);
 }
 
-std::vector<int> DivConq (std::function< int(int,int) > A, int n, int m) {
+std::vector<int> DivConq (std::function< double(int,int) > A, int n, int m) {
     std::vector<int> res(n);
     DivConq(A, 0, n-1, 0, m-1, res);
     return res;

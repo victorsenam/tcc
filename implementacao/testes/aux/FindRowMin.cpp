@@ -1,6 +1,6 @@
 #include "FindRowMin.h"
 
-std::vector<int> FindRowMin (std::function< int(int,int) > A, int n, int m) {
+std::vector<int> FindRowMin (std::function< double(int,int) > A, int n, int m) {
     std::vector<int> res(n);
 
     for (int i = 0; i < n; i++) {
