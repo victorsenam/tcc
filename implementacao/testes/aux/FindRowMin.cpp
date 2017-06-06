@@ -1,11 +1,11 @@
-#include "DivConq.h"
+#include "FindRowMin.h"
 
 void DivConq (std::function< int(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & r) {
     int l = (rt - rs)/2;
 
     r[l] = cs;
     for (int j = cs + 1; j <= ct; j++) {
-        if (A(l,j) > A(l,r[l]))
+        if (A(l,j) > A(i,r[l]))
             r[l] = j;
     }
 

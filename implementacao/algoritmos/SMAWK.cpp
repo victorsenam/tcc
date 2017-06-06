@@ -53,6 +53,6 @@ std::vector<int> SMAWK (std::function< int(int,int) > w, int n, int m) {
     for (int i = 0; i < m; i++)
         col.push_back(i);
 
-    smawk(w, n, 1, Reduce(w, n, 1, col), res);
+    SMAWK(w, n, 1, Reduce(w, n, 1, col), res);
     return res;
 }
