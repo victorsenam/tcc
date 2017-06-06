@@ -73,15 +73,28 @@ SMAWK.o : $(USER_DIR)/SMAWK.cpp $(USER_DIR)/SMAWK.h $(GTEST_HEADERS)
 DivConq.o : $(USER_DIR)/DivConq.cpp $(USER_DIR)/DivConq.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/DivConq.cpp
 
+KnuthYao.o : $(USER_DIR)/KnuthYao.cpp $(USER_DIR)/KnuthYao.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/KnuthYao.cpp
+
 # == AUX ==
 FindRowMin.o : $(AUXI_DIR)/FindRowMin.cpp $(AUXI_DIR)/FindRowMin.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(AUXI_DIR)/FindRowMin.cpp
+
+SolveIntRec.o : $(AUXI_DIR)/SolveIntRec.cpp $(AUXI_DIR)/SolveIntRec.h $(GTEST_HEADERS)/
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(AUXI_DIR)/SolveIntRec.cpp
 
 # == TESTS ==
 RowMinima.o : RowMinima.cpp $(USER_DIR)/SMAWK.h $(USER_DIR)/DivConq.h $(AUXI_DIR)/FindRowMin.h \
 			  $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c RowMinima.cpp
 
-RowMinima.out : SMAWK.o DivConq.o RowMinima.o FindRowMin.o gtest_main.a
+RowMinima.out : SMAWK.o DivConq.o FindRowMin.o RowMinima.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+IntRecurrence.o : IntRecurrence.cpp $(USER_DIR)/KnuthYao.h $(AUXI_DIR)/SolveIntRec.h \
+			  $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c IntRecurrence.cpp
+
+IntRecurrence.out : KnuthYao.o SolveIntRec.o IntRecurrence.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
