@@ -1,2 +1,3 @@
 *.o
 *.out
+gtest_main.a

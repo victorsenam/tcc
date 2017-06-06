@@ -16,7 +16,7 @@ GTEST_DIR = ../googletest/googletest
 
 # Where to find user code.
 USER_DIR = ../algoritmos
-AUXI_DIR = ../auxiliares
+AUXI_DIR = aux
 
 # Flags passed to the preprocessor.
 # Set Google Test's header directory as a system directory, such that
@@ -24,7 +24,7 @@ AUXI_DIR = ../auxiliares
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
+CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11 -fdiagnostics-color
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
@@ -73,11 +73,15 @@ SMAWK.o : $(USER_DIR)/SMAWK.cpp $(USER_DIR)/SMAWK.h $(GTEST_HEADERS)
 DivConq.o : $(USER_DIR)/DivConq.cpp $(USER_DIR)/DivConq.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/DivConq.cpp
 
+# == AUX ==
+FindRowMin.o : $(AUXI_DIR)/FindRowMin.cpp $(AUXI_DIR)/FindRowMin.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(AUXI_DIR)/FindRowMin.cpp
+
 # == TESTS ==
-RowMinima.o : RowMinima.cpp $(USER_DIR)/SMAWK.h $(USER_DIR)/DivConq.h \
+RowMinima.o : RowMinima.cpp $(USER_DIR)/SMAWK.h $(USER_DIR)/DivConq.h $(AUXI_DIR)/FindRowMin.h \
 			  $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c RowMinima.cpp
 
-RowMinima.out : SMAWK.o RowMinima.o gtest_main.a
+RowMinima.out : SMAWK.o DivConq.o RowMinima.o FindRowMin.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 

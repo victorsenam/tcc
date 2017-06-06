@@ -1,19 +1,19 @@
+#include "../algoritmos/DivConq.h"
+#include "../algoritmos/SMAWK.h"
+#include "aux/FindRowMin.h"
 #include "gtest/gtest.h"
-#include "../algoritmos/DivConq.cpp"
-#include "../algoritmos/SMAWK.cpp"
-#include "aux/FindRowMin.cpp"
 
 void TestGetRowMin (std::function< int(int,int) > f, int n, int m) {
-    std::vector a = FindRowMin(f, n, m);
-    std::vector b = SMAWK(f, n, m);
+    std::vector<int> a = FindRowMin(f, n, m);
+    std::vector<int> b = SMAWK(f, n, m);
     EXPECT_EQ(a,b) << "FindRowMin and SMAWK should return equal vectors";
 
-    std::vector SMAWK_res = DivConq(f, n, m);
+    b = DivConq(f, n, m);
     EXPECT_EQ(a,b) << "FindRowMin and DivConq should return equal vectors";
 }
 
 TEST(GetRowMin, test0) {
-    int A[][] = {
+    int A[7][5] = {
         {10, 17, 13, 28, 23},
         {17, 22, 16, 29, 23},
         {24, 28, 22, 34, 24},
