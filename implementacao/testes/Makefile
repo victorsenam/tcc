@@ -37,10 +37,10 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 
 # House-keeping build targets.
 
-all : $(TESTS)
+all : $(addsuffix .out,${TESTS})
 
 clean :
-	rm -f $(TESTS) gtest.a gtest_main.a *.o
+	rm -f gtest.a gtest_main.a *.o *.out
 
 # Builds gtest.a and gtest_main.a.
 
@@ -78,6 +78,6 @@ RowMinima.o : RowMinima.cpp $(USER_DIR)/SMAWK.h $(USER_DIR)/DivConq.h \
 			  $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c RowMinima.cpp
 
-RowMinima : SMAWK.o RowMinima.o gtest_main.a
+RowMinima.out : SMAWK.o RowMinima.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
