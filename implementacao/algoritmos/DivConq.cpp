@@ -1,23 +1,23 @@
 #include "DivConq.h"
 
-void DivConq (std::function< int(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & r) {
-    int l = (rt - rs)/2;
+void DivConq (std::function< int(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & res) {
+    if (rs > rt)
+        return;
 
-    r[l] = cs;
+    int l = (rs + rt)/2;
+
+    res[l] = cs;
     for (int j = cs + 1; j <= ct; j++) {
-        if (A(l,j) > A(l,r[l]))
-            r[l] = j;
+        if (A(l,j) < A(l,res[l]))
+            res[l] = j;
     }
 
-    if (l > rs)
-        DivConq(A, rs, l-1, cs, r[l], r);
-    if (l < rt)
-        DivConq(A, l+1, rt, r[l], ct, r);
+    DivConq(A, rs, l-1, cs, res[l], res);
+    DivConq(A, l+1, rt, res[l], ct, res);
 }
 
 std::vector<int> DivConq (std::function< int(int,int) > A, int n, int m) {
-    std::vector<int> r(n);
-
-    DivConq(A, 0, n-1, 0, m-1, r);
-    return r;
+    std::vector<int> res(n);
+    DivConq(A, 0, n-1, 0, m-1, res);
+    return res;
 }
