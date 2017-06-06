@@ -9,4 +9,5 @@
 **/*.bbl
 **/*.blg
 **/*.dvi
+**/*.pdf
 **/*.run.xml
