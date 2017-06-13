@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/victorsenam/tcc.svg?branch=master)](https://travis-ci.org/victorsenam/tcc)
+
 # Trabalho de Conclusão de Curso
 Título: Algoritmos em matrizes monótonas e Monge convexas
 Aluno: Victor Sena Molero
