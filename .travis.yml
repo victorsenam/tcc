@@ -8,12 +8,9 @@ before_install:
 script:
 - make -C monografia main.pdf
 deploy:
-  provider: releases
+  provider: pages
   skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: monografia/
   on:
-    tags: true
-  api_key:
-    secure: HmUwjpax003VvEkMJ2bEmrbVx7bFqaFsGj4UtscIlATAVLiBO87mlbVtE+d838emY3cyIwk7mdvDfFrdmRHE+KDG8RfjX2yiAf3cwklDFuNKbg11jIJt8OJOnk6ilAAJlFA+NJO/6Ew9CgCuTxZ0dKXMfXa5p0zxQl2ooorDdcZWrzWULaQi5TuwghPEuKFSUXzA326Aksp46PW9o1d1JCoVozZ0utNmwU0bO1wP1ymQUsUIGmhLt0IBB/07pQeV22fDeh7ipDbFRju5jpLKrsxMXCgzMrMtvDcuhHPUcBf2DnqOGf+e6yFQfl7vvbPq+gR5kwUztPvfIBnp0v7Kjpd8tAS+eq4Jtndxm1pBX2/adK8T03OVQ8rglxLzktTQQgaqzzYrhUYOqEbx0L4+SaDqM23nZEbahLYyl53j1pdt/em54vH5j2/SKf4bzkatE2RpdEZ2++h/9OhNbH58vyj3BCtaQdbPy+/JF0z3X/TeA1g3WG6c0OC/nF5Ms1NaMjkPhxS7vqZ+UIkEzbtJstKByfb5/nE4SonShkHTSe94vi54qlSaNpsgyKsW/6PYuuZqNS+BJ0lP7qA8bm+Tq/nzHqVvSRKp9Mt3D9eNZHM1f0BrzjAmHXyiiW4/DVZculm+XZ0VNEAF+q0hnyfTBzNJMQL8Xi2sXclAFd+O0sY=
-  file: monografia/main.pdf
-  on:
-    repo: victorsenam/tcc
+    branch: master
