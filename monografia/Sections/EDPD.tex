@@ -1,0 +1,93 @@
+\section{Estruturas de dados em programação dinâmica}
+\label{EDPD}
+
+Nesta seção, exemplificaremos a utilização de estruturas de dados em programação dinâmica, o que facilitará a compreensão da seção~\ref{OnlineSearch}.
+
+%----------------------------------------------------------------------------------------
+
+\subsection{O problema da subsequência crescente de peso máximo}
+
+\begin{prob}[Subsequência crescente de peso máximo] \label{HIS}
+Dados um natural~$n$ e dois vetores~$v,w \in \B{Q}^n$, descobrir uma subsequência~$s$ de~$[1 \tdots n]$ crescente em~$v$, isto é, tal que para todo par de índices~$i,j \in [1 \tdots |s|]$ onde~$i < j$, vale~$v_{s_i} < v_{s_j}$, e de soma máxima em~$w$, isto é, tal que~$\sum\limits_{i \in s} w_i$ seja máximo.
+\end{prob}
+
+Podemos resolver este problema com tempo~$\Cl{O}(n^2)$ utilizando programação dinâmica na recorrência
+$$f(i) = \max(\{f(j) \mid j < i \text{ e } v_j < v_i\} \cup \{0\}) + w_j$$
+onde, para todo~$i \in [1 \tdots n]$ o valor~$f(i)$ representa a melhor sequência válida que contém~$i$ como último elemento.
+
+Um caso especial deste problema onde o vetor~$w$ é um vetor unitário é o problema clássico da maior subsequência crescente. É conhecido o fato de que este problema pode ser resolvido em tempo~$O(n\lg(n))$~\cite{missing}. Apresentaremos uma estrutura de dados que nos ajudará a atingir a mesma complexidade para o Problema~\ref{HIS}.
+
+%----------------------------------------------------------------------------------------
+
+\subsection{Fronteira de Pareto}
+
+Apresentaremos uma estrutura de dados que vai nos ajudar a resolver o problema em tempo~$\Cl{O}(n\lg(n))$, para isso, vamos utilizar algumas definições e resultados.
+
+\begin{defi}[Relação de dominância]
+Dados dois pontos~$a = (a_1,a_2)$ e~$b = (b_1,b_2) \in \B{Q}^2$, vale~$a \succeq b$ ($a$ domina~$b$), se~$a_1 \geq b_1$ e~$a_2 \geq b_2$. Além disso, se~$S \subseteq \B{Q}^2$ e~$x \in \B{Q}^2$, dizemos que~$x$ é dominado em~$S$ se existe um ponto~$y \in S$ tal que~$y \succeq x$ e~$y \neq x$.
+\end{defi}
+
+\begin{prop}
+A relação de dominância é uma ordem parcial~\cite[Apêndice B]{CLRS} em~$\B{Q}^2$.
+\end{prop}
+
+\begin{proof}
+Sobre a relação~$\succeq$ valem as propriedades:
+\begin{description}
+\item[Reflexiva] Se~$a = (a_1,a_2) \in \B{Q}^2$, vale~$a_1 \geq a_1$ e~$a_2 \geq a_2$, portanto~$a \succeq a$.
+\item[Antissimétrica] Se~$a = (a_1,a_2)$ e~$b = (b_1,b_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq a$, vale~$a_1 = b_1$ e~$a_2 = b_2$, portanto~$a = b$.
+\item[Transitiva] Se~$a = (a_1,a_2), b = (b_1,b_2)$ e~$c = (c_1,c_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq c$,~$a_1 \geq c_1$ e~$a_2 \geq c_2$, logo,~$a \succeq c$.
+\end{description}
+Logo,~$\succeq$ define uma ordem parcial sobre~$\B{Q}^2$.
+\end{proof}
+
+\begin{defi}[Fronteira de Pareto]
+A fronteira de Pareto~$\Cl{P}(S)$ de um conjunto finito~$S \subset \B{Q}^2$ é conjunto dos pontos não dominados de~$S$, isto é, ${\Cl{P}(S) = \{x \in S \mid x \text{ não é dominado em } S\}}$.
+\end{defi}
+
+\begin{prop} \label{EDPD:DomP}
+Se~$S$ é um conjunto finito e um ponto~$x \in \B{Q}^2$ é dominado em~$S$, então,~$x$ é dominado em~$\Cl{P}(S)$.
+\end{prop}
+
+\begin{proof}
+Seja~$y \in S$ tal que~$y \succeq x$, usaremos indução na quantidade de pontos que dominam~$y$ em~$S$ para mostrar que~$y \in \Cl{P}(S)$ ou~$y$ é dominado em~$\Cl{P}(S)$. Na base, existe apenas um ponto em~$S$ que domina~$y$, ele próprio, assim~$y \in \Cl{P}(S)$, caso contrário, existe um outro ponto~$z$ em~$S$ que domina~$y$ e, por transitividade, é dominado por estritamente menos pontos do que~$y$, pela hipótese de indução, temos dois casos, no primeiro~$z \in \Cl{P}(S)$ e~$y$ é dominado em~$\Cl{P}(S)$, no outro,~$z$ é dominado em~$\Cl{P}(S)$ e, por transitividade,~$y$ também é, assim, está provada a tese. Finalmente, já que~$y \succeq x$ e~$\succeq$ é transitiva~$x$ é dominado em~$\Cl{P}(S)$.
+\end{proof}
+
+\begin{defi}
+Dados~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$, definimos~${M(S,c) = \max\{a_2 \mid (a_1,a_2) \in S \text{ e } a_1 \geq c\}}$.
+\end{defi}
+
+\begin{prop}
+Para todo~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$ vale~$M(S,c) = M(\Cl{P}(S),c)$.
+\end{prop}
+
+\begin{proof}
+Sabemos~$M(S,c) \geq M(\Cl{P}(S),c)$. Se~$S = \emptyset$, vale~${M(S,c) = M(\Cl{P}(S),c) = -\infty}$. Suponha~$S \neq \emptyset$, existe~$a=(a_1,a_2) \in S$ tal que~$M(S,c) = a_2$ e~$a_1 \geq c$, se~$a \in \Cl{P}(S)$, temos~${M(S,c) \leq M(\Cl{P}(S),c)}$. No outro caso, pela Proposição~\ref{EDPD:DomP}, existe~$b =(b_1,b_2)$ tal que~$b \in \Cl{P}(S)$ e~$b \succeq a$, portanto, já que~$b_1 \geq a_1 \geq c$, vale~$M(\Cl{P}(S),c) \geq b_2 \geq a_2 = M(S,c)$.
+\end{proof}
+
+Com estes conceitos, estamos prontos para apresentar uma estrutura de dados que nos permite realizar as seguintes operações sobre um conjunto~$S \subset \B{Q}^2$ finito.
+
+\begin{enumerate}
+\item Inserir um novo elemento~$x \in \B{Q}^2$ em~$S$ em tempo~$\Cl{O}(\lg(|S|))$ amortizado. \label{EDPD:FP:add}
+\item Descobrir, dado um~$c \in \B{Q}$ o valor~$M(S,c)$ em tempo~$\Cl{O}(\lg(|S|))$. \label{EDPD:FP:query}
+\end{enumerate}
+
+Para executar as operações no tempo pedido, vamos manter os elementos de~$\Cl{P}(S)$ ordenados crescentemente pela primeira coordenada em uma árvore de busca binária balanceada~\cite[Capítulo 13]{CLRS}. Neste momento é interessante observar a seguinte proposição.
+
+\begin{prop} \label{EDPD:doubleorder}
+Se~$S \subset \B{Q}^2$ é finito e os elementos de~$\Cl{P}(S)$ estão ordenados na primeira coordenada, eles estão automáticamente ordenados decrescentemente na segunda coordenada.
+\end{prop}
+
+\begin{proof}
+Suponha que existem~$x = (x_1,x_2)$ e~$y = (y_1,y_2) \in \Cl{P}(S)$ tais que~$x_1 \leq x_2$ e~$y_1 \leq y_2$, assim,~$y \succeq x$ e~$x \notin \Cl{P}(S)$.
+\end{proof}
+
+Com isso, fica fácil calcular~$M(\Cl{P}(S),c)$, basta encontrar o elemento em~$\Cl{P}(S)$ com menor primeira coordenada que seja maior ou igual a~$c$ e devolver a segunda coordenada deste ponto, pois saberemos que qualquer elemento com maior valor na primeira coordenada terá menor valor na segunda. É possível encontrar este elemento em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, já que a nossa estrutura está ordenada pela primeira coordenada permitindo a realização de uma busca binária, note que~${\Cl{O}(\lg(|\Cl{P}(S)|)) \subseteq \Cl{O}(\lg(|S|))}$ e~$M(S,c) = M(\Cl{P}(S),c)$, portanto, conseguimos satisfazer a Operação~\ref{EDPD:FP:query}.
+
+Agora, para conseguir realizar a Operação~\ref{EDPD:FP:add} para um~$x = (x_1,x_2) \in \B{Q}^2$ com um dado~$x$ precisamos remover todos os elementos da estrutura que são dominados por~$x$. Suponha que existem dois elementos~$a = (a_1,a_2)$ e~$b = (b_1,b_2)$ na estrutura onde~$x_1 \geq a_1 \geq b_1$ e~$x \succeq b$, já que, pela Proposição~\ref{EDPD:doubleorder}, temos~$a_1 \leq b_1$, sabemos que~$x \succeq a$. Com isso, para remover todos os elementos dominados por~$x$ basta encontrar o último elemento com primeira coordenada menor do que~$x_1$ com busca binária e, caso ele seja dominado por~$x$, removê-lo e repetir o processo, caso contrário, parar com a garantia de que nenhum elemento da estrutura é dominado por~$x$. Note que cada elemento é removido apenas uma vez e cada remoção custa tempo~$\Cl{O}(\lg(|S|))$. Além disso, precisamos descobrir se~$x$ é dominado por algum elemento, para isso, calculamos o valor~$M(S,x_1)$. Se este valor for pelo menos~$x_2$ existe um elemento exatamente igual a~$x$ na estrutura ou~$x$ é dominado por outro elemento da estrutura, em ambos os casos, não inserimos~$x$ na estrutura, caso contrário, basta inserir~$x$ na estrutura.
+
+%----------------------------------------------------------------------------------------
+
+\subsection{Otimizando subsequência crescente de peso máximo}
+
+Com a possibilidade de manter a fronteira de Pareto de um conjunto~$S$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{HIS} em tempo~$\Cl{O}(\lg(n))$. Para isso
