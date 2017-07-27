@@ -12,7 +12,9 @@ Dados um natural~$n$ e dois vetores~$v,w \in \B{Q}^n$, descobrir uma subsequênc
 \end{prob}
 
 Podemos resolver este problema com tempo~$\Cl{O}(n^2)$ utilizando programação dinâmica na recorrência
-$$f(i) = \max(\{f(j) \mid j < i \text{ e } v_j < v_i\} \cup \{0\}) + w_j$$
+\begin{equation} \label{EDPD:HIS:rec}
+f(i) = \max(\{f(j) \mid j < i \text{ e } v_j < v_i\} \cup \{0\}) + w_j
+\end{equation}
 onde, para todo~$i \in [1 \tdots n]$ o valor~$f(i)$ representa a melhor sequência válida que contém~$i$ como último elemento.
 
 Um caso especial deste problema onde o vetor~$w$ é um vetor unitário é o problema clássico da maior subsequência crescente. É conhecido o fato de que este problema pode ser resolvido em tempo~$O(n\lg(n))$~\cite{missing}. Apresentaremos uma estrutura de dados que nos ajudará a atingir a mesma complexidade para o Problema~\ref{HIS}.
@@ -65,12 +67,12 @@ Para todo~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$ vale~$M(S,c) = M(\Cl{P}(S),
 Sabemos~$M(S,c) \geq M(\Cl{P}(S),c)$. Se~$S = \emptyset$, vale~${M(S,c) = M(\Cl{P}(S),c) = -\infty}$. Suponha~$S \neq \emptyset$, existe~$a=(a_1,a_2) \in S$ tal que~$M(S,c) = a_2$ e~$a_1 \geq c$, se~$a \in \Cl{P}(S)$, temos~${M(S,c) \leq M(\Cl{P}(S),c)}$. No outro caso, pela Proposição~\ref{EDPD:DomP}, existe~$b =(b_1,b_2)$ tal que~$b \in \Cl{P}(S)$ e~$b \succeq a$, portanto, já que~$b_1 \geq a_1 \geq c$, vale~$M(\Cl{P}(S),c) \geq b_2 \geq a_2 = M(S,c)$.
 \end{proof}
 
-Com estes conceitos, estamos prontos para apresentar uma estrutura de dados que nos permite realizar as seguintes operações sobre um conjunto~$S \subset \B{Q}^2$ finito.
+Com estes conceitos, estamos prontos para apresentar uma estrutura de dados que nos permite realizar as seguintes operações sobre um conjunto~$S \subset \B{Q}^2$ finito. Chamaremos a estrutura de dados descrita aqui de fronteira de Pareto e denotaremos a fronteira de um conjunto~$S$ também por~$\Cl{P}(S)$.
 
-\begin{enumerate}
-\item Inserir um novo elemento~$x \in \B{Q}^2$ em~$S$ em tempo~$\Cl{O}(\lg(|S|))$ amortizado. \label{EDPD:FP:add}
-\item Descobrir, dado um~$c \in \B{Q}$ o valor~$M(S,c)$ em tempo~$\Cl{O}(\lg(|S|))$. \label{EDPD:FP:query}
-\end{enumerate}
+\begin{description}
+\item[$\textsc{Insere}(\Cl{P}(S),x)$] Inserir um novo elemento~$x \in \B{Q}^2$ em~$S$ em tempo~$\Cl{O}(\lg(|S|))$ amortizado. \label{EDPD:FP:add}
+\item[$\textsc{CalculaM}(\Cl{P}(S),c)$] Descobrir, dado um~$c \in \B{Q}$ o valor~$M(S,c)$ em tempo~$\Cl{O}(\lg(|S|))$. \label{EDPD:FP:query}
+\end{description}
 
 Para executar as operações no tempo pedido, vamos manter os elementos de~$\Cl{P}(S)$ ordenados crescentemente pela primeira coordenada em uma árvore de busca binária balanceada~\cite[Capítulo 13]{CLRS}. Neste momento é interessante observar a seguinte proposição.
 
@@ -84,10 +86,52 @@ Suponha que existem~$x = (x_1,x_2)$ e~$y = (y_1,y_2) \in \Cl{P}(S)$ tais que~$x_
 
 Com isso, fica fácil calcular~$M(\Cl{P}(S),c)$, basta encontrar o elemento em~$\Cl{P}(S)$ com menor primeira coordenada que seja maior ou igual a~$c$ e devolver a segunda coordenada deste ponto, pois saberemos que qualquer elemento com maior valor na primeira coordenada terá menor valor na segunda. É possível encontrar este elemento em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, já que a nossa estrutura está ordenada pela primeira coordenada permitindo a realização de uma busca binária, note que~${\Cl{O}(\lg(|\Cl{P}(S)|)) \subseteq \Cl{O}(\lg(|S|))}$ e~$M(S,c) = M(\Cl{P}(S),c)$, portanto, conseguimos satisfazer a Operação~\ref{EDPD:FP:query}.
 
-Agora, para conseguir realizar a Operação~\ref{EDPD:FP:add} para um~$x = (x_1,x_2) \in \B{Q}^2$ com um dado~$x$ precisamos remover todos os elementos da estrutura que são dominados por~$x$. Suponha que existem dois elementos~$a = (a_1,a_2)$ e~$b = (b_1,b_2)$ na estrutura onde~$x_1 \geq a_1 \geq b_1$ e~$x \succeq b$, já que, pela Proposição~\ref{EDPD:doubleorder}, temos~$a_1 \leq b_1$, sabemos que~$x \succeq a$. Com isso, para remover todos os elementos dominados por~$x$ basta encontrar o último elemento com primeira coordenada menor do que~$x_1$ com busca binária e, caso ele seja dominado por~$x$, removê-lo e repetir o processo, caso contrário, parar com a garantia de que nenhum elemento da estrutura é dominado por~$x$. Note que cada elemento é removido apenas uma vez e cada remoção custa tempo~$\Cl{O}(\lg(|S|))$. Além disso, precisamos descobrir se~$x$ é dominado por algum elemento, para isso, calculamos o valor~$M(S,x_1)$. Se este valor for pelo menos~$x_2$ existe um elemento exatamente igual a~$x$ na estrutura ou~$x$ é dominado por outro elemento da estrutura, em ambos os casos, não inserimos~$x$ na estrutura, caso contrário, basta inserir~$x$ na estrutura.
+
+Agora, para conseguir realizar a Operação~\ref{EDPD:FP:add} para um~$x = (x_1,x_2) \in \B{Q}^2$ com um dado~$x$ precisamos remover todos os elementos da estrutura que são dominados por~$x$. Suponha que existem dois elementos~$a = (a_1,a_2)$ e~$b = (b_1,b_2)$ na estrutura onde~$x_1 \geq a_1 \geq b_1$ e~$x \succeq b$, já que, pela Proposição~\ref{EDPD:doubleorder}, temos~$a_1 \leq b_1$, sabemos que~$x \succeq a$. Com isso, para remover todos os elementos dominados por~$x$ basta encontrar o último elemento com primeira coordenada menor ou igual a~$x_1$ com busca binária e, caso ele seja dominado por~$x$, removê-lo e repetir o processo, caso contrário, parar com a garantia de que nenhum elemento da estrutura é dominado por~$x$. Note que cada elemento é removido apenas uma vez e cada remoção custa tempo~$\Cl{O}(\lg(|S|))$. Além disso, precisamos descobrir se~$x$ é dominado por algum elemento, para isso, calculamos o valor~$M(S,x_1)$. Se este valor for pelo menos~$x_2$ existe um elemento exatamente igual a~$x$ na estrutura ou~$x$ é dominado por outro elemento da estrutura, em ambos os casos, não inserimos~$x$ na estrutura, caso contrário, basta inserir~$x$ na estrutura.
+
+As operações sobre esta estrutura são descritas no Algoritmo~\ref{EDPD:FP:code}.
+
+\begin{algorithm}[h]
+\caption{Operações sobre a fronteira de Pareto de um conjunto}
+\label{EDPD:FP:code}
+\begin{algorithmic}[1]
+\Function{\textsc{Insere}}{\Cl{P}(S),x = (x_1,x_2)}
+    \State $y = (y_1,y_2) \rec$ último elemento tal que~$y_1 \leq x_1$
+    \While{ $y$ existe e $x \succeq y$}
+        \State Remove~$y$ da árvore de busca de~$\Cl{P}(S)$
+        \State $y = (y_1,y_2) \rec$ último elemento tal que~$y_1 \leq x_1$
+    \EndWhile
+    \If{$\textsc{CalculaM}(\Cl{P}(S),x_1) < x_2$}
+        \State Insere~$x$ na árvore de busca de~$\Cl{P}(S)$
+    \EndIf
+\EndFunction
+\Function{\textsc{CalculaM}}{\Cl{P}(S),c}
+    \State $y = (y_1,y_2) \rec$ primeiro elemento tal que~$y_1 \geq c$
+    \State \Return $y_2$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
 
 %----------------------------------------------------------------------------------------
 
 \subsection{Otimizando subsequência crescente de peso máximo}
 
-Com a possibilidade de manter a fronteira de Pareto de um conjunto~$S$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{HIS} em tempo~$\Cl{O}(\lg(n))$. Para isso
+Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~$\B{Q}^2$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{HIS} em tempo~$\Cl{O}(\lg(n))$. Para isso basta notar que podemos reescrever a recorrência~\ref{EDPD:HIS:rec} como~$f(i) = M(S_i,-v_i)$ onde~$S_i = \{(-v_j,f(j)) \mid j < i\} \cup \{(0,\infty)\}$. Com isso, o Algoritmo~\ref{EDPD:HIS:code} calcula todos os~$f$ em tempo~$\Cl{O}(n\lg(n))$.
+
+\begin{algorithm}[h]
+\caption{Solução do Problema~\ref{HIS}}
+\label{EDPD:HIS:code}
+\begin{algorithmic}[1]
+\Function{\textsc{SubsequênciaCrescentePesoMáximo}}{n,v,w}
+    \State Inicializa a fronteira de Pareto~$P$ com o elemnto~$(0,\infty)$
+    \State $r \rec 0$
+    \For{$i$ de $1$ até $n$}
+        \State $f(i) = \textsc{CalculaM}(P,-v_i)$
+        \State $\textsc{Insere}(P,(f(i),-v_i))$
+        \State $r \rec \max(r,f(i))$
+    \EndFor
+    \State \Return $r$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
