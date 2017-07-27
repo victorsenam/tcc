@@ -107,7 +107,11 @@ As operações sobre esta estrutura são descritas no Algoritmo~\ref{EDPD:FP:cod
 \EndFunction
 \Function{\textsc{CalculaM}}{\Cl{P}(S),c}
     \State $y = (y_1,y_2) \rec$ primeiro elemento tal que~$y_1 \geq c$
-    \State \Return $y_2$
+    \If{$y$ existe}
+        \State \Return $y_2$
+    \Else
+        \State \Return $-\infty$
+    \EndIf
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -124,7 +128,7 @@ Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~
 \label{EDPD:HIS:code}
 \begin{algorithmic}[1]
 \Function{\textsc{SubsequênciaCrescentePesoMáximo}}{n,v,w}
-    \State Inicializa a fronteira de Pareto~$P$ com o elemnto~$(0,\infty)$
+    \State Inicializa a fronteira de Pareto~$P$ com o elemento~$(0,\infty)$
     \State $r \rec 0$
     \For{$i$ de $1$ até $n$}
         \State $f(i) = \textsc{CalculaM}(P,-v_i)$
