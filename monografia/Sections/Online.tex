@@ -1,9 +1,47 @@
 \section{Busca em matrizes online}
 \label{Online}
 
-Nas Seções~\ref{DivConq} e~\ref{SMAWK} discutimos algoritmos de buscas de índices ótimos em matrizes que respeitavam determinadas propriedades, porém, nos dois casos, era necessário conhecer toda a matriz ao início do algoritmo para conseguir realizar o calculo de seus valores. É comum se deparar com aplicações onde as entradas da matriz dependem de outras entradas da matriz, o que faz com que os algoritmos estudados até agora se tornem inúteis.
+Nas Seções~\ref{DivConq} e~\ref{SMAWK} discutimos algoritmos de buscas de índices ótimos em matrizes que respeitavam determinadas propriedades, porém, nos dois casos, era necessário conhecer toda a matriz ao início do algoritmo para conseguir realizar o calculo de seus valores. É comum se deparar com aplicações onde as entradas da matriz dependem de outras entradas da matriz, o que não cabe nas hipóteses dos algoritmos já estudados. Este estudo inicial é baseado fortemente na pesquisa de Galil e Park~\cite{Galil:1992}, buscaremos generalizar as ideias apresentadas aqui na Seção~\ref{FullyDynamic}.
 
-Chamamos de online as matrizes definidas por uma recorrência em outras entradas da matriz. Galil e Park~\cite{Galil1992} discutem algoritmos para encontrar mínimos e máximos de linhas de matrizes online totalmente monóntonas convexas e côncavas onde cada elemento depende apensas de elementos em linhas com índices menores. Vamos discutir estes algoritmos aqui.
+Um caso comum onde matrizes monótonas e online surgem é onde tentamos resolver o Problema~\ref{Online:prob} em casos específicos.
+
+\begin{prob}[Problema online] \label{Online:prob}
+Dada uma matriz~$C \in \B{Q}^{n \times n}$, nos interessamos em encontrar os valores do vetor~$E \in \B{Q}^{n}$ definido por~$E[n] = 0$ e, para todo~$i \in [1 \tdots n-1]$, por~${E[i] = \min\{ C[i][j] + E[j] \mid j \in [i+1 \tdots n]\}}$.
+\end{prob}
+
+É fácil perceber a relação do Problema~\ref{Online:prob} com os problemas já estudados. O Problema~\ref{Monge:example} busca particionar um vetor em exatamente~$k$ subvetores de forma a maximizar a soma de~$C[i][j]$ para cada um dos~$k$ subvetores~$v[i \tdots j]$ onde~$C$ é uma matriz Monge convexa. A formulação acima poderia resolver o mesmo problema (no caso da minimização) onde~$k$ não é fixo, isto é, podemos escolher o~$k$ que otimiza a resposta do problema~$\ref{Monge:example}$ resolvendo o problema~$\ref{Online:prob}$.
 
 %----------------------------------------------------------------------------------------
+
+\subsection{Caso convexo}
+
+Estudaremos primeiro o caso onde~$C$ é uma matriz Monge convexa por linhas. Vamos definir a matriz~$B$ para todo~$i,j \in [1 \tdots n]$ da seguinte forma:
+\begin{equation}
+B[i][j] = \begin{cases}
+    C[i][j] + E[j] & \text{ se } i < j \text{ e } \\
+    \infty         & \text{ caso contrário. } 
+\end{cases}
+\end{equation}
+
+Vamos mostrar que~$B$ é totalmente monótona convexa por linhas. Primeiramente, uma matriz~$B'$ definida, para todo~$i,j \in [1 \tdots n]$ por~$B'[i][j] = C[i][j] + E[j]$ é totalmente monótona pelo Lema~\ref{Monge:keepConvex}. Agora, considere quaisquer dois índices~$i,j \in [1 \tdots n-1]$. Se~$i + 1 < j$ vale~${B[i][j] + B[i+1][j+1] \leq B[i+1][j] + B[i][j+1]}$ já que cada uma dessas entradas tem valor igual à mesma entrada em~$B'$ e esta é Monge convexa, caso contrário, também vale a desigualdade já que~$B[i+1][j] = \infty$. Com isso, pelo Teorema~\ref{Monge:theo+1}, sabemos que~$B$ é Monge convexa.
+
+Já que para todo~$i \in [1 \tdots n-1]$ vale~$E[i] = \min\{B[i][j] \mid j \in [i+1 \tdots n]\}$ e isto é igual a~$\min\{B[i][j] \mid j \in [1 \tdots n]\}$, é verdade que descobrir as entradas do vetor~$E$ é equivalente a descobrir os mínimos de cada linha de~$B$. Como comentado, apesar da Monge convexidade de~$B$, não é possível aplicar os algoritmos aprendidos nas Seções~\ref{DivConq} e~\ref{SMAWK}, o que se deve ao fato da matriz~$B$ não ser inteiramente conhecida a priori, para conhecer as entradas de uma linha qualquer da matriz, os mínimos de todas as linhas anteriores devem já estar calculados, o que nos impede de escolher a ordem na qual descobrimos os mínimos das matrizes, necessário para os algoritmos já discutidos.
+
+Para encontrar os mínimos das linhas de~$B$ vamos utilizar uma estrutura de dados auxiliar que guardará certas colunas da matriz e nos permitirá descobrir qual é o valor de mínimo dentre todas estas colunas em uma dada linha de maneira rápida, com isso, o Algoritmo~\ref{Online:algo} mostra a ideia geral da solução e fazendo com que falte apenas descrever a estrutura de dados para uma solução completa.
+
+\begin{algorithm}[h]
+\caption{Busca em matrizes online}
+\label{Online:algo}
+\begin{algorithmic}[1]
+\Function{Online}{C, n}
+    \State $E[n] = 0$
+    \State Insere a coluna~$n$ na estrutura
+    \For{$i$ de $n-1$ até $1$}
+        \State Guarda em $j$ o índice da coluna da estrutura que alcança o valor mínimo em~$i$
+        \State $E[i] = B[i][j]$
+        \State Insere a coluna~$i$ na estrutura
+    \EndFor
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
