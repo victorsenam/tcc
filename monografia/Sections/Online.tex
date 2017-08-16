@@ -1,69 +1,71 @@
 \section{Busca em matrizes online}
 \label{Online}
 
-Nesta seção estudaremos formas de resolver o Problema~\ref{Online:prob} onde a matriz de custos é Monge. Este estudo é fortemente baseado na pesquisa de Galil e Park~\cite{Galil:1992} e as técnicas observadas aqui serão generalizadas na Seção~\ref{FullyDynamic}. Como por padrão, estudaremos o caso onde estamos interessados em mínimos de linhas, porém, vamos pensar separadamente nos casos convexo e côncavo.
+Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Na Seção~\ref{FullyDynamic} buscaremos generalizar a técnica apresentada aqui para outras matrizes online.
 
-\begin{prob}[Problema online] \label{Online:prob}
-Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, nos interessamos em encontrar os valores do vetor~$E \in \B{Q}^{n}$ definido por~$E[n] = 0$ e, para todo~$i \in [1 \tdots n-1]$, por~${E[i] = \min\{ C[i][j] + E[j] \mid j \in [i+1 \tdots n]\}}$.
+Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, devemos explicar quais dependências podem aparecer e quais não podem, para isso, é útil descrever matrizes online segundo a Definição~\ref{Online:matrix}.
+
+\begin{defi}[Matriz online] \label{Online:matrix}
+Dizemos que uma matriz~$A \in \B{Q}^{n \times n}$ com vetor de índices de mínimos de linhas~$R$ é online nas linhas se para todo~$i,j \in [n]$ com~$i \neq j$ o valor de~$A[i][i]$ é conhecido à priori e os valores de~$A[i][j]$ podem depender de~$R[j]$. Isto é, em uma matriz online, a diagonal é conhecida e as outras entradas de uma \textbf{coluna}~$j$ qualquer dependem do índice do mínimo da \textbf{linha}~$j$ correspondente.
+
+Similarmente, dizemos que uma matriz é online nas colunas quando as entradas de suas diagonais são conhecidas à priori porém uma entrada~$A[i][j]$ fora da diagonal pode depender do índice de mínimo da coluna~$i$.
+\end{defi}
+
+Note que a definição permite que outras entradas além das diagonais sejam conhecidas à priori. Dizemos ainda que uma entrada da matriz está disponível se é possível descobrir seu valor, isto é, ela era conhecida à priori ou ela só depende de informações já calculadas.
+
+Nesta seção exploraremos especificamente o caso onde a matriz é triangular inferior, isto é, cada entrada~$A[i][j]$ da matriz onde~$i \geq j$ é indefinida. Vamos descobrir métodos para encontrar índices ótimos nestas matrizes quando elas forem totalmente monótonas convexa ou côncavas. O Problema~\ref{Online:prob} ilustra a utilidade de trabalhar com matrizes deste tipo.
+
+\begin{prob} \label{Online:prob}
+Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[1] = 0$ e para todo~$i \in [1 \tdots n]$ vale~$E[i] = \min\limits_{j < i} C[i][j] + E[j]$.
 \end{prob}
 
-É fácil perceber a relação do Problema~\ref{Online:prob} com os problemas já estudados. O Problema~\ref{Monge:example}, por exemplo, recebe uma matriz~$C$ Monge e busca particionar o intervalo~$[1 \tdots n]$ em~$k$ intervalos de forma a maximizar a soma de~$C[i][j]$ para cada intervalo~$[i \tdots j]$ escolhido. O problema atual descobre o~$k$ que otimiza (no caso da minimização) a resposta do problema anterior.
-
-%----------------------------------------------------------------------------------------
-
-\subsection{Caso convexo}
-
-Estudaremos primeiro o caso onde~$C$ é uma matriz Monge convexa por linhas. Vamos definir a matriz~$B$ para todo~$i,j \in [1 \tdots n]$ da seguinte forma:
-\begin{equation} \label{Online:Bconv}
-B[i][j] = \begin{cases}
-    C[i][j] + E[j] & \text{ se } i < j \text{ e } \\
-    \infty         & \text{ caso contrário. } 
-\end{cases}
+Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, criamos a matriz~$B \in \B{Q}^{n \times n}$ de forma que para todo~$i,j \in [n]$ vale
+\begin{equation} \label{Online:Bmat}
+    B[i][j] = \begin{cases}
+        \text{indefinida} & \text{, se } i \leq j \text{ e } \\
+        C[i][j] + E[j]    & \text{, caso contrário.}
+    \end{cases}
 \end{equation}
 
-Já que para todo~$i \in [1 \tdots n-1]$ vale~$E[i] = \min\{B[i][j] \mid j \in [i+1 \tdots n]\}$ e isto é igual a~${\min\{B[i][j] \mid j \in [1 \tdots n]\}}$, é verdade que descobrir as entradas do vetor~$E$ é equivalente a descobrir os mínimos de cada linha de~$B$, estaremos interessados em descobrir estes mínimos.
+Primeiramente, é fácil observar que a matriz~$B$ é online nas linhas e triangular inferior, além disso, se~$R$ é o vetor de índices de mínimos das linhas de~$B$, vale~$E[i] = B[i][R[i]]$ para toda linha~$i \in [2 \tdots n]$ de~$B$, portanto, resolver o Problema~\ref{Online:prob} é encontrar os índices de mínimos das linhas de~$B$.É interessante notar que a linha 1 de uma matriz triangular inferior não possui mínimo, já que todos os seus valores são indefinidos.
 
-\begin{prop}
-A matriz~$B$ é totalmente monótona convexa por linhas.
-\end{prop}
+Como já dito, vamos discutir maneiras eficientes encontrar os índices ótimos de uma matriz online nas linhas e triangular inferior no caso onde essa matriz é totalmente monótona nas linhas. No Problema~\ref{Online:prob} é fácil aplicar o Lema~\ref{Monge:theo+1} para perceber que se a matriz~$C$ é Monge, a matriz~$B$ é Monge no mesmo sentido e, portanto, totalmente monótona. Assim, as técnicas discutidas nesta seção são suficientes para resolver o Problema~\ref{Online:prob}.
 
-\begin{proof}
-Primeiramente, uma matriz~$B'$ que é definida, para todo~$i,j \in [1 \tdots n]$, por~${B'[i][j] = C[i][j] + E[j]}$ é Monge convexa pelo Lema~\ref{Monge:keepConvex}. Agora, considere quaisquer dois índices~${i,j \in [1 \tdots n-1]}$. Se~$i + 1 < j$ vale~${B[i][j] + B[i+1][j+1] \leq B[i+1][j] + B[i][j+1]}$ já que cada uma dessas entradas tem valor igual à mesma entrada em~$B'$ e esta é Monge convexa, caso contrário, também vale a desigualdade já que~$B[i+1][j] = \infty$. Com isso, pelo Teorema~\ref{Monge:theo+1}, sabemos que~$B$ é Monge convexa e, portanto, totalmente monótona convexa por linhas.
-\end{proof}
+Passamos discutir agora o problema de encontrar os mínimos das linhas de uma matriz~$A \in \B{Q}^{n \times n}$ totalmente monótona nas linhas, online nas linhas e triangular inferior. É fácil adaptar as técnicas e formulações apresentadas para problemas de maximização e para o caso onde estamos interessados nos pontos ótimos das colunas de uma matriz totalmente monótona nas colunas e online nas colunas.
 
-Apesar da Monge convexidade de~$B$, não é possível aplicar os algoritmos aprendidos nas Seções~\ref{DivConq} e~\ref{SMAWK}, o que se deve ao fato da matriz~$B$ não ser inteiramente conhecida a priori. Para conhecer as entradas de uma linha qualquer da matriz, os mínimos de todas as linhas anteriores devem já estar calculados e isso nos impede de escolher a ordem na qual descobrimos os mínimos das matrizes, invalidando algoritmos já discutidos.
+Para resolver este problema, usaremos uma estrutura de dados que chamamos de envelope.
 
-Para encontrar os mínimos das linhas de~$B$ vamos utilizar uma estrutura de dados auxiliar que guardará certas colunas da matriz e nos permitirá descobrir qual é o valor de mínimo dentre todas estas colunas em uma dada linha de maneira rápida. Vamos definir esta estrutura de dados de maneira abstrata agora, para especificar seu comportamento depois.
+\begin{defi}
+Um envelope~$\Cl{E}$ sobre uma matriz~$A$ é uma estrutura de dados que mantém um conjunto de colunas~$J$ da matriz e é capaz de responder às seguintes operações:
 
-\begin{defi}[Envelope]
-Dada uma matriz~$B$, um envelope~$\Cl{E}$ sobre a matriz~$B$ é uma estrutura de dados que guarda um conjunto~$J$ de linhas de~$B$ e aceita duas operações
 \begin{description}
-\item[$\textsc{Insere}(\Cl{E}(B),j)$] Insere a coluna~$j$ já conhecida no conjunto~$J$
-\item[$\textsc{Calcula}(\Cl{E}(B),i)$] Retorna~$\min\{j \in J \mid B[i][j] \leq B[i][j'] \text{ para todo } j' \in J\}$
+    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ disponível da matriz na estrutura de dados.
+    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Retorna~$\min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\}$.
 \end{description}
 \end{defi}
 
-Dizemos que uma dada coluna~$j$ é já conhecida se for possível calcular trivialmente o valor de cada entrada da coluna. Trabalharemos com envelopes sobre a matriz~$B$ definida na Equação~\ref{Online:Bconv}, portanto, uma coluna~$j$ é conhecida se já calculamos os valores~$E[i]$ com~$i > j$ e sabemos que é possível calcular qualquer entrada de uma coluna conhecida em tempo~$\Cl{O}(1)$.
-
-A estrutura de envelope consegue guardar um conjunto de colunas e descobrir qual dessas colunas atinge o valor mínimo numa dada linha. O Algoritmo~\ref{Online:algo} mostra a ideia geral da solução utilizando o envelope e vamos descrever como implementá-lo depois.
+Com esta definição, vamos descrever genericamente o Algoritmo~\ref{Online:algo} que retorna o vetor~$E$ de mínimos das linhas da matriz~$A$.
 
 \begin{algorithm}[h]
-\caption{Busca em matrizes online}
+\caption{Mínimos de linhas online}
 \label{Online:algo}
 \begin{algorithmic}[1]
-\Function{Online}{C, n}
-    \State $E[n] = 0$
-	\State Inicializa o envelope~$\Cl{E}$ sobre a matriz~$B$
-    \State $\textsc{Insere}(\Cl{E},n)$
-    \For{$i$ de $n-1$ até $1$} \label{Online:algo:loop}
-        \State $j = \textsc{Calcula}(\Cl{E},i)$
-        \State $E[i] = C[i][j] + E[j]$
+\Function{Online}{B, n}
+    \State $\Cl{E}$ é um envelope sobre a matriz~$B$
+    \State $\textsc{Insere}(\Cl{E},1)$
+
+    \For{$i$ de $2$ até $n$} \label{Online:algo:loop}
+        \State $R[i] = \textsc{Calcula}(\Cl{E},i)$
         \State $\textsc{Insere}(\Cl{E},i)$
     \EndFor
+
+    \State \Return $R$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-O Algoritmo~\ref{Online:algo} funciona já que em cada passo do laço da linha~\ref{Online:algo:loop} o valor~$j$ é definido de forma que~${B[i][j] = \min\{j \mid j > i \text{ e } B[i][j] \leq B[i][j'] \text{ para todo } j' > i\}}$, portanto,~$E[i]$ é calculado corretamente para todo~$i$.
+O algoritmo acima funciona pois em toda iteração do laço da linha~\ref{Online:algo:loop}, a variável~$R[i]$ recebe o valor~$\min\{ j < i \mid B[i][j] \leq B[i][j'] \text{ para todo } j' < i\}$.
 
-Vamos definir como será implementada a estrutura de envelope. Não vamos implementar ela para um caso genérico, mas sim aproveitar a convexidade da matriz~$C$ e a natureza do Algoritmo~\ref{Online:algo} para atingir uma complexidade boa. Considera
+%------------------------------------------------------------------
+
+\subsection{Caso Convexo}
