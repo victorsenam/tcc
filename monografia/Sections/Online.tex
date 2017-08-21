@@ -39,8 +39,8 @@ Para resolver este problema, usaremos uma estrutura de dados que chamamos de env
 Um envelope~$\Cl{E}$ sobre uma matriz~$A$ é uma estrutura de dados que mantém um conjunto de colunas~$J$ da matriz e é capaz de responder às seguintes operações:
 
 \begin{description}
-    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ disponível da matriz na estrutura de dados.
-    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Retorna~$\min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\}$.
+    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ disponível da matriz na estrutura de dados e
+    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Retorna~$\min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\}$ onde~$i \in [n]$ e~$J$ é não vazio.
 \end{description}
 \end{defi}
 
@@ -50,7 +50,7 @@ Com esta definição, vamos descrever genericamente o Algoritmo~\ref{Online:algo
 \caption{Mínimos de linhas online}
 \label{Online:algo}
 \begin{algorithmic}[1]
-\Function{Online}{B, n}
+\Function{Online}{A, n}
     \State $\Cl{E}$ é um envelope sobre a matriz~$B$
     \State $\textsc{Insere}(\Cl{E},1)$
 
@@ -64,8 +64,44 @@ Com esta definição, vamos descrever genericamente o Algoritmo~\ref{Online:algo
 \end{algorithmic}
 \end{algorithm}
 
-O algoritmo acima funciona pois em toda iteração do laço da linha~\ref{Online:algo:loop}, a variável~$R[i]$ recebe o valor~$\min\{ j < i \mid B[i][j] \leq B[i][j'] \text{ para todo } j' < i\}$.
+O algoritmo acima funciona pois em toda iteração do laço da linha~\ref{Online:algo:loop}, a variável~$R[i]$ recebe o valor~$\min\{ j < i \mid B[i][j] \leq B[i][j'] \text{ para todo } j' < i\}$, que é o índice de mínimo da linha~$i$, portanto, o algoritmo retorna o vetor de índices de mínimos de~$A$.
+
+Falta agora descrever a estrutura de envelope tanto para o caso côncavo quanto para o caso convexo. Nos dois casos temos a garantia de que o parâmetros passados tanto para \textsc{Insere} quanto para \textsc{Calcula} são dados em ordem crescente, isto é, as colunas são inseridas em ordem crescente de índice na estrutura e os mínimos das linhas também são calculados em ordem crescente.
 
 %------------------------------------------------------------------
 
-\subsection{Caso Convexo}
+\subsection{Caso convexo}
+Discutiremos agora a implementação de um envelope~$\Cl{E}$ sobre uma matriz~$A$ totalmente monótona convexa nas linhas e online nas linhas. 
+
+Dadas duas colunas~$a,b \in [n]$ onde~$a < b$ definimos a operação~$\textsc{Intersecta}(a,b)$ que descobre a primeira linha da matriz para a qual o valor da coluna~$b$ é menor do que o valor da coluna~$a$ ou~$n+1$ se este índice não existir, isto é~${\textsc{Intersecta}(a,b) = \min\{\{ i \in [n] \mid A[i][a] > A[i][b] \} \cup \{n+1\}\}}$. Note que pelo Lema~\ref{MonotoneTotallyMonotone} os índices de mínimos das linhas são crescentes em toda submatriz de~$A$ e isso nos diz que a partir do ponto~$\textsc{Intersecta}(a,b)$ a coluna~$b$ tem valor menor do que a coluna~$a$. Note também que o calculo desta operação pode ser realizado em tempo~$\Cl{O}(n)$ com busca binária.
+
+Para cada coluna~$j$ de~$A$ estamos interessados, também, no primeiro momento onde esta coluna é a de menor valor dentre todas as de índice menor já presentes na estrutura~$J$, para isso, definimos a função~${ s(j) = \max\{\{ \textsc{Intersecta}(j',j) \mid j' < j \text{ e } j' \in J \} \cup \{ 1 \} \} }$. Pela total monotonicidade de~$A$ é fácil perceber que a partir do ponto~$s(j)$ a coluna~$j$ é a menor dentre todas as em~$J$ de índice menor do que ela. 
+
+Representaremos o envelope~$\Cl{E}$ com uma lista de pares~$(j,s(j))$ onde~$j \in J$ ordenada pelo valor de~$j$ e manter as invariantes de que os valores~$s(j)$ estão calculados corretamente e caso~$s(j) = n+1$ o par~$(j,s(j))$ foi removido da lista. O Algoritmo~\ref{Online:envelope:convex} implementa as operações~\textsc{Insere} e~\textsc{Calcula} sobre esta representação de envelope.
+
+\begin{algorithm}[h]
+\caption{Envelope convexo}
+\label{Online:envelope:convex}
+\begin{algorithmic}[1]
+\Function{Calcula}{\Cl{E},i}
+    \While{ $\Cl{E}$ tem pelo menos 2 elementos}
+        \State $(j_2,s(j_2))$ é o segundo elemento
+        \If{$s(j_2) \leq i$}
+            \State Remove o primeiro elemento de~$\Cl{E}$
+        \Else
+            \State $(j_1,s(j_1))$ é o primeiro elemento
+            \State \Return $j_0$
+        \EndIf
+    \EndWhile
+    \State $(j_0,s(j_0))$ é o primeiro elemento
+    \State \Return $j_0$
+\EndFunction
+
+\Function{Insere}{\Cl{E},j}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+%------------------------------------------------------------------
+
+\subsection{Caso côncavo}
