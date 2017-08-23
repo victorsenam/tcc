@@ -66,42 +66,120 @@ Com esta definição, vamos descrever genericamente o Algoritmo~\ref{Online:algo
 
 O algoritmo acima funciona pois em toda iteração do laço da linha~\ref{Online:algo:loop}, a variável~$R[i]$ recebe o valor~$\min\{ j < i \mid B[i][j] \leq B[i][j'] \text{ para todo } j' < i\}$, que é o índice de mínimo da linha~$i$, portanto, o algoritmo retorna o vetor de índices de mínimos de~$A$.
 
-Falta agora descrever a estrutura de envelope tanto para o caso côncavo quanto para o caso convexo. Nos dois casos temos a garantia de que o parâmetros passados tanto para \textsc{Insere} quanto para \textsc{Calcula} são dados em ordem crescente, isto é, as colunas são inseridas em ordem crescente de índice na estrutura e os mínimos das linhas também são calculados em ordem crescente.
+Falta agora descrever a estrutura de envelope tanto para o caso côncavo quanto para o caso convexo. Nos dois casos temos a garantia de que o parâmetros passados tanto para \textsc{Insere} quanto para \textsc{Calcula} são dados em ordem crescente, isto é, as colunas são inseridas em ordem crescente de índice na estrutura e os mínimos das linhas também são calculados em ordem crescente. Inicialmente, nas Subseções~\ref{Online:convex} e~\ref{Online:concave} aproveitaremos apenas a propriedade descrita para a operação \textsc{Insere} e depois, na Subseção~\ref{Online:linear} utilizaremos também a propriedade descrita para \textsc{Calcula}.
 
 %------------------------------------------------------------------
 
-\subsection{Caso convexo}
+\subsection{Caso convexo} \label{Online:convex}
 Discutiremos agora a implementação de um envelope~$\Cl{E}$ sobre uma matriz~$A$ totalmente monótona convexa nas linhas e online nas linhas. 
 
-Dadas duas colunas~$a,b \in [n]$ onde~$a < b$ definimos a operação~$\textsc{Intersecta}(a,b)$ que descobre a primeira linha da matriz para a qual o valor da coluna~$b$ é menor do que o valor da coluna~$a$ ou~$n+1$ se este índice não existir, isto é~${\textsc{Intersecta}(a,b) = \min\{\{ i \in [n] \mid A[i][a] > A[i][b] \} \cup \{n+1\}\}}$. Note que pelo Lema~\ref{MonotoneTotallyMonotone} os índices de mínimos das linhas são crescentes em toda submatriz de~$A$ e isso nos diz que a partir do ponto~$\textsc{Intersecta}(a,b)$ a coluna~$b$ tem valor menor do que a coluna~$a$. Note também que o calculo desta operação pode ser realizado em tempo~$\Cl{O}(n)$ com busca binária.
+\begin{defi}[Coluna válida]
+Uma coluna~$j \in J$ é válida somente se existe uma linha~$i \in [n]$ para a qual~${j = \textsc{Calcula}(\Cl{E},i)}$, ou seja, ela é o mínimo de alguma linha. Uma coluna que não respeita esta propriedade é chamada inválida.
+\end{defi}
 
-Para cada coluna~$j$ de~$A$ estamos interessados, também, no primeiro momento onde esta coluna é a de menor valor dentre todas as de índice menor já presentes na estrutura~$J$, para isso, definimos a função~${ s(j) = \max\{\{ \textsc{Intersecta}(j',j) \mid j' < j \text{ e } j' \in J \} \cup \{ 1 \} \} }$. Pela total monotonicidade de~$A$ é fácil perceber que a partir do ponto~$s(j)$ a coluna~$j$ é a menor dentre todas as em~$J$ de índice menor do que ela. 
+Se~$a$ e~$b$ são duas colunas válidas de~$A$ onde~$a < b$, pela convexidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ tem valor menor ou igual do que o da~$b$ para um prefixo das linhas e maior para o restante (um sufixo), isto é, existe um índice~$i$ tal que a partir da linha~$i$ a coluna~$b$ é a melhor entre as duas e antes da linha~$i$ a coluna~$a$ é a melhor. Definimos a operação~$\textsc{Intersecta}(a,b)$ que devolve este índice de linha. Formalmente, definimos~${\textsc{Intersecta}(a,b) = \min\{ i \in [n] \mid A[i][a] > A[i][b] \}}$. O cálculo desta operação pode ser realizado com busca binária em tempo~$\Cl{O}(\lg(n))$ da maneira descrita no Algoritmo~\ref{Online:convex:BB}.
 
-Representaremos o envelope~$\Cl{E}$ com uma lista de pares~$(j,s(j))$ onde~$j \in J$ ordenada pelo valor de~$j$ e manter as invariantes de que os valores~$s(j)$ estão calculados corretamente e caso~$s(j) = n+1$ o par~$(j,s(j))$ foi removido da lista. O Algoritmo~\ref{Online:envelope:convex} implementa as operações~\textsc{Insere} e~\textsc{Calcula} sobre esta representação de envelope.
+\begin{algorithm}[h]
+\caption{Intersecção de duas colunas no caso convexo}
+\label{Online:convex:BB}
+\begin{algorithmic}[1]
+\Function{Intersecta}{a,b}
+    \State $\ell \rec 1$
+    \State $r \rec n$
+
+    \While{ $\ell < r$}
+        \State $p \rec (\ell + r)/2$
+        \If{ $A[p][a] > A[p][b]$} \label{Online:convex:BB:ineq}
+            \State $r \rec p$
+        \Else
+            \State $\ell \rec p+1$
+        \EndIf
+    \EndWhile
+    \State \Return $\ell$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Para cada coluna~$j \in J$ é interessante descobrir a primeira linha onde esta é a de menor valor dentre todas as colunas de índice menor do que ela em~$J$. Vamos definir este valor como~$s(j)$ e, assim como em~\textsc{Intersecta}, se não houver uma linha que respeite isso definimos~$s(j) = n+1$. Formalmente, definimos~${s(j) = \max(\{ \textsc{Intersecta}(j',j) \mid j' \in J \text{ e } j' < j\} \cup \{1\})}$.
+
+\begin{prop} \label{Online:convex:easys}
+Para qualquer conjunto~$J$ de colunas de~$A$ e qualquer~$j \in J$ ou conjunto~${\{j' \in J \mid j' \text{ é valido e } j' < j\}}$ é vazio e~$s(j) = 1$ ou~$\{s(j) = \textsc{Intersecta}(j,j')\}$ onde~$j'$ é o máximo deste conjunto.
+
+Isto é, para calcular o valor de~$s(j)$ basta escolher o maior~$j' \in J$ válido de valor menor do que~$j$. Se tal valor existe basta calcular sua intersecção com~$j$ e, caso contrário, definir~$s(j) = 1$.
+\end{prop}
+
+\begin{proof}
+Denotamos por~$J_<$ o subconjunto de~$J$ que contém apenas os elementos menores do que~$j$. Se~$| J_<| \leq 1$ é fácil ver que as definições propostas para~$s(j)$ coincidem analisando 3 casos separadamente, onde~$J_<$ é vazio, onde possui um elemento válido e onde possui um elemento inválido e assumimos, sem perda de generalidade, que~$|J_<| > 1$.
+
+Sejam~$j_0$ e~$j_1$ dois elementos de~$J_<$ tais que~$j_0 < j_1$. Definimos~${i_0 = \textsc{Intersecta}(j_0,j)}$ e~${i_1 = \textsc{Intersecta}(j_1,j)}$. Suponha que~$i_1 < i_0$. Vamos descobrir para cada linha da matriz qual dentre as três colunas,~$j_0$,~$j_1$ e~$j$, é a de valor mínimo. Para todo~$i \in [i_0 \tdots n]$, pela total monotonicidade de~$A$ e já que~$i_0 < i$ e~$i_1 < i$, valem as desigualdades~$A[i][j] < A[i][j_0]$ e~$A[i][j] < A[i][j_1]$. 
+
+Além disso, sabemos~$A[i_0-1][j_0] \leq A[i_0-1][j]$ e~$A[i_0-1][j] < A[i_0-1][j_1]$ o que nos leva a~$A[i_0-1][j_0] < A[i_0-1][j_1]$ e, portanto, para todo~$i' \in [1 \tdots i_0-1]$ vale~$A[i][j_0] < A[i][j_1]$. Note que usamos a total monotonicidade de~$A$ em todo passo desta demonstração. Isso nos mostra que no intervalo~$[1 \tdots i_0-1]$~$j_0$ é ótimo e no intervalo~$[i_0 \tdots i_1]$~$j$ é ótimo, portanto,~$j_1$ é inválido.
+
+Com isso, sabemos que o maior~$j'$ válido em~$J_<$ é o de maior intersecção com~$j$ dentre todos os elementos de~$J_<$, provando a proposição.
+\end{proof}
+
+A Proposição~\ref{Online:convex:easys} dá motivo a uma representação do envelope~$\Cl{E}$ que guarda todos os elementos válidos de~$J$ numa lista ordenada crescentemente. Nesta representação, calcular o~$s(j)$ de um dado~$j$ é fácil. Se~$j$ for o primeiro elemento,~$s(j) = 1$, caso contrário, basta visitar o elemento que precede~$j$ e calcular sua intersecção com~$j$. Vamos utilizar esta representação de~$\Cl{E}$. Além disso, guardaremos para cada elemento~$j$ da lista qual é o seu valor~$s(j)$. A nossa estrutura deve, então, manter 3 invariantes. Um valor~$j \in J$ pertence à estrutura se e somente se é válido, os valores aparecem em ordem crescente e todos os~$s(j)$ estão calculados corretamente.
 
 \begin{algorithm}[h]
 \caption{Envelope convexo}
 \label{Online:envelope:convex}
 \begin{algorithmic}[1]
 \Function{Calcula}{\Cl{E},i}
-    \While{ $\Cl{E}$ tem pelo menos 2 elementos}
-        \State $(j_2,s(j_2))$ é o segundo elemento
-        \If{$s(j_2) \leq i$}
-            \State Remove o primeiro elemento de~$\Cl{E}$
+    \State $\ell \rec 1$
+    \State $r \rec |\Cl{E}|$
+    
+    \While{ $\ell < r$ }
+        \State $p = (\ell+r)/2$
+        \If{ $s(\Cl{E}_p) \leq i$ }
+            \State $r = p$
         \Else
-            \State $(j_1,s(j_1))$ é o primeiro elemento
-            \State \Return $j_0$
+            \State $\ell = p+1$
         \EndIf
     \EndWhile
-    \State $(j_0,s(j_0))$ é o primeiro elemento
-    \State \Return $j_0$
+
+    \State \Return $\ell$
 \EndFunction
 
 \Function{Insere}{\Cl{E},j}
+    \If{ $A[n][\Cl{E}_{-1}] \leq A[n][j]$ }
+        \State \Return
+    \EndIf
+    
+    \While{ $\Cl{E}$ é não vazio e~$A[s(\Cl{E}_{-1})][\Cl{E}_{-1}] > A[\Cl{E}_{-1}][j]$ }
+        \State Remove o final de~$\Cl{E}$
+    \EndWhile
+
+    \State Insere~$j$ ao final de~$\Cl{E}$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
+O Algoritmo~\ref{Online:envelope:convex} implementa as operações~\textsc{Calcula} e~\textsc{Insere} como descrito a seguir. Para responder a uma pergunta da forma~$\textsc{Insere}(\Cl{E},j)$ vamos aproveitar a garantia já citada de que~$j > j'$ para todo~$j' \in J$ já que as operações de inserção estão ordenadas crescentemente. É possível que~$j$ seja uma coluna inválida em~$J$, esta condição pode ser testada comparando os valores das coluna~$j$ com o valor da última coluna~$j_{-1}$ da estrutura, se~${A[n][j_{-1}] \leq A[n][j]}$, pela total monotonicidade,~$j$ será inválida, caso contrário,~$j$ será a coluna ótima da estrutura na linha~$n$. No caso onde~$j$ é inválida, devemos ignorar esta operação de inserção e podemos, agora, assumir sem perda de generalidade que~$j$ é válida.
+
+Devemos verificar se a nossa coluna~$j$ torna alguma outra coluna de~$J$ inválida e remover esta coluna. Escolhemos a última coluna~$j_{-1}$ da estrutura e verificamos~${A[s(j_{-1})][j_{-1}] \leq A[s(j_{-1})][j]}$, se esta condição for verdade~$j_{-1}$ é válida pois é ótima no ponto~$s(j_{-1})$ e todas as colunas anteriores também são, já que, pela total monotonicidade, o valor da coluna~$j_{-1}$ supera o valor de~$j$ em todas as linhas anteriores a~$s(j_{-1})$, mantendo a validade de todos os elementos que possuem algum ponto ótimo em alguma dessas linhas. Se a condição for mentira, pela total monotonicidade,~$j_{-1}$ é superada por~$j$ de~$s(j_{-1})$ em diante e por alguma outra coluna antes desta linha, portanto, é inválida e deve ser removida, portanto, removemos~$j_{-1}$ e repetimos o processo até não haver mais elementos na lista ou até o último elemento ser válido. Com este trabalho, mantivemos a invariante de que todas as colunas de~$\Cl{E}$ são válidas.
+
+Falta atualizar os valores~$s(j')$ para todo~$j' \in \Cl{E}$. Temos a garantia de que inserimos e removemos elementos apenas no final da lista, já que os valores~$s(j')$ dependem do elemento anterior, basta calcular o valor~$s(j)$ do novo elemento adicionado, o que sabemos fazer em tempo~$\Cl{O}(\lg(n))$. Isso garante a invariante de que os valores da função~$s$ estão guardados corretamente. A invariante de que o vetor é ordenado é trivialmente mantida já que só adicionamos elementos no final da lista.
+
+Agora precisamos usar esta estrutura para responder rapidamente a uma pergunta da forma~${ \textsc{Calcula}(\Cl{E},i) }$ com~$i \in [n]$. Para isso, vamos descobrir o maior elemento~$j \in \Cl{E}$ tal que~$s(j) \leq i$. Este valor é a resposta correta pois a resposta deve ser válida, portanto, pertencer a~$\Cl{E}$ e~$j$ supera todos os elementos anteriores a ele a partir de~$s(j)$ e todo elemento~$j'$ seguinte antes de~$s(j')$ que, por construção, é maior do que~$i$. A tarefa de encontrar este~$j$ pode ser realizada com uma busca binária na lista~$\Cl{E}$.
+
+Assumimos que a nossa implementação da lista~$\Cl{E}$ é capaz de visitar um elemento em uma dada posição em tempo~$\Cl{O}(1)$ além de adicionar e remover elementos do final da lista, isso, em \texttt{C++}, pode ser implementado utilizando a estrutura~\texttt{vector} da biblioteca padrão. Podemos criar uma estrutura que guarda tanto o valor~$j$ quanto o~$s(j)$ correspondente e montar nossa lista fazendo com que cada elemento seja um objeto deste tipo, com isso, acessar ou atualizar o~$s(j)$ de um~$j$ é equivalente a acessar o valor de~$j$. Uma implementação em~\texttt{C++} que respeita estas hipóteses pode ser encontrada em~\texttt{envelope\_convex}.Vamos calcular a complexidade dos algoritmos sugeridos.
+
+Cada operação~\textsc{Calcula} envolve apenas uma busca binária na lista~$\Cl{E}$ onde cada iteração custa tempo constante, já que esta lista tem tamanho no máximo~$n$ (pois~$A$ tem~$n$ colunas), estas chamadas custam~$\Cl{O}(\lg(n))$ cada. Uma operação~\textsc{Insere} pode remover vários elementos de~$\Cl{E}$, custando tempo potencialmente linear, porém, cada elemento de~$\Cl{E}$ só pode ser removido uma única vez, fazendo com que a soma de todas as remoções custe tempo~$\Cl{O}(n)$. Além disso, esta operação insere um novo elemento em~$\Cl{O}(1)$ e calcula o valor~$s$ do novo elemento em tempo~$\Cl{O}(\lg(n))$, desta maneira, cada operação custa tempo~$\Cl{O}(\lg(n))$ amortizado.
+
 %------------------------------------------------------------------
 
-\subsection{Caso côncavo}
+\subsection{Caso côncavo} \label{Online:concave}
+
+Discutiremos agora a implementação do envelope~$\Cl{E}$ sobre uma matriz~$A$ totalmente monótona côncava nas linhas e online nas linhas. Este caso se desenvolve de maneira extremamente similar ao caso convexo, portanto, aproveitaremos várias das definições do caso convexo.
+
+Se~$a$ e~$b$ são colunas válidas de~$A$ onde~$a < b$, pela concavidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ tem valor maior do que o da~$b$ para um prefixo das linhas e menor ou igual para o restante (um sufixo). Definimos a operação~$\textsc{Intersecta}(a,b)$ que retorna o primeiro índice de linha para o qual~$a$ tem valor menor ou igual a~$b$. Formalmente, vale~${\textsc{Intersecta}(a,b) = \min\{i \in [n] \mid A[i][a] \leq A[i][b]\}}$. Podemos calcular este valor, também, com busca binária, de forma parecida com o Algoritmo~\ref{Online:convex:BB} com a alteração de que a linha~\ref{Online:convex:BB:ineq} deve checar a condição~$A[p][a] \leq A[p][b]$.
+
+%------------------------------------------------------------------
+
+\subsection{Envelopes em tempo linear} \label{Online:linear}
+
+%------------------------------------------------------------------
+
+\subsection{Relação com Pareto}
+
+O caso convexo funciona de maneira parecida como uma fronteira de Pareto em pares~$(j,s(j))$ que restringe a ordem das buscas e inserções e o caso côncavo pode ser interpretado, também, de maneira parecida. É razoável imaginar o motivo de não podermos realizar todas as operações de uma fronteira de Pareto no envelope. A próxima seção explora esta possibilidade.
