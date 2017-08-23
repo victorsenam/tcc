@@ -77,7 +77,7 @@ Discutiremos agora a implementação de um envelope~$\Cl{E}$ sobre uma matriz~$A
 Uma coluna~$j \in J$ é válida somente se existe uma linha~$i \in [n]$ para a qual~${j = \textsc{Calcula}(\Cl{E},i)}$, ou seja, ela é o mínimo de alguma linha. Uma coluna que não respeita esta propriedade é chamada inválida.
 \end{defi}
 
-Se~$a$ e~$b$ são duas colunas válidas de~$A$ onde~$a < b$, pela convexidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ tem valor menor ou igual do que o da~$b$ para um prefixo das linhas e maior para o restante (um sufixo), isto é, existe um índice~$i$ tal que a partir da linha~$i$ a coluna~$b$ é a melhor entre as duas e antes da linha~$i$ a coluna~$a$ é a melhor. Definimos a operação~$\textsc{Intersecta}(a,b)$ que devolve este índice de linha. Formalmente, definimos~${\textsc{Intersecta}(a,b) = \min\{ i \in [n] \mid A[i][a] > A[i][b] \}}$. O cálculo desta operação pode ser realizado com busca binária em tempo~$\Cl{O}(\lg(n))$ da maneira descrita no Algoritmo~\ref{Online:convex:BB}.
+Se~$a$ e~$b$ são duas colunas de~$A$ onde~$a < b$, pela convexidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ tem valor menor ou igual do que o da~$b$ para um prefixo potencialmente vazio das linhas e maior para o restante, um sufixo também potencialmente vazio, isto é, existe um índice~$i \in [n+1]$ tal que a partir da linha~$i$ a coluna~$b$ é a melhor entre as duas e antes da linha~$i$ a coluna~$a$ é a melhor. Definimos a operação~$\textsc{Intersecta}(a,b)$ que devolve este índice de linha. Formalmente, definimos~${\textsc{Intersecta}(a,b) = \min(\{ i \in [n] \mid A[i][a] > A[i][b] \} \cup \{n+1\})}$. O cálculo desta operação pode ser realizado com busca binária em tempo~$\Cl{O}(\lg(n))$ da maneira descrita no Algoritmo~\ref{Online:convex:BB}.
 
 \begin{algorithm}[h]
 \caption{Intersecção de duas colunas no caso convexo}
@@ -85,7 +85,7 @@ Se~$a$ e~$b$ são duas colunas válidas de~$A$ onde~$a < b$, pela convexidade de
 \begin{algorithmic}[1]
 \Function{Intersecta}{a,b}
     \State $\ell \rec 1$
-    \State $r \rec n$
+    \State $r \rec n+1$
 
     \While{ $\ell < r$}
         \State $p \rec (\ell + r)/2$
@@ -100,22 +100,18 @@ Se~$a$ e~$b$ são duas colunas válidas de~$A$ onde~$a < b$, pela convexidade de
 \end{algorithmic}
 \end{algorithm}
 
-Para cada coluna~$j \in J$ é interessante descobrir a primeira linha onde esta é a de menor valor dentre todas as colunas de índice menor do que ela em~$J$. Vamos definir este valor como~$s(j)$ e, assim como em~\textsc{Intersecta}, se não houver uma linha que respeite isso definimos~$s(j) = n+1$. Formalmente, definimos~${s(j) = \max(\{ \textsc{Intersecta}(j',j) \mid j' \in J \text{ e } j' < j\} \cup \{1\})}$.
+Para cada coluna~$j \in J$ é interessante descobrir a primeira linha onde~$j$ é a coluna de menor valor dentre todas as colunas de índice menor do que ela em~$J$. Vamos definir este valor como~$s(j)$. Se~$j$ for maior ou igual a todas as colunas de índice menor em~$J$ para todas as linhas da matriz definimos~$s(j) = n+1$. Formalmente~${ s(j) = \min(\{i \in [n] \mid A[i][j] < A[i][j'] \text{ para todo } j' \in J \text{ tal que } j' < j\} \cup \{n+1\}) }$. Perceba que, pela total monotonicidade de~$A$, a coluna~$j$ tem valor menor ou igual a todas as de índice menor em~$J$ para toda linha a partir de~$s(j)$.
 
 \begin{prop} \label{Online:convex:easys}
-Para qualquer conjunto~$J$ de colunas de~$A$ e qualquer~$j \in J$ ou conjunto~${\{j' \in J \mid j' \text{ é valido e } j' < j\}}$ é vazio e~$s(j) = 1$ ou~$\{s(j) = \textsc{Intersecta}(j,j')\}$ onde~$j'$ é o máximo deste conjunto.
+Para qualquer conjunto~$J$ de colunas de~$A$ e qualquer~$j \in J$ válido ou o conjunto~${\{j' \in J \mid j' \text{ é valido e } j' < j\}}$ é vazio e~$s(j) = 1$ ou~$\{s(j) = \textsc{Intersecta}(j^*,j)\}$ onde~$j^*$ é o máximo deste conjunto.
 
-Isto é, para calcular o valor de~$s(j)$ basta escolher o maior~$j' \in J$ válido de valor menor do que~$j$. Se tal valor existe basta calcular sua intersecção com~$j$ e, caso contrário, definir~$s(j) = 1$.
+Isto é, para calcular o valor de~$s(j)$ basta escolher o maior~$j^* \in J$ válido de valor menor do que~$j$. Se tal~$j^*$ existe basta calcular sua intersecção com~$j$ e, caso contrário, definir~$s(j) = 1$.
 \end{prop}
 
 \begin{proof}
-Denotamos por~$J_<$ o subconjunto de~$J$ que contém apenas os elementos menores do que~$j$. Se~$| J_<| \leq 1$ é fácil ver que as definições propostas para~$s(j)$ coincidem analisando 3 casos separadamente, onde~$J_<$ é vazio, onde possui um elemento válido e onde possui um elemento inválido e assumimos, sem perda de generalidade, que~$|J_<| > 1$.
+Sabemos que~$j$ é válida e, por este motivo, a linha~$s(j)$ pertence a matriz e tem~$j$ como sua coluna ótima. Sabemos, graças à total monotonicidade de~$A$, que se uma coluna~$j' \in J$ tem índice maior do que~$j$, ela só pode ser ótima em linhas maiores do que~$s(j)$ e, similarmente, se~$j'$ tem índice menor do que~$j$, só pode ser ótima em linhas de índice menor do que~$s(j)$. Com isso, se não há nenhuma coluna válida em~$J$ de índice menor do que~$j$, a coluna~$j$ deve ser a de índice ótimo em todas as linhas menores do que~$s(j)$ o que é contradiz a definição de~$s(j)$, portanto,~$s(j) = 1$, já que não pode haver uma linha menor do que~$s(j)$ e 1 é o único valor que respeita isso.
 
-Sejam~$j_0$ e~$j_1$ dois elementos de~$J_<$ tais que~$j_0 < j_1$. Definimos~${i_0 = \textsc{Intersecta}(j_0,j)}$ e~${i_1 = \textsc{Intersecta}(j_1,j)}$. Suponha que~$i_1 < i_0$. Vamos descobrir para cada linha da matriz qual dentre as três colunas,~$j_0$,~$j_1$ e~$j$, é a de valor mínimo. Para todo~$i \in [i_0 \tdots n]$, pela total monotonicidade de~$A$ e já que~$i_0 < i$ e~$i_1 < i$, valem as desigualdades~$A[i][j] < A[i][j_0]$ e~$A[i][j] < A[i][j_1]$. 
-
-Além disso, sabemos~$A[i_0-1][j_0] \leq A[i_0-1][j]$ e~$A[i_0-1][j] < A[i_0-1][j_1]$ o que nos leva a~$A[i_0-1][j_0] < A[i_0-1][j_1]$ e, portanto, para todo~$i' \in [1 \tdots i_0-1]$ vale~$A[i][j_0] < A[i][j_1]$. Note que usamos a total monotonicidade de~$A$ em todo passo desta demonstração. Isso nos mostra que no intervalo~$[1 \tdots i_0-1]$~$j_0$ é ótimo e no intervalo~$[i_0 \tdots i_1]$~$j$ é ótimo, portanto,~$j_1$ é inválido.
-
-Com isso, sabemos que o maior~$j'$ válido em~$J_<$ é o de maior intersecção com~$j$ dentre todos os elementos de~$J_<$, provando a proposição.
+Por outro lado, se existe uma coluna em~$j$ válida de índice menor do que~$J$, chamamos de~$j^*$ a maior dentre todas estas colunas. Se~$j^*$ não for a coluna ótima em~$s(j) - 1$ existe uma outra coluna~$j'$ de índice menor do que~$j^*$ que é ótima na linha~$s(j) - 1$, isso se deve aos fatos de que a coluna ótima na linha~$s(j) - 1$ não pode ter índice maior do que~$j$, deve ser válida e não pode estar em~$[j^* \tdots j]$. Porém, se~$j'$ for ótima em~$s(j) - 1$ ela é, por total monotonicidade, menor do que~$j^*$ em todas as linhas de~$[1 \tdots s(j)-1]$, o que faz com que~$j^*$ seja inválida, um absurdo. Assim,~$j^*$ é a coluna ótima em~$s(j) - 1$ e~$\textsc{Intersecta}(j^*,j) = s(j)$.
 \end{proof}
 
 A Proposição~\ref{Online:convex:easys} dá motivo a uma representação do envelope~$\Cl{E}$ que guarda todos os elementos válidos de~$J$ numa lista ordenada crescentemente. Nesta representação, calcular o~$s(j)$ de um dado~$j$ é fácil. Se~$j$ for o primeiro elemento,~$s(j) = 1$, caso contrário, basta visitar o elemento que precede~$j$ e calcular sua intersecção com~$j$. Vamos utilizar esta representação de~$\Cl{E}$. Além disso, guardaremos para cada elemento~$j$ da lista qual é o seu valor~$s(j)$. A nossa estrutura deve, então, manter 3 invariantes. Um valor~$j \in J$ pertence à estrutura se e somente se é válido, os valores aparecem em ordem crescente e todos os~$s(j)$ estão calculados corretamente.
@@ -172,7 +168,9 @@ Cada operação~\textsc{Calcula} envolve apenas uma busca binária na lista~$\Cl
 
 Discutiremos agora a implementação do envelope~$\Cl{E}$ sobre uma matriz~$A$ totalmente monótona côncava nas linhas e online nas linhas. Este caso se desenvolve de maneira extremamente similar ao caso convexo, portanto, aproveitaremos várias das definições do caso convexo.
 
-Se~$a$ e~$b$ são colunas válidas de~$A$ onde~$a < b$, pela concavidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ tem valor maior do que o da~$b$ para um prefixo das linhas e menor ou igual para o restante (um sufixo). Definimos a operação~$\textsc{Intersecta}(a,b)$ que retorna o primeiro índice de linha para o qual~$a$ tem valor menor ou igual a~$b$. Formalmente, vale~${\textsc{Intersecta}(a,b) = \min\{i \in [n] \mid A[i][a] \leq A[i][b]\}}$. Podemos calcular este valor, também, com busca binária, de forma parecida com o Algoritmo~\ref{Online:convex:BB} com a alteração de que a linha~\ref{Online:convex:BB:ineq} deve checar a condição~$A[p][a] \leq A[p][b]$.
+Se~$a$ e~$b$ são colunas válidas de~$A$ onde~$a < b$, pela concavidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ tem valor \textbf{maior} do que o da~$b$ para um prefixo das linhas e menor ou igual para o restante (um sufixo). Definimos a operação~$\textsc{Intersecta}(a,b)$ que retorna o primeiro índice de linha para o qual~$a$ tem valor menor ou igual a~$b$. Formalmente, vale~${\textsc{Intersecta}(a,b) = \min\{i \in [n] \mid A[i][a] \leq A[i][b]\}}$. Podemos calcular este valor, também, com busca binária, de forma parecida com o Algoritmo~\ref{Online:convex:BB} com a alteração de que a linha~\ref{Online:convex:BB:ineq} deve checar a condição~$A[p][a] \leq A[p][b]$.
+
+Para cada coluna~$j \in J$ estamos interessados agora em descobrir a primeira coluna onde esta \textbf{não} é a de menor valor dentre todas as colunas de índice menor do que ela em~$J$. Vamos definir este valor como
 
 %------------------------------------------------------------------
 
