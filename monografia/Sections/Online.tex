@@ -131,7 +131,7 @@ A Proposição~\ref{Online:convex:easys} dá motivo a uma representação do env
     \State $r \rec |\Cl{E}|$
     
     \While{ $\ell < r$ }
-        \State $p = (\ell+r)/2$
+        \State $p = \floor{ (\ell+r)/2 }$
         \If{ $s(\Cl{E}_p) \leq i$ }
             \State $r = p$
         \Else
@@ -152,13 +152,14 @@ A Proposição~\ref{Online:convex:easys} dá motivo a uma representação do env
     \EndWhile
 
     \State Insere~$j$ ao final de~$\Cl{E}$
+    \State Calcula e guarda~$s(j)$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-O Algoritmo~\ref{Online:envelope:convex} implementa as operações~\textsc{Calcula} e~\textsc{Insere} como descrito a seguir. Para responder a uma pergunta da forma~$\textsc{Insere}(\Cl{E},j)$ aproveitamos a garantia já citada de que estas operações estão ordenadas crescentemente, ou seja,~$j > j'$ para todo~$j' \in J$. É possível que~$j$ se torne uma coluna inválida quando adicionada a~$J$ o que, pela total monotonicidade, só ocorre se~$\Cl{E}_{-1}$ for melhor do que~$j$ na linha~$n$, portanto, verificamos inicialmente se esta condição é verdade e, caso seja, ignoramos a operação. Podemos assumir sem perda de generalidade que~$j$ é válida daqui em diante.
+O Algoritmo~\ref{Online:envelope:convex} implementa as operações~\textsc{Calcula} e~\textsc{Insere} como descrito a seguir. Para responder a uma pergunta da forma~$\textsc{Insere}(\Cl{E},j)$ aproveitamos a garantia já citada de que estas operações estão ordenadas crescentemente, ou seja,~$j > j'$ para todo~$j' \in J$. É possível que~$j$ se torne uma coluna inválida quando adicionada a~$J$ o que, pela total monotonicidade, só ocorre se~$\Cl{E}_{-1}$ (a coluna válida de maior índice) for melhor do que~$j$ na linha~$n$, portanto, verificamos inicialmente se esta condição é verdade e, caso seja, ignoramos a operação. Podemos assumir sem perda de generalidade que~$j$ é válida daqui em diante.
 
-Devemos verificar se a nova coluna~$j$ torna alguma outra coluna de~$J$ inválida e remover esta coluna. Escolhemos a última coluna~$\Cl{E}_{-1}$ da estrutura. Se~$j$ for melhor do que~$\Cl{E}_{-1}$ na linha~$s(\Cl{E}_{-1})$, pela total monotonicidade, a coluna~$\Cl{E}_{-1}$ passa a ser inválida e, por este motivo, removemos ela da estrutura. Se~$j$ for pior, também pela total monotonicidade, é pior em todas as linhas anteriores e mantém a validade de todas as outras colunas da estrutura. Este argumento nos mostra que, para remover todos os elementos inválidos de~$\Cl{E}$ basta remover o último elemento enquanto ele for inválido. Com este trabalho, mantivemos a invariante de que todas as colunas de~$\Cl{E}$ são válidas.
+Devemos verificar se a nova coluna~$j$ torna alguma outra coluna de~$J$ inválida e remover esta coluna. Escolhemos a última coluna~$\Cl{E}_{-1}$ da estrutura. Se~$j$ for melhor do que~$\Cl{E}_{-1}$ na linha~$s(\Cl{E}_{-1})$, pela total monotonicidade, a coluna~$\Cl{E}_{-1}$ passa a ser inválida e, por este motivo, removemos ela da estrutura. Se~$j$ for pior, também pela total monotonicidade, é pior em todas as linhas seguintes e mantém a validade de todas as outras colunas da estrutura. Este argumento nos mostra que para remover todos os elementos inválidos de~$\Cl{E}$ basta remover o último elemento enquanto ele for inválido. Com este trabalho mantivemos a invariante de que uma coluna de~$J$ está em~$\Cl{E}$ se e somente se é válida.
 
 Falta atualizar os valores~$s(j')$ para todo~$j' \in \Cl{E}$. Temos a garantia de que inserimos e removemos elementos apenas no final da lista, já que os valores~$s(j')$ dependem do elemento anterior, basta calcular o valor~$s(j)$ do novo elemento adicionado, o que sabemos fazer em tempo~$\Cl{O}(\lg(n))$. Isso garante a invariante de que os valores da função~$s$ estão guardados corretamente. A invariante de que o vetor é ordenado é trivialmente mantida já que só adicionamos elementos no final da lista.
 
@@ -188,7 +189,7 @@ A prova vai pelas mesmas linhas da prova da Proposição~\ref{Online:convex:easy
 Com isso, sabemos que~$j^*$ é ótima no ponto~$s(j) - 1$, assim, decidir~$s(j)$ é decidir o primeiro momento onde~$j$ é melhor do que~$j^*$, isto é, calcular~$\textsc{Intersecta}(j^*,j)$.
 \end{proof}
 
-Novamente, a Proposição~\ref{Online:concave:easys} indica uma representação do envelope~$\Cl{E}$ que guarda todos os elementos válidos de~$J$ numa lista ordenada crescentemente. Para calcular~$s(j)$ basta olhar para o elemento que precede~$j$ na estrutura, se não houver um vale~$s(j) = n+1$, caso contrário~$s(j)$ é a intersecção destes dois elementos. Vamos utilizar esta representação para o envelope e, mais uma vez, guardar, para cada~$j$, o valor~$s(j)$. As operações serão realizadas de forma a manter as mesmas invariantes do caso convexo, isto é, um valor~$j \in J$ pertence à estrutura se e somente se é válido, os valores aparecem em ordem crescente e todos os~$s(j)$ estão calculados corretamente.
+Novamente, a Proposição~\ref{Online:concave:easys} indica uma representação do envelope~$\Cl{E}$ que guarda todos os elementos válidos de~$J$ numa lista ordenada, porém, desta vez, vamos ordenar os itens decrescentemente. Calcular o~$s(j)$ de um dado~$j$ ainda é fácil e pode ser realizado exatamente da mesma maneira do caso convexo. Além disso, para cada elemento de~$\Cl{E}$ vamos guardar o valor~$s(j)$. A nossa estrutura deve, novamente, manter 3 invariantes: Um valor~$j \in J$ pertence à estrutura se e somente se é válido, os valores aparecem em ordem decrescente e todos os~$s(j)$ estão calculados corretamente. Note que quando~$J$ é vazio as três invariantes valem trivialmente.
 
 \begin{algorithm}[h]
 \caption{Envelope côncavo}
@@ -199,11 +200,11 @@ Novamente, a Proposição~\ref{Online:concave:easys} indica uma representação 
     \State $r \rec |\Cl{E}|$
     
     \While{ $\ell < r$ }
-        \State $p = (\ell+r+1)/2$
+        \State $p = \floor{(\ell+r)/2}$
         \If{ $s(\Cl{E}_p) \leq i$ }
-            \State $r = p - 1$
+            \State $r = p$
         \Else
-            \State $\ell = p$
+            \State $\ell = p + 1$
         \EndIf
     \EndWhile
 
@@ -211,38 +212,43 @@ Novamente, a Proposição~\ref{Online:concave:easys} indica uma representação 
 \EndFunction
 
 \Function{Insere}{\Cl{E},j}
-    \If{ $\Cl{E}$ é não vazio e~$A[1][\Cl{E}_{-11}] \leq A[1][j]$ }
+    \If{ $\Cl{E}$ é não vazio e~$A[1][\Cl{E}_{1}] < A[1][j]$ }
         \State \Return
     \EndIf
     
-    \While{ $\Cl{E}$ é não vazio e~$A[s(\Cl{E}_{-1})-1][\Cl{E}_{-1}] > A[s(\Cl{E}_{-1})-1][j]$ }
-        \State Remove o fim de~$\Cl{E}$
+    \While{ $\Cl{E}$ tem pelo menos dois elementos e~$A[s(\Cl{E}_{2})-1][\Cl{E}_{1}] > A[s(\Cl{E}_{2})-1][j]$ }
+        \State Remove o início de~$\Cl{E}$
     \EndWhile
 
-    \State Insere~$j$ no final de~$\Cl{E}$
+    \If{ $\Cl{E}$ tem exatamente um elemento e~$A[n][\Cl{E}_1] > A[n][j]$ }
+        \State Remove o início de~$\Cl{E}$
+    \EndIf
+
+    \State Insere~$j$ no início de~$\Cl{E}$
+    \State Calcula e guarda~$s(j)$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-O Algoritmo~\ref{Online:envelope:concave} implementa as operações~\textsc{Calcula} e~\textsc{Insere} como descrito a seguir. Para responder a uma pergunta da forma~$\textsc{Insere}(\Cl{E},j)$ vamos aproveitar a garantia já citada de que~$j > j'$ para todo~$j' \in J$, isto é, as operações de inserção estão ordenadas crescentemente. Primeiro, verificamos se~$j$ é uma coluna inválida em~$J$, para tanto, basta comparar o valor da coluna~$j$ com o valor da coluna~$\Cl{E}_{-1}$ (caso esta exista) na primeira linha da matriz, já que a total monotonicidade garante que se~$j$ for menor do que~$\Cl{E}_{-1}$ em alguma linha, deverá ser na primeira. No caso onde~$j$ é inválida ignoramos esta operação, portanto, podemos assumir que~$j$ é válida daqui em diante.
+O Algoritmo~\ref{Online:envelope:concave} implementa as operações~\textsc{Calcula} e~\textsc{Insere} como descrito a seguir. Para responder a uma pergunta da forma~$\textsc{Insere}(\Cl{E},j)$ aproveitamos a garantia já citada de que estas operações estão ordenadas crescentemente, ou seja,~$j > j'$ para todo~$j' \in J$. É possível que~$j$ se torne uma coluna inválida quando adicionada a~$J$ o que, pela total monotonicidade, só ocorre se~$\Cl{E}_1$ (a coluna válida de maior índice) for melhor do que~$j$ na linha~$1$, portanto, verificamos inicialmente se esta condição é verdade e, caso seja, ignoramos a operação. Podemos assumir sem perda de generalidade que~$j$ é válida daqui em diante.
 
-Devemos verificar se a nova coluna~$j$ torna alguma outra coluna de~$J$ inválida e, caso faça, remover esta coluna. Escolhemos a primeira coluna~$\Cl{E}_{-1}$ da estrutura e verificamos se~$j$ é menor do que~$\Cl{E}_{-1}$ na última linha onde esta é ótima, isto é,~$s(\Cl{E}_{-1}) - 1$. Se isso for verdade, pela total monotonicidade,~$\Cl{E}_{-1}$ deixa de ser válida e deve ser removida, caso contrário, ela permanece válida por ser ótima pelo menos na linha~$s(\Cl{E}_{-1}) - 1$. No primeiro caso, removemos a primeira coluna da estrutura e repetimos o processo, já no segundo caso, pela total monotonicidade, nenhuma coluna de~$J$ se tornará inválida com a adição de~$j$, portanto, basta adicionar~$j$ ao fim da estrutura. Desta forma, mantivemos a invariante de que~$\Cl{E}$ contém todos e apenas valores que representam colunas válidas de~$J$.
+Devemos verificar se a nova coluna~$j$ torna alguma outra coluna de~$J$ inválida e remover esta coluna. Escolhemos a primeira coluna~$\Cl{E}_1$ e vamos descobrir se ela é inválida, para tanto, basta verificar se~$j$ é melhor do que~$\Cl{E}_1$ na última linha onde~$\Cl{E}_1$ é ótima, esta linha é~${ s(\Cl{E}_2) - 1 }$ caso exista~$\Cl{E}_2$ e~$n$ caso contrário. Se~$j$ for melhor, a coluna~$\Cl{E}_1$ se tornou inválida e é removida, caso contrário não há outra coluna inválida na estrutura graças à total monotonicidade. Este argumento nos mostra que para remover todos os elementos inválidos de~$\Cl{E}$ basta remover o primeiro elemento enquanto ele for inválido. Com este trabalho mantivemos a invariante de uma coluna de~$J$ pertence a~$\Cl{E}$ se e somente se é válida.
 
-Para atualizar os valores~$s(j')$ de todo valor~$j' \in \Cl{E}$ basta perceber, mais uma vez que estes não mudam, já que só inserimos e removemos elementos do final de~$\Cl{E}$ e cada um destes depende apenas do elemento que antecede ele na estrutura. Portanto, basta calcular o valor de~$s(j)$ para o elemento~$j$ recém adicionado em tempo~$\Cl{O}(\lg(n))$ garantindo a invariante de que todos os valores de~$s$ estão corretamente calculados. Além destas duas, a invariante de que o vetor é ordenado é trivialmente mantida.
+Para atualizar os valores~$s(j')$ de todo valor~$j' \in \Cl{E}$ basta perceber, mais uma vez que estes não mudam, já que só inserimos e removemos elementos do início de~$\Cl{E}$ e cada um dos~$s(j')$ depende apenas do elemento que antecede~$j'$ na estrutura. Portanto, basta calcular o valor de~$s(j)$ para o elemento~$j$ recém adicionado em tempo~$\Cl{O}(\lg(n))$ garantindo a invariante de que todos os valores de~$s$ estão corretamente calculados. Além destas duas, a invariante de que o vetor é ordenado é trivialmente mantida.
 
-Para responder a pergunta da forma~${ \textsc{Calcula}(\Cl{E},i) }$ com~$i \in [n]$ precisamos descobrir o maior valor~$j \in \Cl{E}$ tal que~$s(j) > i$ e, similarmente ao caso convexo, este valor pode ser encontrado com busca binária em tempo~$\Cl{O}(\lg(n))$. As mesmas hipóteses sobre acessos a elementos da estrutura realizadas no caso convexo são feitas aqui e é possível encontrar uma implementação que respeita estas hipóteses em~\texttt{envelope\_concave}. 
+Para responder a pergunta da forma~${ \textsc{Calcula}(\Cl{E},i) }$ com~$i \in [n]$ precisamos descobrir o maior valor~$j \in \Cl{E}$ tal que~$s(j) \leq i$ e, similarmente ao caso convexo, este valor pode ser encontrado com busca binária em tempo~$\Cl{O}(\lg(n))$. As mesmas hipóteses sobre acessos a elementos da estrutura realizadas no caso convexo são feitas aqui e é possível encontrar uma implementação que respeita estas hipóteses em~\texttt{envelope\_concave}. 
 
-Vamos calcular a complexidade dos algoritmos sugeridos. Cada operação~\textsc{Calcula} custa tempo~$\Cl{O}(\lg(n))$, como já citado, e cada elemento de~$J$ só é inserido e removido pela operação~\textsc{Insere} no máximo uma vez, portanto, todas as inserções e remoções custam tempo~$\Cl{O}(1)$ amortizado, porém, esta operação deve calcular~$s(j)$ ao inserir um elemento~$j$, o que faz com que seu tempo final seja~$\Cl{O}(\lg(n))$ amortizado.
+Vamos calcular a complexidade dos algoritmos sugeridos. Cada operação~\textsc{Calcula} custa tempo~$\Cl{O}(\lg(n))$, como já citado, e cada elemento de~$J$ só é inserido e removido pela operação~\textsc{Insere} no máximo uma vez, portanto, todas as inserções e remoções custam tempo~$\Cl{O}(1)$ amortizado. Além disso a operação~\textsc{Insere} deve calcular~$s(j)$ ao inserir um elemento~$j$, o que faz com que seu tempo final seja~$\Cl{O}(\lg(n))$ amortizado.
 
 %------------------------------------------------------------------
 
 \subsection{Envelopes em tempo linear} \label{Online:linear}
 
-Um caso especial interessante deste problema é aquele onde matriz~$A$ é definida em termo de retas com coeficientes angulares ordenados, isto é, existem vetores~$a,b \in \B{Q}^n$ tais que~$a$ é monótona e~$A[i][j] = a_j*i + b_j$. É fácil provar que se~$a$ é decrescente,~$A$ é totalmente monótona convexa nas linhas e se~$a$ é crescente,~$A$ é totalmente monótona côncava nas colunas.
+Um caso especial interessante deste problema é aquele onde matriz~$A$ é definida em termo de retas com coeficientes angulares ordenados, isto é, existem vetores~$a,b \in \B{Q}^n$ tais que~$a$ é monótona e~$A[i][j] = a_j i + b_j$. É fácil provar que se~$a$ é decrescente,~$A$ é totalmente monótona convexa nas linhas e se~$a$ é crescente,~$A$ é totalmente monótona côncava nas linhas.
 
-Este é um bom exemplo de caso para a qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. Galil e Park ao descrever os algoritmos discutidos aqui fazem com que a utilização deste fato se torne clara. Da forma como foram descritos aqui, é necessário fazer uma observação para atingir esta complexidade.
+Este é um bom exemplo de caso para a qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. Galil e Park, ao descrever os algoritmos discutidos aqui, fazem com que a utilização deste fato se torne clara. Da forma como foram descritos aqui, é necessário fazer uma observação para atingir esta complexidade.
 
-Durante o desenvolvimento do nosso método, não aproveitamos o fato de sabermos que as operações~\textsc{Calcula} serão chamadas com parâmetro crescente, isto é, as linhas para as quais deveremos descobrir o valor ótimo estarão ordenadas. Para utilizar este fato, vamos manter um ponteiro~$\ell$ para o último item da estrutura que foi resposta de alguma pergunta deste tipo ou para o primeiro item da estrutura, caso nenhuma pergunta tenha sido feita ainda. 
+Durante o desenvolvimento do nosso método, não aproveitamos o fato de sabermos que as operações~\textsc{Calcula} serão chamadas com parâmetro crescente, isto é, as linhas para as quais deveremos descobrir o valor ótimo estarão ordenadas. Para utilizar este fato, vamos manter um ponteiro~$\ell$ para o último item da estrutura que foi resposta de alguma pergunta deste tipo ou para o primeiro item da estrutura, caso nenhuma pergunta tenha sido feita ainda. O Algoritmo~\ref{Online:envelope:linear} reimplementa a operação em questão no caso convexo mostrando como utilizar este ponteiro para responder às perguntas mais eficientemente. Utilizamos a notação~$\ell + 1$ para denotar o elemento seguinte a~$\ell$ na estrutura
 
 \begin{algorithm}[h]
 \caption{Calcula no envelope convexo em tempo linear}
@@ -253,8 +259,8 @@ Durante o desenvolvimento do nosso método, não aproveitamos o fato de sabermos
         \State $\ell$ passa a apontar para~$\Cl{E}_1$
     \EndIf
     
-    \While{ existe um~$r$ que sucede~$\ell$ e~$A[i][r] < A[i][\ell]$}
-        \State $\ell \rec r$
+    \While{ $\ell+1$ existe é melhor do que~$\ell$ em~$i$}
+        \State $\ell \rec \ell+1$
     \EndWhile
 
     \State \Return valor de $\ell$
@@ -262,7 +268,7 @@ Durante o desenvolvimento do nosso método, não aproveitamos o fato de sabermos
 \end{algorithmic}
 \end{algorithm}
 
-O Algoritmo~\ref{Online:envelope:linear} reimplementa a operação em questão no caso convexo mostrando como utilizar este ponteiro para responder às perguntas mais eficientemente. Se o ponteiro aponta para alguém fora da estrutura, ele é mandado novamente para o início, se o elemento atual é menor do que o seguinte na linha atual, ele é o ótimo, caso contrário, o ponteiro é movido para o próximo elemento e o algoritmo recomeça. Este algoritmo leva tempo constante amortizado já que o ponteiro só passa a apontar para cada elemento uma única vez, portanto, só pode ser movido no máximo~$n$ vezes.
+Se o ponteiro aponta para alguém fora da estrutura, ele é mandado novamente para o início, se o elemento atual é menor do que o seguinte na linha atual, ele é o ótimo, caso contrário, o ponteiro é movido para o próximo elemento e o algoritmo recomeça. Este algoritmo leva tempo constante amortizado já que o ponteiro só passa a apontar para cada elemento uma única vez, portanto, só pode ser movido no máximo~$n$ vezes. É fácil adaptar este algoritmo para o caso côncavo.
 
 %------------------------------------------------------------------
 
