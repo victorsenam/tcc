@@ -35,7 +35,7 @@ Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, 
     \end{cases}
 \end{equation}
 
-Primeiramente, é fácil observar que a matriz~$B$ é online nas linhas e triangular inferior, além disso, se~$R$ é o vetor de índices de mínimos das linhas de~$B$, vale~$E[i] = B[i][R[i]]$ para toda linha~$i \in [2 \tdots n]$ de~$B$, portanto, resolver o Problema~\ref{Online:prob} é encontrar os índices de mínimos das linhas de~$B$.É interessante notar que a linha 1 de uma matriz triangular inferior não possui mínimo, já que todos os seus valores são indefinidos.
+Primeiramente, é fácil observar que a matriz~$B$ é online nas linhas e triangular inferior, além disso, se~$R$ é o vetor de índices de mínimos das linhas de~$B$, vale~$E[i] = B[i][R[i]]$ para toda linha~$i \in [2 \tdots n]$ de~$B$, portanto, resolver o Problema~\ref{Online:prob} é encontrar os índices de mínimos das linhas de~$B$. É interessante notar que a linha 1 de uma matriz triangular inferior não possui mínimo, já que todos os seus valores são indefinidos.
 
 Como já dito, vamos discutir maneiras eficientes encontrar os índices ótimos de uma matriz online nas linhas e triangular inferior no caso onde essa matriz é totalmente monótona nas linhas. No Problema~\ref{Online:prob} é fácil aplicar o Lema~\ref{Monge:theo+1} para perceber que se a matriz~$C$ é Monge, a matriz~$B$ é Monge no mesmo sentido e, portanto, totalmente monótona nas linhas. Além disso, por construção, a matriz~$B$ é online nas linhas e triangular inferior, assim, as técnicas discutidas nesta seção são suficientes para resolver o Problema~\ref{Online:prob}.
 
