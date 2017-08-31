@@ -269,9 +269,3 @@ Durante o desenvolvimento do nosso método, não aproveitamos o fato de sabermos
 \end{algorithm}
 
 Se o ponteiro aponta para alguém fora da estrutura, ele é mandado novamente para o início, se o elemento atual é menor do que o seguinte na linha atual, ele é o ótimo, caso contrário, o ponteiro é movido para o próximo elemento e o algoritmo recomeça. Este algoritmo leva tempo constante amortizado já que o ponteiro só passa a apontar para cada elemento uma única vez, portanto, só pode ser movido no máximo~$n$ vezes. É fácil adaptar este algoritmo para o caso côncavo.
-
-%------------------------------------------------------------------
-
-\subsection{Relação com Pareto}
-
- caso convexo funciona de maneira parecida como uma fronteira de Pareto em pares~$(j,s(j))$ que restringe a ordem das buscas e inserções e o caso côncavo pode ser interpretado, também, de maneira parecida. É razoável imaginar o motivo de não podermos realizar todas as operações de uma fronteira de Pareto no envelope. A próxima seção explora esta possibilidade generalizando a estrutura de envelope.
