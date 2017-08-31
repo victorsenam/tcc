@@ -83,7 +83,7 @@ Discutiremos agora a implementação de um envelope~$\Cl{E}$ sobre uma matriz~$A
 Uma coluna~$j \in J$ é válida somente se existe uma linha~$i \in [n]$ para a qual~${j = \textsc{Calcula}(\Cl{E},i)}$, ou seja, ela é melhor do que todas as outras colunas de~$J$ nesta linha. Uma coluna que não respeita esta propriedade é chamada inválida.
 \end{defi}
 
-Sejam~$a$ e~$b$ duas colunas de~$A$ tais que~$a < b$. Pela convexidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone} sabemos que a coluna~$a$ é melhor do que a~$b$ para um prefixo potencialmente vazio das linhas e pior para o restante, um sufixo também potencialmente vazio. Definimos a operação~$\textsc{Intersecta}(a,b)$ que devolve o primeiro índice de linha deste sufixo. Formalmente, definimos~${\textsc{Intersecta}(a,b) = \min(\{ i \in [n] \mid A[i][a] > A[i][b] \} \cup \{n+1\})}$. O cálculo desta operação pode ser realizado com busca binária em tempo~$\Cl{O}(\lg(n))$ da maneira descrita no Algoritmo~\ref{Online:convex:BB}.
+Sejam~$a$ e~$b$ duas colunas de~$A$ tais que~$a < b$. Pela convexidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone} sabemos que a coluna~$a$ é melhor do que a~$b$ para um prefixo potencialmente vazio das linhas e pior para o restante, um sufixo também potencialmente vazio. Definimos a operação~$\textsc{Intersecta}(a,b)$ que devolve o primeiro índice de linha deste sufixo. Formalmente, definimos~${\textsc{Intersecta}(a,b) = \min(\{ i \in [n] \mid A[i][a] > A[i][b] \} \cup \{n+1\})}$. O cálculo desta operação pode ser realizado com busca binária em tempo~$\Cl{O}(\lg(n))$ da maneira descrita no Algoritmo~\ref{Online:convex:BB}. Lembre que neste caso, já que~$a < b$,~$a$ é melhor do que~$b$ numa determinada linha~$p$ se e somente se~${A[p][a] \leq A[p][b]}$.
 
 \begin{algorithm}[h]
 \caption{Intersecção de duas colunas no caso convexo}
@@ -94,11 +94,11 @@ Sejam~$a$ e~$b$ duas colunas de~$A$ tais que~$a < b$. Pela convexidade de~$A$ e 
     \State $r \rec n+1$
 
     \While{ $\ell < r$}
-        \State $p \rec (\ell + r)/2$
-        \If{ $A[p][a] > A[p][b]$} \label{Online:convex:BB:ineq}
-            \State $r \rec p$
+        \State $p \rec \floor{(\ell + r)/2}$
+        \If{ $a$ é melhor do que~$b$ na linha~$p$} \label{Online:convex:BB:ineq}
+            \State $\ell \rec p + 1$
         \Else
-            \State $\ell \rec p+1$
+            \State $r \rec p$
         \EndIf
     \EndWhile
     \State \Return $\ell$
@@ -106,10 +106,10 @@ Sejam~$a$ e~$b$ duas colunas de~$A$ tais que~$a < b$. Pela convexidade de~$A$ e 
 \end{algorithmic}
 \end{algorithm}
 
-Se~$j \in J$ for melhor do que todas as colunas de índice menor em~$J$ em alguma linha, pela total monotonicidade, ela passa a ser melhor em todas as linhas a partir desta, por isso, é interessante definir um valor~$s(j)$ para toda coluna~$j \in J$ que diz a melhor linha para a qual~$j$ é melhor do que todas as de índice menor em~$J$ ou~$n+1$ caso isso nunca ocorra.  Formalmente~${ s(j) = \min(\{i \in [n] \mid A[i][j] < A[i][j'] \text{ para todo } j' \in J \text{ tal que } j' < j\} \cup \{n+1\}) }$.
+Se~$j \in J$ for melhor do que todas as colunas de índice menor em~$J$ em alguma linha, pela total monotonicidade, ela passa a ser melhor em todas as linhas a partir desta, por isso, é interessante definir um valor~$s(j)$ para toda coluna~$j \in J$ que diz a menor linha para a qual~$j$ é melhor do que todas as de índice menor em~$J$ ou~$n+1$ caso isso nunca ocorra.  Formalmente~${ s(j) = \min(\{i \in [n] \mid A[i][j] < A[i][j'] \text{ para todo } j' \in J \text{ tal que } j' < j\} \cup \{n+1\}) }$.
 
 \begin{prop} \label{Online:convex:easys}
-Para qualquer~$j \in J$ válido, considerando o conjunto~$\{j' \in J \mid j' \text{ é válido e } j' < j\}$ de colunas válidas em~$J$ de índice menor do que~$j$, vale uma das duas alternativas, ou o conjunto é vazio e~$s(j) = 1$ ou o conjunto não é vazio e~$s(j) = \textsc{Intersecta}(j^*,j)$ onde~$j^*$ é o máximo do conjunto.
+Para qualquer~$j \in J$ válido, considerando o conjunto~$\{j' \in J \mid j' \text{ é válido e } j' < j\}$ de colunas válidas em~$J$ de índice menor do que~$j$, vale uma das duas alternativas: O conjunto é vazio e~$s(j) = 1$ ou o conjunto não é vazio e~$s(j) = \textsc{Intersecta}(j^*,j)$ onde~$j^*$ é o máximo do conjunto.
 
 Isto é, para calcular o valor de~$s(j)$ basta escolher o maior~$j^* \in J$ válido de índice menor do que~$j$. Se tal~$j^*$ existe basta calcular sua intersecção com~$j$ e, caso contrário, basta definir~$s(j) = 1$.
 \end{prop}
@@ -172,20 +172,20 @@ Cada operação~\textsc{Calcula} envolve apenas uma busca binária na lista~$\Cl
 
 \subsection{Caso côncavo} \label{Online:concave}
 
-Discutiremos agora a implementação do envelope~$\Cl{E}$ sobre uma matriz~$A$ totalmente monótona côncava nas linhas e online nas linhas. Este caso se desenvolve de maneira extremamente similar ao caso convexo, portanto, aproveitaremos várias das definições do caso convexo.
+Vamos aproveitar várias das ideias e definições do caso convexo para desenvolver um envelope~$\Cl{E}$ sobre uma matriz~$A$ totalmente monótona côncava nas linhas e online nas linhas. Novamente, o conjunto~$J$ representa as colunas já inseridas em~$\Cl{E}$.
 
-Se~$a$ e~$b$ são colunas válidas de~$A$ onde~$a < b$, pela concavidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ tem valor \textbf{maior} do que o da~$b$ para um prefixo das linhas e menor ou igual para o restante (um sufixo). Definimos a operação~$\textsc{Intersecta}(a,b)$ que retorna o primeiro índice de linha para o qual~$a$ tem valor menor ou igual a~$b$. Formalmente, vale~${\textsc{Intersecta}(a,b) = \min\{i \in [n] \mid A[i][a] \leq A[i][b]\}}$. Podemos calcular este valor, também, com busca binária, de forma parecida com o Algoritmo~\ref{Online:convex:BB} com a alteração de que a linha~\ref{Online:convex:BB:ineq} deve checar a condição~$A[p][a] \leq A[p][b]$.
+Sejam~$a$ e~$b$ colunas de~$A$ onde~$b < a$ (note a inversão). Pela concavidade de~$A$ e pelo Lema~\ref{lema:MonotoneTotallyMonotone}, sabemos que a coluna~$a$ é melhor do que a coluna~$b$ num prefixo potencialmente vazio das linhas e pior no restante das linhas, um sufixo também potencialmente vazio. Perceba que esta operação é escrita exatamente como no caso convexo justamente por causa da inversão da ordem de~$a$ e~$b$. Definimos a operação~$\textsc{Intersecta}(a,b)$ que devolve o primeiro índice de linha deste sufixo. Formalmente definimos~$\textsc{Intersecta}(a,b) = \min\{i \in [n] \mid A[i][a] \geq A[i][b]\}$. Tanto no caso convexo quanto no caso côncavo a operação busca o primeiro índice de linha para o qual o segundo parâmetro é melhor do que o primeiro e isso faz com que o Algoritmo~\ref{Online:convex:BB} também possa ser aplicado aqui, porém, para verificar se~$a$ é melhor do que~$b$ numa dada linha~$p$, devemos verificar se~${ A[p][a] < A[p][b] }$, diferente do que foi feito no caso convexo.
 
-Para cada coluna~$j \in J$ estamos interessados agora em descobrir a primeira linha onde esta \textbf{não} é a de menor valor dentre todas as colunas de índice menor do que ela em~$J$. Vamos definir este valor como~$s(j)$. Se~$j$ possuir valor menor do que todas as colunas de~$J$ com índice menor, definimos~$s(j) = n+1$. Formalmente~$ {s(j) = \min(\{ i \in [n] \mid A[i][j] \geq A[i][j'] \text{ para algum } j > j' \in J \} \cup \{n+1\})} $. Perceba que, pela total monotonicidade, a coluna~$j$ terá valor menor do que todas as de índice menor para toda linha anterior a~$s(j)$ e haverá uma outra de valor menor ou igual a ela à partir desta linha.
+Se algum~$j \in J$ é melhor do que todas as colunas de índice~\textbf{maior} em~$J$ em alguma linha, pela total monotonicidade, ela passa a ser melhor também em todas as linhas a partir desta, por isso, é interessante definir o valor~$s(j)$ para toda coluna~$j \in J$ que diz a menor linha para a qual~$j$ é melhor do que todas as de índice maior em~$J$ ou~$n+1$ caso isso nunca ocorra. Formalmente~${ s(j) = \min(\{i \in [n] \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J \text{ tal que } j' > j\} \cup \{n+1\}) }$.
 
 \begin{prop} \label{Online:concave:easys}
-Para qualquer conjunto~$J$ de colunas de~$A$ e qualquer~$j \in J$ válido ou o conjunto~${\{j' \in J \mid j' \text{ é vaido e } j' < j\}}$ é vazio e~$s(j) = n+1$ ou~${\{s(j) = \textsc{Intersecta}(j^*,j)\}}$ onde~$j^*$ é o máximo deste conjunto.
+Para qualquer~$j \in J$ válido, considerando o conjunto~${ \{j' \in J \mid j' \text{ é válido e } j' > j\} }$ de colunas válidas em~$J$ de índice maior do que~$j$, vale uma das duas alternativas: O conjunto é vazio e~${ s(j) = 1 }$ ou o conjunto não é vazio e~${ s(j) = \textsc{Intersecta}(j^*,j) }$ onde~$j^*$ é o mínimo do conjunto.
 \end{prop}
 
 \begin{proof}
-A prova vai pelas mesmas linhas da prova da Proposição~\ref{Online:convex:easys}. Sabemos que~$s(j)$ é válida e, portanto, é ótima em pelo menos uma linha~$s(j) - 1$ e~$s(j) > 1$. Sabemos, graças à total monotonicidade de~$A$ que se uma coluna~$j' \in J$ tem índice maior do que~$j$ ela só pode ser ótima em linhas menores do que~$s(j)$ e, similarmente, se~$j'$ tem índice menor do que~$j$ ela só pode ser ótima em linhas de índice maior do que~$j$. Com isso, se não há nenhuma coluna válida em~$J$ de índice menor do que~$j$ a coluna~$j$ deve ser a ótima em todas as colunas de~$s(j)$ em diante, o que contraria a definição de~$s(j)$ quando~$s(j) < n+1$, portanto, a única escolha possível para~$s(j)$ é~$n+1$.
+A prova vai pelas mesmas linhas da prova da Proposição~\ref{Online:convex:easys}. Se o conjunto é vazio vale~$s(j) = 1$ já que, por vacuidade,~${ A[1][j] \leq A[1][j'] }$  para todo~$j'$ do conjunto. Se existe pelo menos um elemento no conjunto tomamos o~$j^*$ de menor índice e sabemos que~$s(j) > 1$ já que se~$s(j) = 1$, pela total monotonicidade,~$j^*$ seria inválida. Vamos provar que~$j^*$ é ótima em~$s(j) - 1$. Suponha que existe uma~$j' \in J$ diferente de~$j^*$ ótima em~$i$. Separamos em três casos, se~$j' < j$ sabemos que~$j^*$ é melhor do que~$j$ em~$s(j) - 1$ portanto~$j'$ também é e, pela total monotonicidade, é melhor do que~$j$ deste ponto em diante, além disso, também pela total monotonicidade,~$j^*$ é melhor do que~$j$ antes desta linha e concluímos que~$j$ é inválida, um absurdo. Se~$j' = j$ vale que~$j$ é ótima em~$s(j) - 1$ o que contraria a definição de~$s(j)$. Resta o caso onde~$j' > j$, porém, já que~$j' \neq j^*$,~$j^*$ é o mínimo do conjunto e~$j'$ pertence ao conjunto,~$j' > j^*$ e, pela total monotonicidade,~$j^*$ é pior do que~$j'$ até~$s(j)-1$ e pior do que~$j$ de~$s(j)$ em diante, o que a torna inválida, um absurdo.
 
-Por outro lado, se existe uma coluna em~$j$ válida de índice menor do que~$J$ chamamos de~$j^*$ a de maior índice dentre todas estas. Se~$j^*$ não for a coluna ótima em~$s(j)$ existe uma outra coluna~$j' \in J$ de índice menor do que~$j^*$ que é ótima na linha~$s(j)$, isso se deve aos fatos de que a coluna ótima na linha~$s(j)$ não pode ter índice maior do que~$j$, deve ser válida e não ter índice em~$[j^* \tdots j]$. Porém se~$j'$ for ótima em~$s(j)$ ela é, pela total monotonicidade, menor do que~$j^*$ em todas as linhas de~$[s(j) \tdots n]$, o que faz com que~$j^*$ seja inválida já que~$j^*$ é maior do que~$j$ em todas as linhas restantes, um absurdo. Assim,~$j^*$ é a coluna ótima em~$s(j)$ e~$\textsc{Intersecta}(j^*,j) = s(j)$.
+Com isso, sabemos que~$j^*$ é ótima no ponto~$s(j) - 1$, assim, decidir~$s(j)$ é decidir o primeiro momento onde~$j$ é melhor do que~$j^*$, isto é, calcular~$\textsc{Intersecta}(j^*,j)$.
 \end{proof}
 
 Novamente, a Proposição~\ref{Online:concave:easys} indica uma representação do envelope~$\Cl{E}$ que guarda todos os elementos válidos de~$J$ numa lista ordenada crescentemente. Para calcular~$s(j)$ basta olhar para o elemento que precede~$j$ na estrutura, se não houver um vale~$s(j) = n+1$, caso contrário~$s(j)$ é a intersecção destes dois elementos. Vamos utilizar esta representação para o envelope e, mais uma vez, guardar, para cada~$j$, o valor~$s(j)$. As operações serão realizadas de forma a manter as mesmas invariantes do caso convexo, isto é, um valor~$j \in J$ pertence à estrutura se e somente se é válido, os valores aparecem em ordem crescente e todos os~$s(j)$ estão calculados corretamente.
