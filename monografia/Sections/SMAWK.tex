@@ -3,41 +3,41 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção discutiremos o algoritmo SMAWK. Ele é conhecido pela sua aplicação no problema de encontrar o vértice mais distante de cada vértice num polígono convexo em tempo linear~\cite{Aggarwal:1987}. Ao final desta seção serão citadas esta e outras aplicações deste algoritmo.  
+Nesta seção discutiremos o algoritmo SMAWK. Este algoritmo tem a mesma função do que a otimização divisão e conquista, porém, precisa que a matriz seja totalmente monótona, não apenas monótona, e tem uma complexidade assintótica melhor do que aquele. Ele é conhecido pela sua aplicação no problema de encontrar um vértice mais distante de cada vértice num polígono convexo em tempo linear~\cite{Aggarwal:1987}, mas pode ser usado em vários outros problemas, assim como a otimização da divisão e conquista.
 
-Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso deste algoritmo:
+Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos em que este algoritmo se aplica:
 \begin{itemize}
-    \item Se $A$ é totalmente monótona convexa ou côncava nas linhas podemos encontrar os índices de mínimos e máximos das linhas em tempo $\Cl{O}(n + m)$ e
-    \item se $A$ é totalmente monótona convexa ou côncava nas colunas podemos encontrar os índices de mínimos e máximos das colunas em tempo $\Cl{O}(n + m)$.
+    \item Se $A$ é totalmente monótona convexa ou côncava nas linhas podemos encontrar os índices de mínimos e máximos das linhas em tempo $\Cl{O}(n + m)$;
+    \item Se $A$ é totalmente monótona convexa ou côncava nas colunas podemos encontrar os índices de mínimos e máximos das colunas em tempo $\Cl{O}(n + m)$.
 \end{itemize}
 
 Apresentaremos o caso onde $A$ é totalmente monótona convexa nas linhas e estamos interessados nos índices de mínimos. É fácil manipular o algoritmo para trabalhar com os outros casos.
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Técnica Primordial} \label{SMAWK:primordial}
-Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a Divisão e Conquista apresentada na Seção~\ref{DivConq} e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
+\subsection{Técnica primordial} \label{SMAWK:primordial}
+Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a otimização da divisão e conquista, apresentada na Seção~\ref{DivConq}, e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
 
-Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o índice de mínimo de cada uma das linhas de~$A$. Se para uma dada linha~$i$ onde~$i > 0$ e~$i < n$ conhecermos os índices~$\ell$ e~$r$ de mínimos das linhas~$i-1$ e~$i+1$, respectivamente, já que~$A$ tem os índices de mínimos das linhas crescente (por ser totalmente monótona) basta buscar o índice de mínimo da linha~$i$ no intervalo entre~$\ell$ e~$r$ (inclusive). Além disso, se~$i$ é a primeira linha da matriz podemos considerar~$\ell = 1$ ou se~$i$ é a última linha da matriz podemos considerar~$r = n$ sem perder a validade do fato de que basta buscar entre~$\ell$ e~$r$.  
+Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o índice de mínimo de cada uma das linhas de~$A$. Se, para uma dada linha~${ i \in [2 \tdots n-1] }$, conhecermos os índices~$\ell$ e~$r$ de mínimos das linhas~${ i-1 }$ e~${ i+1 }$, sabemos, pela monotonicidade de~$A$ que o índice de mínimo da linha~$i$ está em~${ [\ell \tdots r] }$. Além disso, se~${ i = 1 }$ e~${ \ell = 1 }$ ou se~${ i = n }$ e~${ r = m }$, o resultado descrito continua valendo.
 
-Após realizar as observações acima note que, já que~$A$ é totalmente monótona, remover qualquer linha de~$A$ mantém a total monotonicidade e não altera o índice de mínimo de outra linha. Com esta observação, concluímos que podemos remover todas as linhas pares da matriz, resolver o problema recursivamente para a matriz resultante e utilizar este resultado para calcular os índices de interesse para as linhas pares da matriz. Vamos provar que encontrar estes índices de mínimos custa tempo~$\Cl{O}(m)$. 
+Já que~$A$ é totalmente monótona, remover qualquer linha de~$A$ mantém a total monotonicidade e não altera o índice de mínimo de outra linha. Graças a este fato, podemos remover todas as linhas pares da matriz, encontrar os mínimos recursivamente para todas as linhas restantes e depois utilizar as respostas conhecidas para calcular os índices de mínimos das linhas pares. Vamos mostrar que esta última parte, encontrar os mínimos das linhas pares dados os mínimos das outras, custa tempo~$\Cl{O}(n+m)$.
 
-Definimos a sequência~$t$ de forma que a~$i$-ésima linha ímpar de~$A$ busca seu máximo entre as colunas~$t_{i-1}$ e $t_{i}$, inclusive. Sabemos que~$0 = t_0 \leq t_1 \leq t_2 \leq \dots \leq t_{\floor{n/2}} \leq n$. Podemos escrever o tempo gasto por todas as buscas de mínimo como~$\sum \limits_{i=1}^{\floor{n/2}} t_i - t_{i-1} + 1 = \Cl{O}(n+m)$, ou seja, o trabalho feito para encontrar os mínimos das colunas ímpares dados os mínimos das colunas pares custa tempo~$\Cl{O}(n+m)$.
+Definimos, para cada~$i$ ímpar, o valor~$t_i$ que representa o índice de mínimo da~$i$-ésima linha, além dos valor~${ t_0 = 1 }$ , caso~$n$ seja par, o valor~${ t_{n+1} = m }$. Para cada linha~$i$ par, o parágrafo anterior sugere buscar o mínimo desta linha entre as posições~$t_{i-1}$ e~$t_{i+1}$. Podemos escrever o tempo gasto para encontrar o mínimo de cada uma das linhas pares como~${ \sum\limits_{ i \in [n] \text{ par} }( t_{i+1} - t_{i-1} ) }$ e concluir, desta expressão, que o tempo gasto ao todo é~$\Cl{O}(n+m)$. 
 
-Agora, com uma análise similar à realizada para a técnica da Divisão e Conquista é fácil concluir que uma implementação desta técnica que consiga remover as linhas pares da matriz (e adicionar elas de volta) em tempo~$\Cl{O}(1)$ resolve o problema em tempo~$\Cl{O}((n+m)\lg(n))$, assim como a técnica da divisão e conquista.
+Considerando que remover todas as linhas pares de uma matriz pode ser realizado em tempo~$\Cl{O}(1)$, é fácil ver que o tempo de execução total deste algoritmo é~$\Cl{O}((n+m)\lg(n)$, já que só é possível remover todas as linhas pares~$\Cl{O}(\lg(n))$ vezes.
 
 %----------------------------------------------------------------------------------------
 
 \subsection{Reduce} \label{SMAWK:reduce}
-Chamamos de ótimas as células de uma matriz que são mínimo de alguma linha e as colunas que contém o índice de mínimo de pelo menos uma linha. Note que uma matriz contém no máximo~$n$ colunas ótimas, pois cada linha faz com que exatamente uma célula seja ótima. 
+Chamamos de ótimas as células de uma matriz que são o mínimo de alguma linha e as colunas que contém pelo menos uma célula ótima. Lembre que a definição de mínimo permite apenas um mínimo por linha, portanto, uma matriz contém no máximo~$n$ colunas ótimas.
 
-Queremos agilizar a técnica apresentada acima. Para isso, vamos adicionar a nova hipótese de que a matriz~$A$ é quadrada, ou seja,~$n = m$. Lembre que a cada passo, removemos as~$\floor{n/2}$ linhas pares da matriz gerando uma nova matriz $A'$, resolvemos o problema recursivamente para~$A'$ e usamos a solução de~$A'$ para resolver para as linhas restantes de~$A$. Quando removemos linhas da nossa~$A$, ela deixa de ser quadrada e passa a ser uma matriz com mais colunas do que linhas, isto é,~$m \geq n$. Queremos remover colunas não ótimas da matriz~$A$ com mais colunas do que linhas fazendo com que~$A$ se torne quadrada.  
+Queremos agilizar a técnica apresentada acima. Para isso, vamos adicionar a nova hipótese de que a matriz~$A$ é quadrada, ou seja,~$n = m$. A cada passo, removemos as~$\floor{n/2}$ linhas pares da matriz, gerando uma nova matriz $A'$, resolvemos o problema recursivamente em~$A'$ e usamos a solução de~$A'$ para encontrar os mínimos das linhas restantes de~$A$. Quando removemos linhas da nossa~$A$, ela deixa de ser quadrada e passa a ser uma matriz com mais colunas do que linhas, isto é,~$m \geq n$. Queremos remover colunas não ótimas dessa matriz com mais colunas do que linhas fazendo com que a matriz resultante se torne quadrada.  
 
 Vamos desenvolver o algoritmo \textsc{Reduce} a partir de um índice de linha~$k$ e de algumas invariantes: 
 \begin{enumerate}
-    \item Vale~$1 \leq k \leq n$, \label{invar:Reduce0}
+    \item $k \in [1 \tdots n]$, \label{invar:Reduce0}
     \item apenas colunas não ótimas foram removidas da matriz e \label{invar:Reduce1}
-    \item toda célula em uma coluna de índice menor ou igual a~$k$ que possua índice de linha menor do que índice de coluna é não ótima. A Figura~\ref{figure:Reduce1} representa, em azul, a célula de índice~$k,k$ e, em preto, as células que, segundo esta invariante, são não ótimas. \label{invar:Reduce2}
+    \item toda célula em uma coluna de índice menor ou igual a~$k$ que possua índice de linha menor do que seu índice de coluna não é ótima. A Figura~\ref{figure:Reduce1} representa, preenchido em azul, a célula~$(k,k)$ e, pontilhado em preto, as células que, segundo esta invariante, não são ótimas. \label{invar:Reduce2}
 \end{enumerate}
 
 \begin{figure}[h]
@@ -46,7 +46,7 @@ Vamos desenvolver o algoritmo \textsc{Reduce} a partir de um índice de linha~$k
     \caption{Invariante~\ref{invar:Reduce2} do \textsc{Reduce}.} \label{figure:Reduce1}
 \end{figure}
 
-Vamos comparar~$A[k][k]$ com~$A[k][k+1]$ e considerar dois casos. Em cada um dos casos, concluiremos que algumas células da matriz $A$ são não ótimas. A Figura~\ref{figure:Reduce2} mostra, hachuradas em vermelho, as células que são descobertas não ótimas quando~$A[k][k] > A[k][k+1]$ e, com linhas verticais verdes, as células que são descobertas não ótimas quando~$A[k][k] \leq A[k][k+1]$. Vamos provar estas implicações.
+Vamos comparar~$A[k][k]$ com~$A[k][k+1]$ e considerar dois casos. Em cada um dos casos, concluiremos que algumas células da matriz $A$ são não ótimas. A Figura~\ref{figure:Reduce2} mostra as células que não são ótimas em cada um dos casos. Quando~$A[k][k] > A[k][k+1]$ as células hachuradas em vermelho não são ótimas. No caso contrário as células com linhas verticais verdes não são ótimas. Vamos provar estas afirmações.
 
 \begin{figure}[h]
     \centering
@@ -54,11 +54,11 @@ Vamos comparar~$A[k][k]$ com~$A[k][k+1]$ e considerar dois casos. Em cada um dos
     \caption{Casos do \textsc{Reduce}.} \label{figure:Reduce2}
 \end{figure}
 
-Se~$A[k][k] > A[k][k+1]$, as entradas com índice de linha maior ou igual a~$k$ na coluna~$k$ são não ótimas. Primeiramente, a célula~$(k,k)$ é não ótima como consequência direta da desigualdade. Agora, suponha que existe alguma linha~$i>k$ tal que~$A[i][k] \leq A[i][k+1]$. Pela total monotonicidade convexa por linhas de $A$, isso implica em~$A[k][k] \leq A[k][k+1]$, um absurdo.  
+No primeiro caso, em que~$A[k][k] > A[k][k+1]$, vamos mostrar que as entradas com índice de linha maior ou igual a~$k$ na coluna~$k$ não são ótimas. Primeiramente, a célula~$(k,k)$ não é ótima como consequência direta da desigualdade. Tome uma linha~${ i > k }$ qualquer, pela total monotonicidade de~$A$ vale que~${ A[i][k] > A[i][k+1] }$, logo, a célula~$(i,k)$ não é ótima.
 
-Se~$A[k][k] \leq A[k][k+1]$, as células da coluna~$k+1$ com índices de linha menores ou iguals a~$k$ são não ótimas. A célula~$(k,k+1)$ é não ótima pela desigualdade apresentada. Suponha que existe alguma linha~$i<k$ tal que~$A[i][k] > A[i][k+1]$. Pela contrapositiva da total monotonicidade, temos~$A[k][k] > A[k][k+1]$, um absurdo.  
+No outro caso, em que~$A[k][k] \leq A[k][k+1]$, vamos mostrar que as células da coluna~$k+1$ com índices de linha menores ou iguais a~$k$ não são ótimas. A célula~$(k,k+1)$ não é ótima. Se~${ i < k }$ é uma linha qualquer de~$A$, pela total monotonicidade de~$A$, vale~${ A[i][k] \leq A[i][k+1] }$, logo, a célula~$(i,k+1)$ não é ótima.
 
-Com estas observações estamos prontos para deduzir um algoritmo que elimina exatamente~$m-n$ colunas de~$A$. 
+Com estas observações estamos prontos para deduzir um algoritmo que elimina exatamente~${ m-n }$ colunas de~$A$. 
 
 \newcommand{\Reduce}{\textsc{Reduce}}
 \begin{algorithm}[H]
@@ -67,8 +67,8 @@ Com estas observações estamos prontos para deduzir um algoritmo que elimina ex
 \begin{algorithmic}[1]
 \Function{\Reduce}{A}
     \State $k \rec 1$
-    \While{$A$ tem mais linhas do que colunas}
-        \If{$A[k][k] > A[k][k+1]$}
+    \While{ $A$ tem mais colunas do que linhas} \label{SMAWK:Reduce:loop}
+        \If{$A[k][k] > A[k][k+1]$} 
             \State Remove a coluna~$k$
             \State $k \rec \max(1,k-1)$
         \Else
@@ -84,20 +84,20 @@ Com estas observações estamos prontos para deduzir um algoritmo que elimina ex
 \end{algorithmic}
 \end{algorithm}
 
-É fácil ver que as invariantes são válidas neste algoritmo. Olhamos para o primeiro passo,~$k = 1$, nenhuma coluna foi removida ainda e não há elementos com índices de linha e coluna menores do que $k$, logo, as Invariantes~\ref{invar:Reduce0},~\ref{invar:Reduce1} e~\ref{invar:Reduce2} valem. Em todo passo do loop,~$A[k][k+1]$ existe, pois~$k \leq n$ e~$n \leq m$. Consideramos o caso onde~$A[k][k] > A[k][k+1]$, a Invariante~\ref{invar:Reduce0} sempre se mantém trivialmente, já provamos que a coluna~$k$ é não ótima neste caso, portanto, a Invariante~\ref{invar:Reduce1} se mantém mesmo após a remoção da coluna~$k$. Agora, se~$k=1$, vale a~\ref{invar:Reduce2} por vacuidade e, no caso contrário, já que a~$k$ decresce, a Invariante~\ref{invar:Reduce2} também se mantém. 
+Mostraremos que as invariantes são válidas neste algoritmo. Olhamos para o primeiro passo.~$k = 1$, nenhuma coluna foi removida ainda e não há elementos com índices de linha e coluna menores do que~$k$, logo as Invariantes~\eqref{invar:Reduce0},~\eqref{invar:Reduce1} e~\eqref{invar:Reduce2} valem. Em todo início do enquanto da linha~\ref{SMAWK:Reduce:loop} a célula~$A[k][k+1]$ existe, uma vez que~${ k \leq n }$ e~${ n < m }$. Consideramos o caso onde~${ A[k][k] > A[k][k+1] }$. A Invariante~\eqref{invar:Reduce0} sempre se mantém trivialmente. Já provamos que a coluna~$k$ não é ótima neste caso, o que faz com que a Invariante~\eqref{invar:Reduce1} se mantenha mesmo após a remoção da coluna~$k$. Agora, se~${ k=1 }$, vale~\eqref{invar:Reduce2} por vacuidade e, caso contrário, já que~$k$ decresce, a Invariante~\eqref{invar:Reduce2} também se mantém. 
 
-Em outro caso, valem~$A[k][k] \leq A[k][k+1]$ e $k = n$. Foi provado que os elemntos de linhas menores ou iguals a~$k$ na coluna coluna~$k+1$ são não ótimos, porém, isto representa toda a coluna~$k+1$, assim, remover ela mantém a Invariante~\ref{invar:Reduce1}. As outras duas invariantes se mantém trivialmente. Agora, falta considerar o caso onde~$A[k][k] \leq A[k][k+1]$ e $k < n$. Neste caso, foi provado, novamente, que as células com índices menores ou iguais a~$k$ na coluna~$k+1$ são inválidos. Estes são exatemente os elementos com índices de linhas menores do que índices de colunas na coluna~$k+1$, o que faz com que a Invariante~\ref{invar:Reduce2} se mantenha ao incrementarmos o valor de~$k$. As outras duas invariantes se mantém trivialmente neste caso.
+No caso onde valem~$A[k][k] \leq A[k][k+1]$ e~$k = n$ foi provado que os elementos de linhas menores ou iguais a~$k$ na coluna coluna~$k+1$ não são ótimos. Já que~${ k = n }$, isto representa toda a coluna~${ k+1 }$, assim, removê-la mantém a Invariante~\eqref{invar:Reduce1}. As outras duas invariantes se mantém trivialmente. Finalmente, resta apenas considerar o caso onde~$A[k][k] \leq A[k][k+1]$ e $k < n$. Foi provado, novamente, que as células com índices menores do que~${ k + 1 }$ na coluna~${ k + 1 }$ não são ótimos, assim, incrementar o~$k$ mantém a Invariante~\eqref{invar:Reduce2}. As outras duas invariantes também se mantém trivialmente neste caso. 
 
-Além disso, o algoritmo, a cada passo, incrementa~$k$ ou remove uma coluna de~$A$. Sabemos que~$k$ nunca passa de~$n$ e, já que a matriz tem~$m$ colunas, não podemos remover mais do que~$m$ colunas. Supondo que a cada remoção de coluna~$k$ seja decrementado, chegamos a uma quantidade máxima de~$2m + n$ passos. Supondo que as remoções sejam feitas em tempo constante, o tempo de cada passo é constante, portanto, atingimos uma complexidade de~$\Cl{O}(m)$ operações no algoritmo $\Reduce$, já que $n \leq m$.
+Além disso, o algoritmo, a cada passo, incrementa~$k$ ou remove uma coluna de~$A$. Sabemos que~$k$ nunca passa de~$n$ e, já que a matriz tem~$m$ colunas, não podemos remover mais do que~$m$ colunas. Supondo que, a cada remoção de coluna,~$k$ seja decrementado, chegamos a uma quantidade máxima de~$2m + n$ passos. Supondo que as remoções sejam feitas em tempo constante, o tempo de cada passo é constante, portanto, atingimos uma complexidade de~$\Cl{O}(m)$ operações no algoritmo $\Reduce$, já que $n \leq m$.
 
 %----------------------------------------------------------------------------------------
 
 \subsection{SMAWK}
 \newcommand{\SMAWK}{\textsc{SMAWK}}
 
-Recebemos uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas. Primeiramente, vamos transformar a matriz $A$ em uma matriz quadrada. Se~$A$ tem mais colunas do que linhas, basta aplicar o algorimto~$\Reduce$ em~$A$ para fazer com que ela fique quadrada e tenha os mesmos índices de mínimos. Se~$A$ tem mais linhas do que colunas, basta adicionar colunas sem que os mínimos ou a total monotonicidade sejam prejudicados, para isso, adicionamos, ao final da matriz, colunas~$n-m$ com entradas infinitas. 
+Recebemos uma matriz~$A$ totalmente monótona convexa por linhas. Primeiramente, vamos fazer com que a matriz se torne quadrada mantendo os índices de mínimos das linhas. Se~$A$ tem mais colunas do que linhas, basta aplicar o~$\Reduce$. Se~$A$ tem mais linhas do que colunas, podemos adicionar colunas com entradas~${ +\infty }$ até que ela se torne quadrada.
 
-\begin{algorithm}[b]
+\begin{algorithm}[h]
 \caption{Algoritmo $\SMAWK$}
 \label{SMAWK:algo:SMAWK}
 \begin{algorithmic}[1]
@@ -105,9 +105,8 @@ Recebemos uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por
     \If{$A$ tem uma linha}
         \State $A$ é uma matriz~$1 \times 1$ e a resposta é trivial
     \Else
-        \State Retiramos as linhas pares de~$A$ gerando~$A'$
-        \State $A'' \rec \Reduce(A')$
-        \State $\SMAWK(A'')$
+        \State $A'$ é a matriz~$A$ sem as linhas pares
+        \State $\SMAWK(\Reduce(A'))$
         \For{$i$ linha ímpar de $A$}
             \State $l \rec 1$ e $r \rec m$
             \If{$i > 1$}
@@ -123,19 +122,19 @@ Recebemos uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por
 \end{algorithmic}
 \end{algorithm}
 
-Agora estamos prontos para descrever e aplicar o algoritmo~$\SMAWK$ na matriz modificada. Vamos misturar as ideias apresentadas da técnica primordial, apresentada na Subseção~\ref{SMAWK:primordial}, e do~$\Reduce$, apresentado na Subseção~\ref{SMAWK:reduce}. Em cada passo, removemos as linhas pares da matriz, aplicamos o algoritmo $\Reduce$ para manter esta nova matriz quadrada e resolvemos o problema recursivamente para a nova matriz. Com a solução desta instância, descobrimos os resultados para as linhas restantes da matriz original. O Algoritmo~\ref{SMAWK:algo:SMAWK} descreve este processo.
+Agora estamos prontos para descrever e aplicar o algoritmo~$\SMAWK$. Vamos usar a ideia da técnica primordial da Subseção~\ref{SMAWK:primordial}, porém, vamos aplicar o algoritmo~$\Reduce$ a cada passo para melhorar a complexidade da solução. Em cada chamada de~$\SMAWK$, recebemos uma matriz~$A$ quadrada, resolvemos o problema recursivamente para a submatriz~$A'$ que consiste das linhas ímpares de~$A$ tomando o cuidado de aplicar o~$\Reduce$ nesta antes de realizar a chamada recursiva, e, depois, utilizamos estes resultados para calcular os mínimos das linhas restantes. O Algoritmo~\ref{SMAWK:algo:SMAWK} descreve este processo.
 
 %----------------------------------------------------------------------------------------
 
 \subsection{Análise}
-O tempo gasto pelo algoritmo~$\SMAWK$ depende apenas da dimensão~$n$ da matriz recebida. Escrevemos~$T(n)$ a recorrência que define o tempo gasto pelo algoritmo para todo~$n \geq 1$. Sabemos que~$T(1) = \Cl{O}(1)$. Com~$n > 1$, a retirada de linhas pares será implementada em tempo constante, o algoritmo~$\Reduce$ é, então, aplicado a uma matriz com~$\floor{n/2}$ linhas e~$n$ colunas, gastando tempo~$\Cl{O}(n)$ e depois os máximos das lunhas ímpares de~$A$ são achados à partir das linhas pares de~$A$ na forma descrita na Subseção~\ref{SMAWK:primordial}, o que custa tempo~$\Cl{O}(n)$. Assim, para todo~$n>1$,~$T(n) = \Cl{O}(n) + T(\floor{n/2})$, o que nos leva a~$T(n) = \Cl{O}(n)$.
+O tempo gasto pelo algoritmo~$\SMAWK$ depende apenas da dimensão~$n$ da matriz recebida. Seja~$T(n)$ o tempo gasto pelo algoritmo para todo~$n \geq 1$. Sabemos que~$T(1) = \Cl{O}(1)$. Assumimos que, dada uma matriz~$A$, sabemos gerar uma matriz~$A'$ que consiste apenas das linhas ímpares de~$A$ em tempo~$\Cl{O}(1)$. Com~$n > 1$, geramos esta matriz, que tem~$\floor{\frac{n}{2}}$ linhas, e aplicamos o~$\Reduce$ nela, gastando tempo~$\Cl{O}(n)$. Após este procedimento, determinamos os mínimos das linhas pares de~$A$ na forma descrita na Subseção~\ref{SMAWK:primordial}, o que custa tempo~$\Cl{O}(n)$. Assim, para todo~${ n > 1 }$, vale que~${ T(n) = \Cl{O}(n) + T(\floor{\frac{n}{2}}) }$, o que nos leva a~${ T(n) = \Cl{O}(n) }$.
 
 Se a matriz recebida tiver menos colunas do que linhas, a transformação inicial custa tempo~$\Cl{O}(n)$, no outro caso, custa tempo~$\Cl{O}(m)$, onde~$m$ é a quantidade de colunas. Assim, podemos escrever a complexidade no caso geral como~$\Cl{O}(n+m)$.
 
 %----------------------------------------------------------------------------------------
 
 \subsection{Implementação}
-Queremos encontrar uma maneira eficiente de remover as linhas pares da matriz, mas não podemos gerar explicitamente uma nova matriz. Queremos representar, a cada passo, todas as linhas que podem ser visitadas. Se~$k$ é um inteiro não negativo arbitrário, as linhas da matriz são da forma~$1 + k$, as linhas visitáveis após a retirada de todas as pares são da forma~$1 + 2k$, as visitáveis depois de duas remoções são da forma~$1 + 4k$ e assim por diante, ou seja, depois de~$t$ remoções de linhas pares, podemos visitar as linhas da forma~$1 + 2^tk$. Assim, basta guardar o inteiro~$p = 2^t$ para representar todas as linhas que podem ser visitadas pelo algoritmo em um dado passo. Remover todas as linhas pares é dobrar o valor de~$p$.  
+Queremos encontrar uma maneira eficiente de remover as linhas pares da matriz, mas não podemos gerar explicitamente uma nova matriz. Queremos representar, a cada chamada, todas as linhas que podem ser visitadas. Inicialmente, todas as linhas visitáveis da matriz são aquelas da forma~${ 1 + k }$ onde~$k$ é um inteiro não negativo. Após remover as linhas pares, as visitáveis são da forma~${ 1 + 2k }$, depois~${ 1 + 4k }$ e assim por diante. Após~$t$ remoções, todas elas são representadas por~${ 1 + 2^tk }$ para algum~$k$ inteiro não negativo. Assim, passa passar o parâmetro~$t$ na recursão e basta incrementar~$t$ para remover tais linhas.
 
 Agora, precisamos representar as colunas visitáveis em~$A$. Já que não há uma regra fixa para a remoção de colunas, precisamos de alguma estrutura de dados que nos permita iterar pelos seus valores em ordem e remover um valor eficientemente sempre que visitado. Guardaremos uma lista duplamente ligada com todos os índices de colunas válidos, já que iteramos pelas colunas e, quando removemos uma coluna, ela é sempre vizinha da atual ou a atual, as remoções são feitas em $\Cl{O}(1)$. Após resolver o problema recursivamente, precisamos recuperar as informações desta lista ligada ao início da iteração para podermos descobrir os valores de mínimo nas linhas ímpares daquela matriz, para isso, basta, ao começo de cada passo, criar uma cópia da lista ligada original, o que é feito em~$\Cl{O}(n)$ e não afeta a análise do tempo do algoritmo.
 

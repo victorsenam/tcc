@@ -15,13 +15,13 @@
 \end{scope}
 
 % function
-\begin{scope}[thin,black,opacity=.3]
+\begin{scope}[pattern=crosshatch dots,thin,pattern color=black,opacity=.3]
   \filldraw (1,7) rectangle (5,6);
   \filldraw (2,6) rectangle (5,5);
   \filldraw (3,5) rectangle (5,4);
   \filldraw (4,4) rectangle (5,3);
-  \filldraw[blue] (4,3) rectangle (5,2);
 \end{scope}
+\filldraw[blue,opacity=.3] (4,3) rectangle (5,2);
 \filldraw[pattern=north west lines,pattern color=red] (4,3) rectangle (5,0);
 \filldraw[pattern=vertical lines,pattern color=green] (5,7) rectangle (6,2);
 
