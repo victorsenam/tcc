@@ -1,16 +1,16 @@
 \section{Estruturas de dados em programação dinâmica}
 \label{EDPD}
 
-Em certas ocasiões, ao aplicar programação dinâmica no cálculo de alguma recorrência, podemos manter alguns dos estados já calculados em uma estrutura de dados que pode nos ajudar a calcular com mais eficiência os estados seguintes. Nesta seção, exemplificaremos esta possibilidade. 
+Em certas ocasiões, ao aplicar programação dinâmica no cálculo de alguma recorrência, podemos manter algumas das entradas já calculadas em uma estrutura de dados que pode nos ajudar a calcular com mais eficiência as entradas seguintes. Nesta seção, exemplificaremos esta possibilidade. 
 
-Na Seção~\ref{Online} apresentaremos um exemplo no qual a convexidade (ou concavidade) da recorrência calculada nos permite usar uma estrutura de dados de forma parecida com a apresentada aqui. Esta seção, portanto, pretende ser uma introdução à utilização de estruturas de dados em programação dinâmica que deve facilitar a compreensão da Seção~\ref{Online}.
+Na Seção~\ref{Online} apresentaremos um exemplo no qual a convexidade (ou concavidade) da recorrência calculada nos permite usar uma estrutura de dados de forma parecida com a apresentada aqui. Esta seção, portanto, é uma introdução à utilização de estruturas de dados em programação dinâmica que deve facilitar a compreensão da Seção~\ref{Online}.
 
 %----------------------------------------------------------------------------------------
 
 \subsection{O problema da subsequência crescente de peso máximo}
 
 \begin{prob}[Subsequência crescente de peso máximo] \label{EDPD:HIS}
-Dados um natural~$n$ e dois vetores~$v,w \in \B{Q}^n$, descobrir uma subsequência~$s$ de~$[1 \tdots n]$ crescente em~$v$ e de soma máxima em~$w$. Formalmente, a subsequência~$s$ deve respeitar~${ v_{s_i} < v_{s_j} }$ para todo par de índices~${ i,j \in [1 \tdots |s|] }$ tal que~${ i < j }$ e deve maximizar~${ \sum\limits_{i \in s} w_i }$.
+Dados um natural~$n$ e dois vetores~${ v,w \in \B{Q}^n }$, descobrir uma subsequência~$s$ de~$[1 \tdots n]$ crescente em~$v$ e de soma máxima em~$w$. Formalmente, a subsequência~$s$ deve respeitar~${ v_{s_i} < v_{s_j} }$ para todo par de índices~${ i,j \in [1 \tdots |s|] }$ tal que~${ i < j }$ e deve maximizar~${ \sum\limits_{i \in s} w_i }$.
 \end{prob}
 
 Podemos resolver este problema com tempo~$\Cl{O}(n^2)$ utilizando programação dinâmica na recorrência
@@ -35,31 +35,25 @@ Sejam~${ a = (a_1,a_2) }$ e~${ b = (b_1,b_2) }$ elementos de~$\B{Q}^2$. Se~${ a_
 A relação de dominância é uma ordem parcial~\cite[Apêndice B]{CLRS} em~$\B{Q}^2$.
 \end{prop}
 \begin{proof}
-Sobre a relação~$\succeq$ valem as propriedades:
-\begin{description}
-\item[Reflexiva] Se~$a = (a_1,a_2) \in \B{Q}^2$, vale~$a_1 \geq a_1$ e~$a_2 \geq a_2$, portanto~$a \succeq a$.
-\item[Antissimétrica] Se~$a = (a_1,a_2)$ e~$b = (b_1,b_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq a$, vale~$a_1 = b_1$ e~$a_2 = b_2$, portanto~$a = b$.
-\item[Transitiva] Se~$a = (a_1,a_2), b = (b_1,b_2)$ e~$c = (c_1,c_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq c$,~$a_1 \geq c_1$ e~$a_2 \geq c_2$, logo,~$a \succeq c$.
-\end{description}
-Logo,~$\succeq$ define uma ordem parcial sobre~$\B{Q}^2$.
+Se~$a = (a_1,a_2) \in \B{Q}^2$, vale~$a_1 \geq a_1$ e~$a_2 \geq a_2$, portanto~$a \succeq a$ e~$\succeq$ é reflexiva. Se~$a = (a_1,a_2)$ e~$b = (b_1,b_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq a$, vale~$a_1 = b_1$ e~$a_2 = b_2$, portanto~$a = b$ e~$\succeq$ é antissimétrica. Se~$a = (a_1,a_2), b = (b_1,b_2)$ e~$c = (c_1,c_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq c$,~$a_1 \geq c_1$ e~$a_2 \geq c_2$, logo,~$a \succeq c$ e~$\succeq$ é transitiva.
 \end{proof}
 
-Além disso, o valor a seguir será de interesse sobre os conjuntos nos quais trabalharemos neste problema.
-\begin{defi}
+Como dito, desenvolveremos uma estrutura de dados que irá agilizar o cálculo de uma recorrência. Tal estrutura será capaz de calcular, para todo~${ c \in \B{Q} }$, o máximo atingido pela segunda coordenada de algum elemento que tem valor pelo menos~$c$ na primeira coordenada e já foi adicionado à estrutura. A função~$M(S,c)$ da Definição~\ref{EDPD:M} abaixo ajuda a descrever este valor, já que, se~$S$ é o conjunto dos elementos adicionados na estrutura,~$M(S,c)$ define exatamente o valor calculado pela estrutura.
+\begin{defi} \label{EDPD:M}
 Dados~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$, definimos~${M(S,c) = \max\{a_2 \mid (a_1,a_2) \in S \text{ e } a_1 \geq c\}}$.
 \end{defi}
 
-Com estas definições estamos prontos para apresentar a estrutura de dados que vai nos ajudar a resolver o Problema~\ref{EDPD:HIS}.
+Com estas definições estamos prontos para apresentar a estrutura de dados que vai agilizar a solução do Problema~\ref{EDPD:HIS}.
 \begin{defi}[Fronteira de Pareto] \label{EDPD:Pareto}
 A fronteira de Pareto~$\Cl{P}(S)$ de um conjunto finito~$S \subset \B{Q}^2$ é uma estrutura de dados que contém todos os elementos não dominados de~$S$, isto é, $x \in \Cl{P}(S)$ se e somente se $x \in S$ e $x$ não é dominado em $S$. Podemos realizar as seguintes operações sobre~$\Cl{P}(S)$:
 
 \begin{description}
-\item[$\textsc{Insere}(x)$] Inserir um novo elemento~$x \in \B{Q}^2$ em~$S$ em tempo~$\Cl{O}(\lg(|S|))$ amortizado.
-\item[$\textsc{CalculaM}(c)$] Descobrir, dado um~$c \in \B{Q}$ o valor~$M(S,c)$ em tempo~$\Cl{O}(\lg(|S|))$.
+\item[$\textsc{Insere}(\Cl{P}(S),x)$] Inserir um novo elemento~$x \in \B{Q}^2$ em~$S$ em tempo~$\Cl{O}(\lg(|S|))$ amortizado.
+\item[$\textsc{CalculaM}(\Cl{P}(S),c)$] Descobrir, dado um~$c \in \B{Q}$ o valor~$M(S,c)$ em tempo~$\Cl{O}(\lg(|S|))$.
 \end{description}
 \end{defi}
 
-Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária ordenada pela primeira coordenada. Esta ordenação nos garante uma propriedade poderosa descrita pela Proposição~\ref{EDPD:doubleorder}.
+Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária ordenada crescentemente pela primeira coordenada. Esta ordenação nos garante uma propriedade poderosa descrita pela Proposição~\ref{EDPD:doubleorder}.
 
 \begin{prop} \label{EDPD:doubleorder}
 Se~$S \subset \B{Q}^2$ é finito e os elementos de~$\Cl{P}(S)$ estão em ordem crescente na primeira coordenada, eles estão em ordem decrescente na segunda coordenada.
@@ -68,44 +62,48 @@ Se~$S \subset \B{Q}^2$ é finito e os elementos de~$\Cl{P}(S)$ estão em ordem c
 Suponha que existam~$x = (x_1,x_2)$ e~$y = (y_1,y_2) \in \Cl{P}(S)$ tais que~$x_1 \leq x_2$ e~$y_1 \leq y_2$, assim,~$y \succeq x$ e~$x \notin \Cl{P}(S)$.
 \end{proof}
 
-Com isso, para calcular~$M(\Cl{P}(S),c)$ basta encontrar o elemento em~$\Cl{P}(S)$ com menor primeira coordenada que seja maior ou igual a~$c$ e devolver a segunda coordenada deste ponto. Isso funciona por sabermos que qualquer elemento que tenha maior valor na primeira coordenada do que o encontrado terá menor valor na segunda. É possível encontrar este elemento em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, já que a nossa estrutura mantém uma árvore de busca binária dos elementos ordenada pela primeira coordenada. 
+Além disso, guardando apenas os elementos~$\Cl{P}(S)$, ainda é possível descobrir se um novo elemento é dominado ou não pelo conjunto~$S$, como demonstrado na Proposição~\ref{EDPD:DomP} a seguir.
+
+\begin{prop} \label{EDPD:DomP}
+Se~$S$ é um conjunto finito e um ponto~$x \in \B{Q}^2$ é dominado em~$S$, então,~$x$ é dominado em~$\Cl{P}(S)$.
+\end{prop}
+\begin{proof}
+Sejam~$S$ e~$x$ dados como no enunciado. Se~$x$ é dominado em~$S$ existe pelo menos um elemento em~$S$ que domina~$x$, dentre estes, tome por~$y$ algum que é maximal em relação a~$\succeq$, isto é, que não seja dominado em~$S$. Isto é possível pois~$\succeq$ é uma ordem parcial e~$S$ é finito. Vale que~${ y \in \Cl{P}(S) }$, portanto,~$x$ é dominado em~$\Cl{P}(S)$.
+\end{proof}
+
+Para calcular~$M(\Cl{P}(S),c)$ basta encontrar o elemento em~$\Cl{P}(S)$ com menor primeira coordenada que seja maior ou igual a~$c$ e devolver a segunda coordenada deste ponto. Isso funciona por sabermos que qualquer elemento que tenha maior valor na primeira coordenada do que o encontrado terá menor valor na segunda, graças à Proposição~\ref{EDPD:doubleorder}. É possível encontrar este elemento em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, já que a nossa estrutura mantém uma árvore de busca binária dos elementos ordenada pela primeira coordenada. 
 
 A Proposição~\ref{EDPD:keepM} abaixo garante que~${ M(\Cl{P}(S),c) = M(S,c) }$, portanto, realizar esta busca na estrutura responde à operação~$\textsc{CalculaM}$. Já que~${\Cl{O}(\lg(|\Cl{P}(S)|)) \subseteq \Cl{O}(\lg(|S|))}$, esta busca e, consequentemente, o cálculo da operação~$\textsc{CalculaM}$, são realizados em tempo~$\Cl{ O(\lg(|S|) }$.
 
 \begin{prop} \label{EDPD:keepM}
 Para todo~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$ vale~$M(S,c) = M(\Cl{P}(S),c)$.
 \end{prop}
-% TODO REVISAR ESSA PROVA
 \begin{proof}
-Sabemos~$M(S,c) \geq M(\Cl{P}(S),c)$. Se~$S = \emptyset$, vale~${M(S,c) = M(\Cl{P}(S),c) = -\infty}$. Suponha~$S \neq \emptyset$, existe~$a=(a_1,a_2) \in S$ tal que~$M(S,c) = a_2$ e~$a_1 \geq c$. Se~$a \in \Cl{P}(S)$, vale que~${ M(\Cl{P}(S),c) \geq M(S,c) }$. Se~${ a \notin \Cl{P}(S) }$, pela Proposição~\ref{EDPD:DomP}, existe~$b =(b_1,b_2)$ tal que~$b \in \Cl{P}(S)$ e~$b \succeq a$, portanto, já que~$b_1 \geq a_1 \geq c$, vale que~$M(\Cl{P}(S),c) \geq b_2 \geq a_2 = M(S,c)$. Concluímos que~${ M(S,c) = M(\Cl{P}(S),c) }$.
+Já que~${ \Cl{P}(S) \subseteq S }$ segue que~${ M(S,c) \geq M(\Cl{P}(S) }$. Vamos provar o outro sentido da igualdade. Suponha que~${ M(S,c) > M(\Cl{P}(S),c) }$. Existe, portanto, algum elemento~$a = (a_1,a_2) \in S$ tal que~${ a \notin \Cl{P}(S) }$,~${ a_2 \geq c }$ e~${ a_1 > M(\Cl{P}(S),c) }$. Porém, já que~${ a \notin \Cl{P}(S) }$ ele é dominado em~$S$ e, pela Proposição~\ref{EDPD:DomP}, dominado em~$\Cl{P}(S)$, logo, existe~${ b \in \Cl{P}(S) }$ tal que~${ b \succeq a }$. Concluímos que~${ b_2 \geq a_2 \geq c }$ e~${ M(\Cl{P}(S),c) \geq b_1 \geq a_1 = M(S,c) }$, um absurdo.
 \end{proof}
 
-Devemos conseguir realizar a operação~$\textsc{Insere}$. Suponha que estamos interessados em inserir um ponto~$x = (x_1,x_2)$ dado. Note que a estrutura deve manter apenas os pontos não dominados de~$S$, para isso, antes de inserir~$x$, devemos descobrir se ele é dominado por ou domina alguém de~$S$ olhando apenas para os elementos da estrutura, o que é possível graças à proposição abaixo.
+Para um~${ x = (x_1,x_2) \in \B{Q}^2 }$ qualquer, podemos realizar a operação~$\textsc{Insere}(\Cl{P}(S),x)$ eficientemente utilizando a árvore de busca binária proposta. Primeiramente, devemos remover de~$\Cl{P}(S)$ os elementos dominados por~$x$. Se algum elemento de~$\Cl{P}(S)$ for dominado por~$x$, aquele que possui primeira coordenada imediatamente menor ou igual a~$x_1$ também é dominado por~$x$. Este fato é consequência da Proposição~\ref{EDPD:doubleorder}. Aproveitando este fato, para remover os elementos dominados por~$x$, buscamos aquele com primeira coordenada imediatamente menor ou igual a~$x_1$. Se este não existir ou não for dominado por~$x$, não há nada a fazer. Se este for dominado por~$x$, removemos tal elemento da estrutura e repetimos o processo até que todos os dominados estejam removidos. 
 
-\begin{prop} \label{EDPD:DomP}
-Se~$S$ é um conjunto finito e um ponto~$x \in \B{Q}^2$ é dominado em~$S$, então,~$x$ é dominado em~$\Cl{P}(S)$.
-\end{prop}
-\begin{proof}
-Seja~$y \in S$ tal que~$y \succeq x$, usaremos indução na quantidade de pontos que dominam~$y$ em~$S$ para mostrar que~$y \in \Cl{P}(S)$ ou~$y$ é dominado em~$\Cl{P}(S)$. Na base, existe apenas um ponto em~$S$ que domina~$y$, ele próprio, assim~$y \in \Cl{P}(S)$, caso contrário, existe um outro ponto~$z$ em~$S$ que domina~$y$ e, por transitividade, é dominado por estritamente menos pontos do que~$y$, pela hipótese de indução, temos dois casos, no primeiro~$z \in \Cl{P}(S)$ e~$y$ é dominado em~$\Cl{P}(S)$, no outro,~$z$ é dominado em~$\Cl{P}(S)$ e, por transitividade,~$y$ também é, assim, está provada a tese. Finalmente, já que~$y \succeq x$ e~$\succeq$ é transitiva~$x$ é dominado em~$\Cl{P}(S)$.
-\end{proof}
+Além de remover todos os pontos dominados por~$x$, devemos descobrir se~$x$ é dominado por alguém de~$\Cl{P}(S)$. Perceba que a ordem em que estas partes da operação são realizadas é irrelevante, já que só uma delas irá obter algum resultado, isto é, é impossível dominar alguém em~$\Cl{P}(S)$ e, ao mesmo tempo, ser dominado por~$\Cl{P}(S)$. Para se~$x$ é dominado, basta descobrir o elemento que tem primeira coordenada imediatamente maior ou igual a~$x_1$. A Proposição~\ref{EDPD:doubleorder} garante que, se algum elemento da estrutura domina~$x$,~$x$ é dominado por tal elemento. Caso~$x$ seja dominado, a execução da função deve ser interrompida. Caso contrário, seguimos normalmente.
 
-Precisamos remover todos os elementos da estrutura que são dominados por~$x$. Suponha que existem dois elementos~$a = (a_1,a_2)$ e~$b = (b_1,b_2)$ na estrutura onde~$x_1 \geq a_1 \geq b_1$ e~$x \succeq b$, já que, pela Proposição~\ref{EDPD:doubleorder}, temos~$a_1 \leq b_1$, sabemos que~$x \succeq a$. Assim, basta encontrar o último elemento com primeira coordenada menor ou igual a~$x_1$ e, caso ele seja dominado por~$x$, removê-lo e repetir o processo, caso contrário, parar com a garantia de que nenhum elemento da estrutura é dominado por~$x$. Estas buscas e remoções podem ser feitas em tempo~$\Cl{O}(\lg(|S|))$, já que estamos usando uma árvore de busca binária. Além disso, precisamos descobrir se~$x$ é dominado por algum elemento, para isso, calculamos o valor~$M(S,x_1)$. Se este valor for pelo menos~$x_2$ existe um elemento exatamente igual a~$x$ na estrutura ou~$x$ é dominado por outro elemento da estrutura, em ambos os casos, não inserimos~$x$ na estrutura, caso contrário, basta inserir~$x$ na estrutura.
-
-Note que todo elemento pode ser removido da estrutura apenas uma vez e que descobrir se um elemento não entra na estrutura pede apenas uma chamada ao método~$\textsc{CalculaM}$. Isso mostra que a operação~$\textsc{Insere}$ é realizada em tempo amortizado~$\Cl{O}(\lg(|S|)$. O Algoritmo~\ref{EDPD:FP:code} implementa as operações descritas aqui.
+Note que todo elemento pode ser removido da estrutura apenas uma vez e que encontrar (e remover) elementos de primeira coordenada igual, imediatamente menor e imediatamente maior do que um dado valor custa tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$ por busca. Portanto, a operação~$\textsc{Insere}$ é realizada em tempo~$\Cl{O}(\lg(|S|))$ amortizado. O Algoritmo~\ref{EDPD:FP:code} implementa as operações descritas aqui. Note que o uso de~$\leq$ nas linhas~\ref{EDPD:FP:code:upper} e~\ref{EDPD:FP:code:lower} tratam, de forma elegante, os casos onde existe um elemento com primeira coordenada igual a~$x_1$.
 
 \begin{algorithm}[h]
 \caption{Operações sobre a fronteira de Pareto de um conjunto}
 \label{EDPD:FP:code}
 \begin{algorithmic}[1]
 \Function{\textsc{Insere}}{\Cl{P}(S),x = (x_1,x_2)}
-    \State $y = (y_1,y_2) \rec$ último elemento tal que~$y_1 \leq x_1$
+    \State $y = (y_1,y_2) \rec$ primeiro elemento tal que~$y_1 \geq x_1$ \label{EDPD:FP:code:upper}
+    \If{$y$ existe e $y \succeq x$}
+        \State Interrompe a execução da função
+    \EndIf
+
+    \State $y = (y_1,y_2) \rec$ último elemento tal que~$y_1 \leq x_1$ \label{EDPD:FP:code:lower}
     \While{ $y$ existe e $x \succeq y$}
         \State Remove~$y$ da árvore de busca de~$\Cl{P}(S)$
         \State $y = (y_1,y_2) \rec$ último elemento tal que~$y_1 \leq x_1$
     \EndWhile
-    \If{$\textsc{CalculaM}(\Cl{P}(S),x_1) < x_2$}
-        \State Insere~$x$ na árvore de busca de~$\Cl{P}(S)$
-    \EndIf
+    \State Insere~$x$ na árvore de busca de~$\Cl{P}(S)$
 \EndFunction
 \Function{\textsc{CalculaM}}{\Cl{P}(S),c}
     \State $y = (y_1,y_2) \rec$ primeiro elemento tal que~$y_1 \geq c$
@@ -123,7 +121,7 @@ Note que todo elemento pode ser removido da estrutura apenas uma vez e que desco
 
 \subsection{Otimizando subsequência crescente de peso máximo}
 
-Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~$\B{Q}^2$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(\lg(n))$. Para isso basta notar que podemos reescrever a recorrência~\ref{EDPD:HIS:rec} como~$f(i) = M(S_i,-v_i)$ onde~$S_i = \{(-v_j,f(j)) \mid j < i\} \cup \{(0,\infty)\}$. Com isso, o Algoritmo~\ref{EDPD:HIS:code} calcula todos os~$f$ em tempo~$\Cl{O}(n\lg(n))$.
+Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~$\B{Q}^2$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(\lg(n))$. Para isso basta notar que podemos reescrever a recorrência~\ref{EDPD:HIS:rec} como~$f(i) = M(S_i,-v_i)$ onde~$S_i = \{(-v_j,f(j)) \mid j < i\} \cup \{(0,\infty)\}$. Com isso, o Algoritmo~\ref{EDPD:HIS:code} calcula todos os~$f$ em tempo~$\Cl{O}(n\lg(n))$ e retorna o máximo entre 0 e todos os valores da função~$f$, já que esta é a resposta para o problema proposto.
 
 \begin{algorithm}[h]
 \caption{Solução do Problema~\ref{EDPD:HIS}}
