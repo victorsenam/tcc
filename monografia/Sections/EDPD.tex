@@ -1,21 +1,23 @@
 \section{Estruturas de dados em programação dinâmica}
 \label{EDPD}
 
-Nesta seção, exemplificaremos a utilização de estruturas de dados em programação dinâmica, o que facilitará a compreensão da Seção~\ref{Online}.
+Em certas ocasiões, ao aplicar programação dinâmica no cálculo de alguma recorrência, podemos manter alguns dos estados já calculados em uma estrutura de dados que pode nos ajudar a calcular com mais eficiência os estados seguintes. Nesta seção, exemplificaremos esta possibilidade. 
+
+Na Seção~\ref{Online} apresentaremos um exemplo no qual a convexidade (ou concavidade) da recorrência calculada nos permite usar uma estrutura de dados de forma parecida com a apresentada aqui. Esta seção, portanto, pretende ser uma introdução à utilização de estruturas de dados em programação dinâmica que deve facilitar a compreensão da Seção~\ref{Online}.
 
 %----------------------------------------------------------------------------------------
 
 \subsection{O problema da subsequência crescente de peso máximo}
 
 \begin{prob}[Subsequência crescente de peso máximo] \label{EDPD:HIS}
-Dados um natural~$n$ e dois vetores~$v,w \in \B{Q}^n$, descobrir uma subsequência~$s$ de~$[1 \tdots n]$ crescente em~$v$, isto é, tal que para todo par de índices~$i,j \in [1 \tdots |s|]$ onde~$i < j$, vale~$v_{s_i} < v_{s_j}$, e de soma máxima em~$w$, isto é, tal que~$\sum\limits_{i \in s} w_i$ seja máximo.
+Dados um natural~$n$ e dois vetores~$v,w \in \B{Q}^n$, descobrir uma subsequência~$s$ de~$[1 \tdots n]$ crescente em~$v$ e de soma máxima em~$w$. Formalmente, a subsequência~$s$ deve respeitar~${ v_{s_i} < v_{s_j} }$ para todo par de índices~${ i,j \in [1 \tdots |s|] }$ tal que~${ i < j }$ e deve maximizar~${ \sum\limits_{i \in s} w_i }$.
 \end{prob}
 
 Podemos resolver este problema com tempo~$\Cl{O}(n^2)$ utilizando programação dinâmica na recorrência
 \begin{equation} \label{EDPD:HIS:rec}
 f(i) = \max(\{f(j) \mid j < i \text{ e } v_j < v_i\} \cup \{0\}) + w_j \text{,}
 \end{equation}
-onde, para todo~$i \in [1 \tdots n]$ o valor~$f(i)$ representa a melhor sequência válida que contém~$i$ como último elemento.
+onde, para todo~$i \in [1 \tdots n]$, o valor~$f(i)$ é o peso da melhor sequência válida que contém~$i$ como último elemento.
 
 Um caso especial deste problema onde o vetor~$w$ é um vetor unitário é o problema clássico da maior subsequência crescente. É conhecido o fato de que este problema pode ser resolvido em tempo~$O(n\lg(n))$~\cite{Fredman:1975}. 
 
@@ -26,7 +28,7 @@ Um caso especial deste problema onde o vetor~$w$ é um vetor unitário é o prob
 Apresentaremos uma estrutura de dados que vai nos ajudar a resolver o Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(n\lg(n))$, para isso, vamos utilizar algumas definições e resultados.
 
 \begin{defi}[Relação de dominância]
-Dados dois pontos~$a = (a_1,a_2)$ e~$b = (b_1,b_2) \in \B{Q}^2$, vale~$a \succeq b$ ($a$ domina~$b$), se~$a_1 \geq b_1$ e~$a_2 \geq b_2$. Além disso, se~$S \subseteq \B{Q}^2$ e~$x \in \B{Q}^2$, dizemos que~$x$ é dominado em~$S$ se existe um ponto~$y \in S$ tal que~$y \succeq x$ e~$y \neq x$.
+Sejam~${ a = (a_1,a_2) }$ e~${ b = (b_1,b_2) }$ elementos de~$\B{Q}^2$. Se~${ a_1 \geq b_1 }$ e~${ a_2 \geq b_2 }$ dizemos que~${ a \succeq b }$ ($a$ domina~$b$). Além disso, se~${ S \subseteq \B{Q}^2 }$, um ponto~${ a \in \B{Q} }$ é dominado em~$S$ se existe um outro ponto~$b \in S$ que domina~$a$.
 \end{defi}
 
 \begin{prop}
@@ -47,7 +49,7 @@ Além disso, o valor a seguir será de interesse sobre os conjuntos nos quais tr
 Dados~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$, definimos~${M(S,c) = \max\{a_2 \mid (a_1,a_2) \in S \text{ e } a_1 \geq c\}}$.
 \end{defi}
 
-Com estas definições já estamos prontos para apresentar a estrutura de dados que vai nos ajudar a resolver o Problema~\ref{EDPD:HIS}.
+Com estas definições estamos prontos para apresentar a estrutura de dados que vai nos ajudar a resolver o Problema~\ref{EDPD:HIS}.
 \begin{defi}[Fronteira de Pareto] \label{EDPD:Pareto}
 A fronteira de Pareto~$\Cl{P}(S)$ de um conjunto finito~$S \subset \B{Q}^2$ é uma estrutura de dados que contém todos os elementos não dominados de~$S$, isto é, $x \in \Cl{P}(S)$ se e somente se $x \in S$ e $x$ não é dominado em $S$. Podemos realizar as seguintes operações sobre~$\Cl{P}(S)$:
 
@@ -57,22 +59,25 @@ A fronteira de Pareto~$\Cl{P}(S)$ de um conjunto finito~$S \subset \B{Q}^2$ é u
 \end{description}
 \end{defi}
 
-Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária ordenada pela primeira coordenada. Esta ordenação nos garante uma propriedade poderosa.
+Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária ordenada pela primeira coordenada. Esta ordenação nos garante uma propriedade poderosa descrita pela Proposição~\ref{EDPD:doubleorder}.
 
 \begin{prop} \label{EDPD:doubleorder}
 Se~$S \subset \B{Q}^2$ é finito e os elementos de~$\Cl{P}(S)$ estão em ordem crescente na primeira coordenada, eles estão em ordem decrescente na segunda coordenada.
 \end{prop}
 \begin{proof}
-Suponha que existem~$x = (x_1,x_2)$ e~$y = (y_1,y_2) \in \Cl{P}(S)$ tais que~$x_1 \leq x_2$ e~$y_1 \leq y_2$, assim,~$y \succeq x$ e~$x \notin \Cl{P}(S)$.
+Suponha que existam~$x = (x_1,x_2)$ e~$y = (y_1,y_2) \in \Cl{P}(S)$ tais que~$x_1 \leq x_2$ e~$y_1 \leq y_2$, assim,~$y \succeq x$ e~$x \notin \Cl{P}(S)$.
 \end{proof}
 
-Com isso, fica fácil calcular~$M(\Cl{P}(S),c)$, basta encontrar o elemento em~$\Cl{P}(S)$ com menor primeira coordenada que seja maior ou igual a~$c$ e devolver a segunda coordenada deste ponto. Isso funciona por sabermos que qualquer elemento que tenha maior valor na primeira coordenada do que o encontrado terá menor valor na segunda. É possível encontrar este elemento em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, já que a nossa estrutura mantém uma árvore de busca binária dos elementos ordenada pela primeira coordenada. Porém, o resultado abaixo nos mostra que~$M(\Cl{P}(S),c) = M(S,c)$. Já que~${\Cl{O}(\lg(|\Cl{P}(S)|)) \subseteq \Cl{O}(\lg(|S|))}$ e~$M(\Cl{P}(S),c) = M(S,c)$, conseguimos satisfazer a operação~$\textsc{CalculaM}$.
+Com isso, para calcular~$M(\Cl{P}(S),c)$ basta encontrar o elemento em~$\Cl{P}(S)$ com menor primeira coordenada que seja maior ou igual a~$c$ e devolver a segunda coordenada deste ponto. Isso funciona por sabermos que qualquer elemento que tenha maior valor na primeira coordenada do que o encontrado terá menor valor na segunda. É possível encontrar este elemento em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, já que a nossa estrutura mantém uma árvore de busca binária dos elementos ordenada pela primeira coordenada. 
 
-\begin{prop}
+A Proposição~\ref{EDPD:keepM} abaixo garante que~${ M(\Cl{P}(S),c) = M(S,c) }$, portanto, realizar esta busca na estrutura responde à operação~$\textsc{CalculaM}$. Já que~${\Cl{O}(\lg(|\Cl{P}(S)|)) \subseteq \Cl{O}(\lg(|S|))}$, esta busca e, consequentemente, o cálculo da operação~$\textsc{CalculaM}$, são realizados em tempo~$\Cl{ O(\lg(|S|) }$.
+
+\begin{prop} \label{EDPD:keepM}
 Para todo~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$ vale~$M(S,c) = M(\Cl{P}(S),c)$.
 \end{prop}
+% TODO REVISAR ESSA PROVA
 \begin{proof}
-Sabemos~$M(S,c) \geq M(\Cl{P}(S),c)$. Se~$S = \emptyset$, vale~${M(S,c) = M(\Cl{P}(S),c) = -\infty}$. Suponha~$S \neq \emptyset$, existe~$a=(a_1,a_2) \in S$ tal que~$M(S,c) = a_2$ e~$a_1 \geq c$, se~$a \in \Cl{P}(S)$, temos~${M(S,c) \leq M(\Cl{P}(S),c)}$. No outro caso, pela Proposição~\ref{EDPD:DomP}, existe~$b =(b_1,b_2)$ tal que~$b \in \Cl{P}(S)$ e~$b \succeq a$, portanto, já que~$b_1 \geq a_1 \geq c$, vale~$M(\Cl{P}(S),c) \geq b_2 \geq a_2 = M(S,c)$.
+Sabemos~$M(S,c) \geq M(\Cl{P}(S),c)$. Se~$S = \emptyset$, vale~${M(S,c) = M(\Cl{P}(S),c) = -\infty}$. Suponha~$S \neq \emptyset$, existe~$a=(a_1,a_2) \in S$ tal que~$M(S,c) = a_2$ e~$a_1 \geq c$. Se~$a \in \Cl{P}(S)$, vale que~${ M(\Cl{P}(S),c) \geq M(S,c) }$. Se~${ a \notin \Cl{P}(S) }$, pela Proposição~\ref{EDPD:DomP}, existe~$b =(b_1,b_2)$ tal que~$b \in \Cl{P}(S)$ e~$b \succeq a$, portanto, já que~$b_1 \geq a_1 \geq c$, vale que~$M(\Cl{P}(S),c) \geq b_2 \geq a_2 = M(S,c)$. Concluímos que~${ M(S,c) = M(\Cl{P}(S),c) }$.
 \end{proof}
 
 Devemos conseguir realizar a operação~$\textsc{Insere}$. Suponha que estamos interessados em inserir um ponto~$x = (x_1,x_2)$ dado. Note que a estrutura deve manter apenas os pontos não dominados de~$S$, para isso, antes de inserir~$x$, devemos descobrir se ele é dominado por ou domina alguém de~$S$ olhando apenas para os elementos da estrutura, o que é possível graças à proposição abaixo.
