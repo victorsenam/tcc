@@ -25,10 +25,10 @@
   \filldraw (6,1) rectangle (7,0);
 \end{scope}
 \begin{scope}[pattern=north west lines,pattern color=red]
-  \filldraw (0,4) rectangle (2,5);
+  \fill (0,4) rectangle (2,5);
 \end{scope}
 \begin{scope}[pattern=vertical lines,pattern color=green]
-  \filldraw (2,0) rectangle (3,4);
+  \fill (2,0) rectangle (3,4);
 \end{scope}
 
 \end{tikzpicture}

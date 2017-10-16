@@ -1,27 +1,31 @@
 \section{Busca em matrizes online}
 \label{Online}
 
-Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Nas Subseções~\ref{Online:convex},~\ref{Online:concave} e~\ref{Online:linear} resolvemos os problemas para este formato e na Seção~\ref{Envelopes} utilizaremos as ideias desenvolvidas aqui para resolver problemas mais genéricos relacionados a este.
+Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Este problema pode ser resolvido em tempo~$\Cl{O}(\lg(n))$ para matrizes~$n \times n$ convexas e côncavas. O caso convexo é resolvido na Subseção~\ref{Online:convex} e, na Subseção~\ref{Online:concave}, discutimos brevemente o caso côncavo, que só é resolvido inteiramente na Seção~\ref{Envelopes} a seguir. Em alguns casos, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
 
-Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, devemos explicar quais dependências podem aparecer e quais não podem, para isso, é útil descrever matrizes online segundo a Definição~\ref{Online:matrix}.
+Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, é necessário explicitar um formato que deve ser respeitado, definindo quais dependências podem aparecer nestas matrizes. O formato descrito pela Definição~\ref{Online:matrix} abaixo aparece naturalmente em recorrências de programação dinâmica, portanto, é útil para esta aplicação. Desde já, discutiremos os algoritmos apenas em termos de buscas de índices de mínimos nestas matrizes. É fácil adaptar os conhecimentos e definições para os casos de busca de índices de máximos.
 
-\begin{defi}[Matriz online] \label{Online:matrix}
-Dizemos que uma matriz~$A \in \B{Q}^{n \times n}$ com vetor de índices de mínimos de linhas~$R$ é online nas linhas se para todo~$i,j \in [n]$ com~$i \neq j$ o valor de~$A[i][i]$ é conhecido à priori e os valores de~$A[i][j]$ podem depender de~$R[j]$. Isto é, em uma matriz online, a diagonal é conhecida e as outras entradas de uma \textbf{coluna}~$j$ qualquer dependem do índice do mínimo da \textbf{linha}~$j$ correspondente.
-
-Similarmente, dizemos que uma matriz é online nas colunas quando as entradas de suas diagonais são conhecidas à priori e uma entrada~$A[i][j]$ fora da diagonal pode depender do índice de mínimo da coluna~$i$.
+\begin{defi}[Matriz triangular online] \label{Online:matrix}
+Dizemos que a matriz~$A \in \B{Q}^{n \times n}$ com vetor de índices de mínimos de linhas~$R$ é triangular inferior online nas linhas se para todo~${ i,j \in [n] }$ vale que~${ A[i][j] = +\infty }$ quando~${ i \leq j }$ e o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i > j }$. Similarmente, se~$A$ é triangular superior online nas linhas, vale que~${ A[i][j] = +\infty }$ quando~${ i \geq j }$ e o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i < j}$. Se~$A$ é online nas colunas, as entradas~$A[i][j]$ dependem de~$R[i]$ em vez de depender de~$R[j]$.
 \end{defi}
 
-Note que a definição permite que outras entradas além das diagonais sejam conhecidas à priori. Dizemos ainda que uma entrada da matriz está disponível se é possível descobrir seu valor, isto é, ela era conhecida à priori ou ela só depende de informações já calculadas. 
+Dizemos que uma entrada da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se for conhecida à priori ou se o mínimo de linha ou coluna da qual ela depende já foi calculado. Consideramos que calcular o valor de uma entrada disponível custa tempo~$\Cl{O}(1)$. Vamos trabalhar, a partir daqui, com matrizes triangulares inferiores online nas linhas. Não é difícil adaptar as discussões desta seção para outras matrizes triangulares online.
 
-A Definição~\ref{Online:matrix} deixa espaço para dependências circulares, o que pode fazer com que a matriz fique mal definida e, portanto, impossível de calcular. Trabalharemos, nesta seção, com matizes triangulares inferiores apenas, isto é, matrizes tais que cada entrada~$A[i][j]$ onde~$i \leq j$ é indefinida. É possível criar matrizes online que não são triangulares e, ainda assim, são bem definidas. A Figura~\ref{Online:matrix:fig} ilustra as relações de dependência nas matrizes tratadas nesta seção. As entradas não definidas estão pintadas em cinza. As entradas da coluna com linhas verticais em verde dependem dos valores das entradas da linha correspondente hachurada em vermelho. 
+Se~$A$ é uma matriz triangular inferior online nas linhas, as entradas do triângulo inferior da matriz em uma coluna~$j$ qualquer se tornam disponíveis assim que o valor~$R[j]$ for conhecido. Isso faz com que seja necessário calcular o vetor~$R$ primeiro na posição 1, depois em 2 e assim por diante. Esta restrição inviabiliza os algoritmos para encontrar valores ótimos já discutidos, uma vez que aqueles calculam os valores de~$R$ em ordens diferentes desta.
+
+A Figura~\ref{Online:matrix:fig} ilustra as relações de dependência nas matrizes tratadas nesta seção. As entradas com valor~$+\infty$ estão pintadas em cinza. As entradas da coluna com linhas verticais em verde dependem dos valores das entradas da linha correspondente hachurada em vermelho. 
 
 \begin{figure}[h]
     \centering
     \input{Figures/Online_Online.tikz}
-    \caption{Dependências de uma matriz online por linhas triangular inferior.} \label{Online:matrix:fig}
+    \caption{Dependências de uma matriz triangular inferior online nas linhas.} \label{Online:matrix:fig}
 \end{figure}
 
-Vamos apresentar métodos para encontrar índices ótimos nestas matrizes quando elas forem totalmente monótonas. Vamos focar no caso onde estamos interessados nos mínimos das linhas de uma matriz totalmente monótona nas linhas e online nas linhas. Assim como nas seções anteriores, é fácil adaptar estes algoritmos para trabalhar em termos de colunas ou máximos. Os casos convexo e côncavo, por outro lado, são diferentes entre si e serão explicados individualmente. É interessante perceber também que, já que a matriz é triangular inferior, a linha 1 não possui valor definido e, portanto, não possuí mínimo. O Problema~\ref{Online:prob} exemplifica a utilidade de trabalhar com matrizes deste tipo.
+Lembramos que, já que estamos trabalhando com minimização de linhas, dizemos que uma coluna~$a$ de~$A$ é melhor do que uma outra coluna~$b$ de~$A$ em uma linha~$i$ de~$A$ se tem valor menor ou se tem valor igual e índice menor, isto é, se~$A[i][a] < A[i][b]$ ou se~$A[i][a] = A[i][b]$ e~$a < b$, dizemos também que~$a$ é pior do que~$b$ quando~$b$ é melhor do que~$a$.
+
+\subsection{Caso convexo}
+
+Vamos apresentar um método para encontrar os índices de mínimos das linhas de matrizes triangulares inferiores online nas linhas totalmente monótonas convexas por linhas. O Problema~\ref{Online:prob} exemplifica a utilidade de trabalhar com matrizes deste tipo.
 
 \begin{prob} \label{Online:prob}
 Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[1] = 0$ e para todo~$i \in [2 \tdots n]$ vale~$E[i] = \min\limits_{j < i} C[i][j] + E[j]$.
@@ -30,21 +34,37 @@ Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal q
 Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, criamos a matriz~$B \in \B{Q}^{n \times n}$ de forma que para todo~$i,j \in [n]$ vale
 \begin{equation} \label{Online:Bmat}
     B[i][j] = \begin{cases}
-        \text{indefinida} & \text{, se } i \leq j \text{ e } \\
+        +\infty & \text{, se } i \leq j \text{ e } \\
         C[i][j] + E[j]    & \text{, caso contrário.}
     \end{cases}
 \end{equation}
 
-Primeiramente, é fácil observar que a matriz~$B$ é online nas linhas e triangular inferior. Se~$R$ é o vetor de índices de mínimos das linhas de~$B$, vale~$E[i] = B[i][R[i]]$ para toda linha~$i \in [2 \tdots n]$ de~$B$. Portanto, resolver o Problema~\ref{Online:prob} é encontrar os índices de mínimos das linhas de~$B$. O Lema~\ref{Monge:keepConvex} garante que se~$C$ é Monge, a matriz~$B$ também será Monge no mesmo sentido e, portanto, totalmente monótona nas linhas. Com estas propriedades, as técnicas discutidas nesta seção são suficientes para resolver este Problema eficientemente.
+Primeiramente, é fácil observar que a matriz~$B$ é online triangular inferior nas linhas. Se~$R$ é o vetor de índices de mínimos das linhas de~$B$, vale~$E[i] = B[i][R[i]]$ para toda linha~$i \in [2 \tdots n]$ de~$B$. Portanto, resolver o Problema~\ref{Online:prob} é encontrar os índices de mínimos das linhas de~$B$. Os Lemas~\ref{Monge:keepConvex} e~\ref{Online:triangLema} garantem que se~$C$ é Monge convexa, a matriz~$B$ também será Monge convexa e, portanto, totalmente monótona nas linhas. 
 
-Lembramos que, já que estamos trabalhando com minimização de linhas, dizemos que uma coluna~$a$ de~$A$ é melhor do que uma outra coluna~$b$ de~$A$ em uma linha~$i$ de~$A$ se tem valor menor ou se tem valor igual e índice menor, isto é, se~$A[i][a] < A[i][b]$ ou se~$A[i][a] = A[i][b]$ e~$a < b$, dizemos também que~$a$ é pior do que~$b$ quando~$b$ é melhor do que~$a$. Para resolver este problema, usaremos uma estrutura de dados que chamamos de envelope.
+\begin{lema} \label{Online:triangLema}
+Sejam~${ A \in \B{Q}^{n \times n} }$ e~${ B \in \B{Q}^{n \times n} }$ tais que, para todo~${ i,j \in [n] }$,~${ B[i][j] = A[i][j] }$ se~${ i > j }$ e~${ B[i][j] = +\infty }$ caso contrário. Se~$A$ é Monge convexa, então~$B$ é Monge convexa.
+\end{lema}
+
+\begin{proof}
+Tome~${ i,i',j,j' \in [n] }$ quaisquer tais que~${ i < i' }$ e~${ j < j' }$. Se~${ i' < j }$ vale a desigualdade~${ B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j'] }$ pois todas as entradas visitadas por esta desigualdade são iguais às entradas de mesmo índice na matriz~$A$ e estas respeitam a desigualdade já que~$A$ é Monge. Se~${ i' \geq j }$ então~${ B[i'][j] = +\infty }$ e a mesma desigualdade vale independente dos valores do lado esquerdo da mesma.
+\end{proof}
+
+Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos das linhas de uma matriz~$A$ triangular inferior online nas linhas totalmente monótona por linhas qualquer. Como já observado, devemos encontrar estes valores um a um da primeira até a última linha necessariamente nesta ordem. É verdade que enquanto o valor~$R[i]$ é calculado para uma linha~$i$ qualquer, todos os valores em uma coluna~${ j < i }$ qualquer já estão disponíveis. Este fato é ilustrado pela Figura~\ref{Online:dep:fig} que mostra, hachurada em vermelho, a linha~$i$ e, com linhas verticais verdes, as entradas já disponíveis da matriz. Note que as entradas da linha~$i$ e as entradas preenchidas em cinza também já estão disponíveis.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Online_Disponiveis.tikz}
+    \caption{Entradas disponíveis em um momento qualquer do cálculo de~$R$} \label{Online:dep:fig}
+\end{figure}
+
+Em vez de buscar o mínimo de cada uma das linhas percorrendo todas as entradas daquela linha, vamos fazer como na Seção~\ref{EDPD} e manter uma estrutura de dados com informações úteis para a solução das linhas restantes. No nosso caso, guardamos, para cada uma das colunas disponíveis, os índices das linhas para as quais esta coluna é a melhor dentre todas as já disponíveis. Veremos adiante que é fácil representar esta informação, já que, para cada subconjunto de colunas de~$A$, uma coluna qualquer é a melhor dentre todas as do conjunto apenas em um intervalo (potencialmente vazio) das linhas de~$A$. Chamamos a estrutura de dados em questão de envelope.
 
 \begin{defi}
 Um envelope~$\Cl{E}$ sobre uma matriz~$A$ é uma estrutura de dados que mantém um conjunto de colunas~$J$ da matriz e é capaz de responder às seguintes operações:
 
 \begin{description}
-    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ disponível da matriz na estrutura de dados e
-    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Retorna~$\min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\}$ onde~$i \in [n]$ e~$J$ é não vazio.
+    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ disponível da matriz na estrutura de dados;
+    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Retorna a melhor coluna de~$J$ na linha~$i$ onde~$J$ é não vazio e~${ i \in [n] }$. Formalmente, retorna~${ \min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\} }$.
 \end{description}
 \end{defi}
 
