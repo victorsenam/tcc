@@ -1,7 +1,7 @@
 \section{Busca em matrizes online}
 \label{Online}
 
-Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Este problema pode ser resolvido em tempo~$\Cl{O}(\lg(n))$ para matrizes~$n \times n$ convexas e côncavas. O caso convexo é resolvido na Subseção~\ref{Online:convex} e, na Subseção~\ref{Online:concave}, discutimos brevemente o caso côncavo, que só é resolvido inteiramente na Seção~\ref{Envelopes} a seguir. Em alguns casos, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
+Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex} e, na Subseção~\ref{Online:concave}, discutimos brevemente o caso côncavo, que só é resolvido inteiramente na Seção~\ref{Envelopes} seguinte. Em alguns casos, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
 
 Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, é necessário explicitar um formato que deve ser respeitado, definindo quais dependências podem aparecer nestas matrizes. O formato descrito pela Definição~\ref{Online:matrix} abaixo aparece naturalmente em recorrências de programação dinâmica, portanto, é útil para esta aplicação. Desde já, discutiremos os algoritmos apenas em termos de buscas de índices de mínimos nestas matrizes. É fácil adaptar os conhecimentos e definições para os casos de busca de índices de máximos.
 
@@ -9,7 +9,11 @@ Para conseguir lidar com matrizes que não são inteiramente conhecidas à prior
 Dizemos que a matriz~$A \in \B{Q}^{n \times n}$ com vetor de índices de mínimos de linhas~$R$ é triangular inferior online nas linhas se para todo~${ i,j \in [n] }$ vale que~${ A[i][j] = +\infty }$ quando~${ i \leq j }$ e o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i > j }$. Similarmente, se~$A$ é triangular superior online nas linhas, vale que~${ A[i][j] = +\infty }$ quando~${ i \geq j }$ e o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i < j}$. Se~$A$ é online nas colunas, as entradas~$A[i][j]$ dependem de~$R[i]$ em vez de depender de~$R[j]$.
 \end{defi}
 
-Dizemos que uma entrada da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se for conhecida à priori ou se o mínimo de linha ou coluna da qual ela depende já foi calculado. Consideramos que calcular o valor de uma entrada disponível custa tempo~$\Cl{O}(1)$. Vamos trabalhar, a partir daqui, com matrizes triangulares inferiores online nas linhas. Não é difícil adaptar as discussões desta seção para outras matrizes triangulares online.
+É possível definir matrizes triangulares também em termos de entradas indefinidas, em vez de infinitas. Esta ideia será útil para o caso côncavo. Galil e Park~\cite{Galil:1992} utilizam o conceito de matrizes escadaria (em inglês, staircase), que generalizam matrizes triangulares utilizando entradas indefinidas, e discutem problemas sobre estas matrizes. Klawe e Kleitman~\cite{Klawe:1990}, também, exploram as matrizes escadaria totalmente monótonas. Matrizes triangulares como definidas aqui são usadas por Burkard, Klinz e Rudolf~\cite[Seções 2.1 e 3.8]{Burkard:1996}.
+
+Dizemos que uma entrada da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se for conhecida à priori ou se o mínimo de linha ou coluna da qual ela depende já foi calculado. Consideramos que calcular o valor de uma entrada disponível custa tempo~$\Cl{O}(1)$.
+
+Vamos trabalhar, a partir daqui, com matrizes triangulares inferiores online nas linhas. Não é difícil adaptar as discussões desta seção para outras matrizes triangulares online.
 
 Se~$A$ é uma matriz triangular inferior online nas linhas, as entradas do triângulo inferior da matriz em uma coluna~$j$ qualquer se tornam disponíveis assim que o valor~$R[j]$ for conhecido. Isso faz com que seja necessário calcular o vetor~$R$ primeiro na posição 1, depois em 2 e assim por diante. Esta restrição inviabiliza os algoritmos para encontrar valores ótimos já discutidos, uma vez que aqueles calculam os valores de~$R$ em ordens diferentes desta.
 
@@ -25,7 +29,7 @@ Lembramos que, já que estamos trabalhando com minimização de linhas, dizemos 
 
 %------------------------------------------------------------------
 
-\subsection{Caso convexo}
+\subsection{Caso convexo} \label{Online:convex}
 
 Vamos apresentar um método para encontrar os índices de mínimos das linhas de matrizes triangulares inferiores online nas linhas totalmente monótonas convexas por linhas. O Problema~\ref{Online:prob} exemplifica a utilidade de trabalhar com matrizes deste tipo.
 
@@ -200,34 +204,56 @@ Vamos calcular a complexidade dos algoritmos sugeridos. Cada operação~\textsc{
 
 \subsection{Caso côncavo} \label{Online:concave}
 
+As matrizes triangulares como definidas não dão espaço para o caso côncavo. Não faz sentido ter uma matriz côncava triangular pois a única forma de respeitar ambas as condições seria ter uma matriz com todas as entradas iguais a~$+\infty$. Poderíamos definir matrizes triangulares com entradas~$-\infty$ em vez de~$+\infty$, porém, em problemas de minimização, isso não faz sentido. Qual é, então, o equivalente ao problema resolvido para o caso convexo?
 
+Como já foi comentado, é possível definir matrizes triangulares com entradas indefinidas ao invés de entradas infinitas. Esta definição, porém, foge do padrão que adotamos até agora e faz com que seja necessário repensar as provas e definições da Seção~\ref{Monge}. Dizemos que uma matriz deste tipo é Monge côncava se respeita a desigualdade quadrangular côncava apenas para as entradas definidas, isto é, se para todo~${ i,i',j,j' \in [n] }$ tais que~${ i \leq i' < j \leq j'}$ vale~${ A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j] }$. 
+
+Na Seção~\ref{Envelopes} vamos generalizar a estrutura de envelope apresentada no caso convexo. Com tal generalização ficará fácil descrever um algoritmo que resolve o problema proposto aqui.
 
 %------------------------------------------------------------------
 
 \subsection{Envelopes em tempo linear} \label{Online:linear}
 
-Um caso especial interessante deste problema é aquele onde matriz~$A$ é definida em termo de retas com coeficientes angulares ordenados, isto é, existem vetores~$a,b \in \B{Q}^n$ tais que~$a$ é monótona e~$A[i][j] = a_j i + b_j$. É fácil provar que se~$a$ é decrescente,~$A$ é totalmente monótona convexa nas linhas e se~$a$ é crescente,~$A$ é totalmente monótona côncava nas linhas.
+Um caso especial interessante deste problema é aquele onde matriz~$A$ é definida em termo de retas com coeficientes angulares ordenados. Formalmente, existem vetores~$a,b \in \B{Q}^n$ tais que~$a$ é monótona e~$A[i][j] = a_j i + b_j$. É fácil provar que, se~$a$ é decrescente,~$A$ é totalmente monótona convexa nas linhas e, se~$a$ é crescente,~$A$ é totalmente monótona côncava nas linhas.
 
-Este é um bom exemplo de caso para a qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. Galil e Park, ao descrever os algoritmos discutidos aqui, fazem com que a utilização deste fato se torne clara. Da forma como foram descritos aqui, é necessário fazer uma observação para atingir esta complexidade.
+Este é um bom exemplo de caso para a qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. O algoritmo do caso convexo, quando apresentado por Galil e Giancarlo~\cite{Galil:1989} faz com que a utilização deste fato seja óbvia. A forma como o algoritmo foi apresentado aqui requer uma observação a mais para atingir esta complexidade. Vamos tratar apenas do caso convexo aqui.
 
-Durante o desenvolvimento do nosso método, não aproveitamos o fato de sabermos que as operações~\textsc{Calcula} serão chamadas com parâmetro crescente, isto é, as linhas para as quais deveremos descobrir o valor ótimo estarão ordenadas. Para utilizar este fato, vamos manter um ponteiro~$\ell$ para o último item da estrutura que foi resposta de alguma pergunta deste tipo ou para o primeiro item da estrutura, caso nenhuma pergunta tenha sido feita ainda. O Algoritmo~\ref{Online:envelope:linear} reimplementa a operação em questão no caso convexo mostrando como utilizar este ponteiro para responder às perguntas mais eficientemente. Utilizamos a notação~$\ell + 1$ para denotar o elemento seguinte a~$\ell$ na estrutura
+Sabemos que, para encontrar os mínimos das linhas de uma matriz triangular inferior online nas linhas, as operações~\textsc{Calcula} do envelope são chamadas com parâmetro crescente. Apesar disso, a cada chamada desta função, na implementação do Algoritmo~\ref{Online:envelope:convex}, realizamos uma busca binária ignorando o resultado da busca anterior. Já que as chamadas possuem parâmetro crescente, pela total monotonicidade da matriz, os índices das linhas também são crescentes. 
+
+Podemos guardar um ponteiro~$\ell$ que aponta para um certo elemento da estrutura~$\Cl{E}$ de forma que, para encontrar a resposta de uma pergunta~\textsc{Calcula}, basta incrementar este ponteiro até achar o elemento ótimo da estrutura e, depois retorná-lo. Além de adaptar a função~\textsc{Calcula} é necessário alterar~\textsc{Insere}. Isso é necessário pois o elemento apontado por~$\ell$ pode se tornar inválido ao inserirmos uma coluna nova, removendo a apontada da estrutura.
+
+Para implementar esta otimização, então, manteremos a invariante de que~$\ell$ sempre aponta para o elemento em~$\Cl{E}$ de menor índice que tem índice pelo menos igual à última resposta de~$\textsc{Calcula}$. Inicialmente,~$ell$ aponta para~$\Cl{E}_1$. Nos referimos a~$\ell + 1$ como o elemento que sucede~$\ell$ na estrutura. O Algoritmo~\ref{Online:envelope:linear} mostra como implementar estas operações mantendo a invariante de maneira eficiente.
 
 \begin{algorithm}[h]
 \caption{Calcula no envelope convexo em tempo linear}
 \label{Online:envelope:linear}
 \begin{algorithmic}[1]
 \Function{Calcula}{\Cl{E},i}
-    \If{ $\ell$ aponta para um elemento fora de~$\Cl{E}$ }
-        \State $\ell$ passa a apontar para~$\Cl{E}_1$
-    \EndIf
-    
     \While{ $\ell+1$ existe é melhor do que~$\ell$ em~$i$}
         \State $\ell \rec \ell+1$
     \EndWhile
 
     \State \Return valor de $\ell$
 \EndFunction
+
+\Function{Insere}{\Cl{E},j}
+    \If{ $\Cl{E}$ é não vazio e~$A[n][\Cl{E}_{-1}] \leq A[n][j]$ }
+        \State \Return
+    \EndIf
+
+    \While{ $\Cl{E}$ é não vazio e~$A[s(\Cl{E}_{-1})][\Cl{E}_{-1}] > A[s(\Cl{E}_{-1})][j]$ }
+        \State Remove o final de~$\Cl{E}$
+    \EndWhile
+
+    \State Insere~$j$ ao final de~$\Cl{E}$
+
+    \If{$\ell$ aponta para fora da estrutura}
+        \State $\ell$ aponta para~$\Cl{E}_{-1}$
+    \EndIf
+
+    \State Calcula e guarda~$s(j)$
+\EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-Se o ponteiro aponta para alguém fora da estrutura, ele é mandado novamente para o início, se o elemento atual é menor do que o seguinte na linha atual, ele é o ótimo, caso contrário, o ponteiro é movido para o próximo elemento e o algoritmo recomeça. Este algoritmo leva tempo constante amortizado já que o ponteiro só passa a apontar para cada elemento uma única vez, portanto, só pode ser movido no máximo~$n$ vezes. É fácil adaptar este algoritmo para o caso côncavo.
+As operações implementadas no Algoritmo~\ref{Online:envelope:linear} mantém as mesmas invariantes do~\ref{Online:envelope:convex} e a nova invariante proposta sobre o ponteiro~$\ell$. Já que o ponteiro~$\ell$ só passa apontar para cada elemento uma vez, todas as manipulações realizadas nele custam tempo~$\Cl{O}(1)$ amortizado. Isso faz com que o algoritmo seja implementado em tempo~$\Cl{O}(n)$.
