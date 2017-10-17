@@ -140,7 +140,7 @@ Precisamos representar as colunas visitáveis em~$A$. Já que não há uma regra
 
 Antes de chamar o~$\SMAWK$ pela primeira vez, é necessário garantir que a matriz~$A$ seja quadrada. Se a quantidade de linhas é maior do que a quantidade de colunas, precisamos adicionar várias colunas com entradas~$+\infty$ em tempo~$\Cl{O}(1)$. Lembre, da Seção~\ref{Introducao}, que as matrizes são sempre representadas por~$(f,n,m)$ onde~$f$ é uma função,~$n$ é a quantidade de linhas de uma matriz e~$m$ é a quantidade de colunas da matriz. Se recebermos uma entrada tal que~${ n > m }$, basta gerar uma nova função~$h$ tal que, para todo~${ i \in [n] }$ e~${ j \in [m] }$, vale que~${ h(i,j) = f(i,j) }$ e, para todo~$i,j$ diferente destes, vale que~${ h(i,j) = +\infty }$ e podemos passar a matriz~$(h,n,n)$ adiante ao invés da original. Após realizar este tratamento, basta inicializar a lista ligada referente às colunas da matriz em tempo~$\Cl{O}(m)$ e aplicar o~$\Reduce$ nesta, o que trata o caso onde~${ n < m }$ e não faz nada em qualquer outro caso.
  
-A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima,leva o nome \texttt{SMAWK.cpp}.
+A implementação em C++ do algoritmo apresentado, levando em conta as considerações acima, leva o nome \texttt{SMAWK.cpp}.
 
 %----------------------------------------------------------------------------------------
 

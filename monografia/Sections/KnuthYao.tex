@@ -85,6 +85,8 @@ A[i][j] = C[i][j] + \min\{A[i][k-1] + A[k][j] \mid i < k \leq j \text{ e } P[i][
 
 Esta observação induz o Algoritmo~\ref{KY:algo} para calcular as entradas das matrizes~$A$ e~$P$. Na linha~\ref{KY:algo:loop} a variável~$k$ varia de~$P[i][j-1]$ até~$P[i+1][j]$ e não de~${ \max(i+1,P[i][j-1]) }$ até~$\min(j,P[i+1][j])$, como indica a igualdade~\eqref{KY:eq}. Perceba que~${ P[i+1][j] \leq j }$, portanto~${ \min(j,P[i+1][j]) = P[i+1][j] }$. Além disso, sabemos que~${ P[i][j-1] \geq i }$, portanto separamos em dois casos. No primeiro,~${ P[i][j-1] > i }$ e vale~$\max(i+1,P[i][j-1]) = P[i][j-1]$. No outro, onde~$P[i][j-1] = i$, a iteração onde~$k=i$ ocorre indevidamente mas, note que, quando~$k = i$,~$i > k-1$ e~$A[i][k-1] = +\infty$, portanto~$C[i][j] + A[i][k-1] + A[k][j] = +\infty$ e esta iteração será irrelevante para a resposta final do algoritmo, o que nos permite realizar a iteração~$k=i$ sem problemas.
 
+A implementação em~\texttt{C++} deste algoritmo como descrito acima pode ser encontrado na pasta de implementações com o nome~\texttt{KnuthYao.cpp}.
+
 %----------------------------------------------------------------------------------------
 
 \subsection{Análise}
