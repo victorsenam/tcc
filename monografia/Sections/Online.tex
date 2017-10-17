@@ -1,19 +1,17 @@
 \section{Busca em matrizes online}
 \label{Online}
 
-Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex} e, na Subseção~\ref{Online:concave}, discutimos brevemente o caso côncavo, que só é resolvido inteiramente na Seção~\ref{Envelopes} seguinte. Em alguns casos, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
+Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex}. Na Subseção~\ref{Online:concave} discutimos brevemente o caso côncavo, que só é resolvido inteiramente na Seção~\ref{Envelopes} seguinte. Em alguns casos, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
 
 Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, é necessário explicitar um formato que deve ser respeitado, definindo quais dependências podem aparecer nestas matrizes. O formato descrito pela Definição~\ref{Online:matrix} abaixo aparece naturalmente em recorrências de programação dinâmica, portanto, é útil para esta aplicação. Desde já, discutiremos os algoritmos apenas em termos de buscas de índices de mínimos nestas matrizes. É fácil adaptar os conhecimentos e definições para os casos de busca de índices de máximos.
 
 \begin{defi}[Matriz triangular online] \label{Online:matrix}
-Dizemos que a matriz~$A \in \B{Q}^{n \times n}$ com vetor de índices de mínimos de linhas~$R$ é triangular inferior online nas linhas se para todo~${ i,j \in [n] }$ vale que~${ A[i][j] = +\infty }$ quando~${ i \leq j }$ e o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i > j }$. Similarmente, se~$A$ é triangular superior online nas linhas, vale que~${ A[i][j] = +\infty }$ quando~${ i \geq j }$ e o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i < j}$. Se~$A$ é online nas colunas, as entradas~$A[i][j]$ dependem de~$R[i]$ em vez de depender de~$R[j]$.
+Dizemos que a matriz~$A \in \B{Q}^{n \times n}$ com vetor de índices de mínimos de linhas~$R$ é triangular inferior online nas linhas se, para todo~${ i,j \in [n] }$, vale que~${ A[i][j] = +\infty }$ quando~${ i \leq j }$ e que o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i > j }$. Similarmente, se~$A$ é triangular superior online nas linhas, vale que~${ A[i][j] = +\infty }$ quando~${ i \geq j }$ e que o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i < j}$. Se~$A$ é online nas colunas, as entradas~$A[i][j]$ dependem de~$R[i]$ em vez de depender de~$R[j]$.
 \end{defi}
 
-É possível definir matrizes triangulares também em termos de entradas indefinidas, em vez de infinitas. Esta ideia será útil para o caso côncavo. Galil e Park~\cite{Galil:1992} utilizam o conceito de matrizes escadaria (em inglês, staircase), que generalizam matrizes triangulares utilizando entradas indefinidas, e discutem problemas sobre estas matrizes. Klawe e Kleitman~\cite{Klawe:1990}, também, exploram as matrizes escadaria totalmente monótonas. Matrizes triangulares como definidas aqui são usadas por Burkard, Klinz e Rudolf~\cite[Seções 2.1 e 3.8]{Burkard:1996}.
+É possível definir matrizes triangulares também em termos de entradas indefinidas, em vez de infinitas. Esta ideia será útil para o caso côncavo. Galil e Park~\cite{Galil:1992} utilizam o conceito de matrizes escadaria (em inglês, staircase), que generalizam matrizes triangulares utilizando entradas indefinidas, e discutem problemas sobre estas matrizes. Klawe e Kleitman~\cite{Klawe:1990}, também, exploram as matrizes escadaria totalmente monótonas. Matrizes triangulares num sentido equivalente ao da Definição~\ref{Online:matrix} são usadas por Burkard, Klinz e Rudolf~\cite[Seções 2.1 e 3.8]{Burkard:1996}.
 
-Dizemos que uma entrada da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se for conhecida à priori ou se o mínimo de linha ou coluna da qual ela depende já foi calculado. Consideramos que calcular o valor de uma entrada disponível custa tempo~$\Cl{O}(1)$.
-
-Vamos trabalhar, a partir daqui, com matrizes triangulares inferiores online nas linhas. Não é difícil adaptar as discussões desta seção para outras matrizes triangulares online.
+Dizemos que uma entrada da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se for conhecida à priori ou se o mínimo de linha ou coluna da qual ela depende já foi calculado. Consideramos que calcular o valor de uma entrada disponível custa tempo~$\Cl{O}(1)$. Vamos trabalhar, a partir daqui, com matrizes triangulares inferiores online nas linhas. Não é difícil adaptar as discussões desta seção para outras matrizes triangulares online.
 
 Se~$A$ é uma matriz triangular inferior online nas linhas, as entradas do triângulo inferior da matriz em uma coluna~$j$ qualquer se tornam disponíveis assim que o valor~$R[j]$ for conhecido. Isso faz com que seja necessário calcular o vetor~$R$ primeiro na posição 1, depois em 2 e assim por diante. Esta restrição inviabiliza os algoritmos para encontrar valores ótimos já discutidos, uma vez que aqueles calculam os valores de~$R$ em ordens diferentes desta.
 
@@ -34,10 +32,10 @@ Lembramos que, já que estamos trabalhando com minimização de linhas, dizemos 
 Vamos apresentar um método para encontrar os índices de mínimos das linhas de matrizes triangulares inferiores online nas linhas totalmente monótonas convexas por linhas. O Problema~\ref{Online:prob} exemplifica a utilidade de trabalhar com matrizes deste tipo.
 
 \begin{prob} \label{Online:prob}
-Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[1] = 0$ e para todo~$i \in [2 \tdots n]$ vale~$E[i] = \min\limits_{j < i} C[i][j] + E[j]$.
+Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[1] = 0$ e, para todo~$i \in [2 \tdots n]$, vale que~$E[i] = \min\limits_{j < i} C[i][j] + E[j]$.
 \end{prob}
 
-Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, criamos a matriz~$B \in \B{Q}^{n \times n}$ de forma que para todo~$i,j \in [n]$ vale
+Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, criamos a matriz~$B \in \B{Q}^{n \times n}$ de forma que, para todo~$i,j \in [n]$, vale que
 \begin{equation} \label{Online:Bmat}
     B[i][j] = \begin{cases}
         +\infty & \text{, se } i \leq j \text{ e } \\
@@ -55,7 +53,7 @@ Sejam~${ A \in \B{Q}^{n \times n} }$ e~${ B \in \B{Q}^{n \times n} }$ tais que, 
 Tome~${ i,i',j,j' \in [n] }$ quaisquer tais que~${ i < i' }$ e~${ j < j' }$. Se~${ i' < j }$ vale a desigualdade~${ B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j'] }$ pois todas as entradas visitadas por esta desigualdade são iguais às entradas de mesmo índice na matriz~$A$ e estas respeitam a desigualdade já que~$A$ é Monge. Se~${ i' \geq j }$ então~${ B[i'][j] = +\infty }$ e a mesma desigualdade vale independente dos valores do lado esquerdo da mesma.
 \end{proof}
 
-Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos das linhas de uma matriz~$A$ triangular inferior online nas linhas totalmente monótona por linhas qualquer. Como já observado, devemos encontrar estes valores um a um da primeira até a última linha necessariamente nesta ordem. É verdade que enquanto o valor~$R[i]$ é calculado para uma linha~$i$ qualquer, todos os valores em uma coluna~${ j < i }$ qualquer já estão disponíveis. Este fato é ilustrado pela Figura~\ref{Online:dep:fig} que mostra, hachurada em vermelho, a linha~$i$ e, com linhas verticais verdes, as entradas já disponíveis da matriz. Note que as entradas da linha~$i$ e as entradas preenchidas em cinza também já estão disponíveis.
+Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos das linhas de uma matriz~$A$ triangular inferior online nas linhas totalmente monótona por linhas qualquer. Como já observado, devemos encontrar estes valores um a um da primeira até a última linha necessariamente nesta ordem. É verdade que, enquanto o valor~$R[i]$ é calculado para uma linha~$i$ qualquer, todos os valores em uma coluna~${ j < i }$ qualquer já estão disponíveis. Este fato é ilustrado pela Figura~\ref{Online:dep:fig}. A linha~$i$ aparece hachurada em vermelho. As entradas já disponíveis da matriz estão marcadas com linhas verticais verdes. Note que as entradas da linha~$i$ também já estão disponíveis.
 
 \begin{figure}[h]
     \centering
@@ -66,15 +64,15 @@ Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos
 Em vez de buscar o mínimo de cada uma das linhas percorrendo todas as entradas daquela linha, vamos fazer como na Seção~\ref{EDPD} e manter uma estrutura de dados com informações úteis para a solução das linhas restantes. No nosso caso, guardamos, para cada uma das colunas disponíveis, os índices das linhas para as quais esta coluna é a melhor dentre todas as já disponíveis. 
 
 \begin{defi}
-Um envelope~$\Cl{E}$ sobre uma matriz~$A$ é uma estrutura de dados que mantém um conjunto de colunas~$J$ da matriz e é capaz de responder às seguintes operações:
+Um envelope~$\Cl{E}$ sobre uma matriz~$A$ é uma estrutura de dados que mantém um conjunto de colunas~$J$ da matriz e é capaz de responder às operações:
 
 \begin{description}
     \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ disponível da matriz na estrutura de dados;
-    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Retorna a melhor coluna de~$J$ na linha~$i$ onde~$J$ é não vazio e~${ i \in [n] }$. Formalmente, retorna~${ \min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\} }$.
+    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Devolve a melhor coluna de~$J$ na linha~$i$ onde~$J$ é não vazio e~${ i \in [n] }$. Formalmente, devolve~${ \min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\} }$.
 \end{description}
 \end{defi}
 
-Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:algo} que recebe a matriz~$A$ e retorna o vetor~$R$. Faltará apenas descrever a implementação do envelope.
+Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:algo} que recebe a matriz~$A$ e devolve o vetor~$R$. Faltará apenas descrever a implementação do envelope.
 
 \begin{algorithm}[h]
 \caption{Mínimos de linhas online}
@@ -82,6 +80,7 @@ Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:alg
 \begin{algorithmic}[1]
 \Function{Online}{A, n}
     \State $\Cl{E}$ é um envelope sobre a matriz~$B$
+    \State $R[1] = 1$
     \State $\textsc{Insere}(\Cl{E},1)$
 
     \For{$i$ de $2$ até $n$} \label{Online:algo:loop}
@@ -94,7 +93,7 @@ Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:alg
 \end{algorithmic}
 \end{algorithm}
 
-É fácil ver que este algoritmo funciona. Ao calcular o valor~$R[i]$ para uma linha~$i$ qualquer, todas as colunas de índice menor do que~$i$ estão presentes no envelope, portanto, todas as colunas com entradas diferentes de~$+\infty$ serão consideradas na chamada da função~\textsc{Calcula}.
+Ao calcular o valor~$R[i]$ para uma linha~$i$ qualquer, todas as colunas de índice menor do que~$i$ estão presentes no envelope, portanto, todas as colunas com entradas diferentes de~$+\infty$ serão consideradas na chamada da função~\textsc{Calcula}. Isso mostra que o Algoritmo~\ref{Online:algo} funciona corretamente.
 
 A Figura~\ref{Online:progress:fig} ilustra uma possível progressão deste algoritmo e da estrutura de envelope. Cada uma das quatro imagens representa uma iteração do~\textbf{para} da linha~\ref{Online:algo:loop}. A linha~$i$ fica circulada em vermelho. Em cada coluna disponível (e, portanto, presente na estrutura) estão marcadas com linhas verticais em verde as linhas para as quais esta coluna é melhor do que todas as outras disponíveis.
 
@@ -106,7 +105,7 @@ A Figura~\ref{Online:progress:fig} ilustra uma possível progressão deste algor
 
 Se o algoritmo for executado como indicado pela Figura~\ref{Online:progress:fig}, teremos, nas cinco primeiras posições do vetor~$R$ retornado, os valores~$1$,~$1$,~$1$,~$2$ e~$4$. Note também que na representação acima, em cada iteração, cada coluna é a melhor apenas em um intervalo (potencialmente vazio) das linhas e que o índice de início deste intervalo é crescente no índice da coluna. Veremos adiante que estas propriedades são sempre respeitadas e são convenientes para a implementação do envelope.
 
-O Algoritmo~\ref{Online:algo} garante que todas as chamadas a~\textsc{Insere} são realizadas em ordem crescente, bem como as chamadas a~\textsc{Calcula}. Este fato facilita a implementação da estrutura. Veremos aplicações de envelopes que não respeitam esta propriedade na Seção~\ref{Envelopes} e mostraremos como implementá-los. Discutiremos agora a implementação de um envelope~$\Cl{E}$ sobre a matriz~$A$. Chamamos de~$J$ o conjunto de colunas já inseridas em~$\Cl{E}$.
+O Algoritmo~\ref{Online:algo} garante que todas as chamadas a~\textsc{Insere} são realizadas em ordem crescente, bem como as chamadas a~\textsc{Calcula}. Este fato facilita a implementação da estrutura. Discutiremos agora a implementação de um envelope~$\Cl{E}$ sobre a matriz~$A$. Chamamos de~$J$ o conjunto de colunas já inseridas em~$\Cl{E}$.
 
 \begin{defi}[Coluna válida]
 Uma coluna~${ j \in J }$ é dita válida para~$J$ somente se existe uma linha~${ i \in [n] }$ tal que~$j$ é melhor do que todas as outras colunas de~$J$ na linhas~$i$. Uma coluna que não é válida é inválida.
@@ -135,21 +134,21 @@ Sejam~$a$ e~$b$ duas colunas de~$A$ tais que~$a < b$. Pela convexidade de~$A$ e 
 \end{algorithmic}
 \end{algorithm}
 
-Considere uma coluna~${ j \in J }$ qualquer e o conjunto~$J_{<j}$ das colunas em~$J$ de índice menor do que~$j$. Se existe alguma linha~$i$ tal que~$j$ é melhor do que todas as colunas de~$J_{<j}$, pela total monotonicidade de~$A$,~$j$ permanece sendo melhor da linha~$i$ em diante. Esta propriedade motiva a definição do valor~$s(j)$ que representa a primeira linha onde~$j$ é melhor do que~$J_{<j}$. Dizemos que~$s(j) = n+1$ caso esta linha não exista. Formalmente, vale que~${ s(j) = \min(\{i \in [n] \mid A[i][j] < A[i][j'] \text{ para todo } j' \in J_{<j} \} \cup \{ n+1 \}) }$.
+Considere uma coluna~${ j \in J }$ qualquer e o conjunto~$J_{<j}$ das colunas em~$J$ de índice menor do que~$j$. Se existe alguma linha~$i$ onde~$j$ é melhor do que todas as colunas de~$J_{<j}$, pela total monotonicidade de~$A$,~$j$ permanece sendo melhor da linha~$i$ em diante. Esta propriedade motiva a definição do valor~$s(j)$ que representa a primeira linha onde~$j$ é melhor do que~$J_{<j}$. Dizemos que~$s(j) = n+1$ caso esta linha não exista. Formalmente, vale que~${ s(j) = \min(\{i \in [n] \mid A[i][j] < A[i][j'] \text{ para todo } j' \in J_{<j} \} \cup \{ n+1 \}) }$.
 
-Tome duas colunas válidas consecutivas~$j$ e~$j'$ de~$J$, ou seja duas colunas válidas de~$J$ tais que~$j < j'$ e não há nenhuma~$j''$ válida em~$J$ tal que~${ j < j'' < j' }$. A definição de~$s$ garante que~${ 1 \leq s(j) < s(j') < n + 1 }$ e que a coluna~$j$ é ótima para o conjunto~$J$ exatamente no intervalo de linhas~$[s(j) \tdots s(j') - 1]$. Isso mostra, como foi prometido anteriormente, que, em todo momento, uma coluna de~$J$ pode ser válida apenas em um intervalo (potencialmente vazio) das linhas de~$A$.
+Tome duas colunas válidas consecutivas~$j$ e~$j'$ de~$J$, ou seja duas colunas válidas de~$J$ tais que~$j < j'$ e não há nenhuma~$j''$ válida em~$J$ tal que~${ j < j'' < j' }$. A definição de~$s$ garante, como foi prometido anteriormente, que, em todo momento, uma coluna de~$J$ pode ser ótima apenas em um intervalo (potencialmente vazio) das linhas de~$A$. Não utilizamos este fato diretamente, portanto, não é necessário demonstrá-lo. Apesar disso, as ideias utilizadas na prova da Proposição~\ref{Online:convex:easys} dão uma boa indicação de como formalizar os argumentos necessários.
 
 \begin{prop} \label{Online:convex:easys}
 Seja~${ j \in J }$ válido. Se existe uma coluna válida para~$J$ em~${ J_{<j} }$, vale que~${ s(j) = \textsc{Intersecta}(j^*,j) }$ onde~$j^*$ é a válida para~$J$ de maior índice em~${ J_{<j} }$. Se não existe tal coluna, vale que~${ s(j) = 1 }$.
 \end{prop}
 
 \begin{proof}
-Se não há coluna válida em~$J_{<j}$, sabemos que a coluna ótima na linha 1 deve ter índice~$j' \geq j$. Se~$j' > j$, vale que~${ A[1][j'] < A[1][j] }$ e, pela total monotonicidade de~$A$, vale, para toda linha~${ i \in [n] }$ que~${ A[i][j'] < A[i][j] }$, portanto,~$j$ é inválida, um absurdo. Assim, sabemos que~$j$ é ótima na linha 1, portanto,~${s(j) = 1}$.
+Se não há coluna válida em~$J_{<j}$, sabemos que a coluna ótima na linha 1 deve ter índice~$j' \geq j$. Se~$j' > j$, vale que~${ A[1][j'] < A[1][j] }$ e, pela total monotonicidade de~$A$, vale, para toda linha~${ i \in [n] }$, que~${ A[i][j'] < A[i][j] }$, portanto,~$j$ é inválida, um absurdo. Assim, sabemos que~$j$ é ótima na linha 1, portanto,~${s(j) = 1}$.
 
 Suponha que existe pelo menos uma coluna válida em~$J_{<j}$. Tomamos a coluna~$j^*$ de maior índice dentre estas. Se~${ s(j) = 1 }$ vale que~$j$ é melhor do que~$j^*$ na coluna 1 e, pela total monotonicidade, é melhor em toda a matriz e~$j^*$ é inválida. Temos~${ s(j) > 1 }$. Vamos provar que~$j^*$ é ótima em~${ s(j) - 1 }$. Suponha que existe uma~$j'$ diferente de~$j^*$ ótima em~$s(j) - 1$. Se~${ j' = j }$ a escolha de~$s(j)$ é contrariada. Se~${ j^* < j' < j }$ a~$j'$ é válida e a escolha de~$j^*$ é contrariada. Se~${ j' < j^* }$, pela total monotonicidade,~$j'$ é melhor que~$j^*$ em~$[1 \tdots s(j) - 1]$ e~$j$ é melhor do que~$j^*$ em~$[s(j) \tdots n]$, o que torna~$j^*$ inválida. Se~${ j < j' }$, de maneira similar,~$j$ seria inválida.  Com isto, sabemos que~$j^*$ é ótima no ponto~$s(j) - 1$, assim,~${s(j) = \textsc{Intersecta}(j^*,j)}$.
 \end{proof}
 
-A Proposição~\ref{Online:convex:easys} mostra que, para calcular um valor~$s(j)$, basta encontrar o valor~$j^*$ da maior coluna válida de~$J_{<j}$ e calcular sua intersecção com~$j$. Esta propriedade motiva uma representação do envelope~$\Cl{E}$ que guarda todos (e apenas) os elementos válidos de~$J$ em uma lista ordenada crescentemente. Calcular o~$s(j)$ de algum elemento nesta estrutura consiste em descobrir qual elemento o precede na estrutura e, caso este existe, calcular a intersecção dos dois.
+A Proposição~\ref{Online:convex:easys} mostra que, para calcular um valor~$s(j)$, basta encontrar o valor~$j^*$ da maior coluna válida de~$J_{<j}$ e calcular sua intersecção com~$j$. Esta propriedade motiva uma representação do envelope~$\Cl{E}$ que guarda todos (e apenas) os elementos válidos de~$J$ em uma lista ordenada crescentemente. Calcular o~$s(j)$ de algum elemento nesta estrutura consiste em descobrir qual elemento o precede na estrutura e, caso este exista, calcular a intersecção dos dois.
 
 Além de manter as colunas ordenadas na estrutura, guardaremos, para cada elemento~$j$ presente na estrutura, o seu valor~$s(j)$ atual. Este cuidado nos impede de recalcular o valor desnecessariamente. A estrutura deve manter, portanto, três invariantes: uma coluna~$j \in J$ pertence à estrutura se e somente se é válida em~$J$, os valores~$j$ aparecem em ordem crescente e todos os~$s(j)$ guardados estão calculados corretamente. Note que quando~$J$ é vazio as invariantes valem trivialmente.
 
@@ -192,11 +191,11 @@ O Algoritmo~\ref{Online:envelope:convex} implementa as operações~\textsc{Calcu
 
 Devemos verificar se a nova coluna~$j$ torna alguma outra coluna de~$J$ inválida e remover esta coluna. Escolhemos a última coluna~$\Cl{E}_{-1}$ da estrutura. Se~$j$ for melhor do que~$\Cl{E}_{-1}$ na linha~$s(\Cl{E}_{-1})$, pela total monotonicidade, a coluna~$\Cl{E}_{-1}$ passa a ser inválida e removemos ela da estrutura. Se~$j$ for pior, também pela total monotonicidade, é pior em todas as linhas seguintes e mantém a validade de todas as outras colunas da estrutura. Este argumento nos mostra que para remover todos os elementos inválidos de~$\Cl{E}$ basta remover o último elemento enquanto ele for inválido. Com este trabalho mantivemos a invariante de que uma coluna de~$J$ está em~$\Cl{E}$ se e somente se é válida.
 
-Falta atualizar os valores~$s(j')$ para todo~$j' \in \Cl{E}$. Temos a garantia de que inserimos e removemos elementos apenas no final da lista, já que os valores~$s(j')$ dependem do elemento anterior, basta calcular o valor~$s(j)$ do novo elemento adicionado, o que sabemos fazer em tempo~$\Cl{O}(\lg(n))$. Isso garante a invariante de que os valores da função~$s$ estão guardados corretamente. A invariante de que o vetor é ordenado é trivialmente mantida já que só adicionamos elementos no final da lista.
+Falta atualizar os valores~$s(j')$ para todo~$j' \in \Cl{E}$. Temos a garantia de que inserimos e removemos elementos apenas no final da lista. Já que os valores~$s(j')$ dependem apenas do elemento anterior, basta calcular o valor~$s(j)$ do novo elemento adicionado, o que sabemos fazer em tempo~$\Cl{O}(\lg(n))$. Isso garante a invariante de que os valores da função~$s$ estão guardados corretamente. A invariante de que o vetor é ordenado é trivialmente mantida já que só adicionamos elementos no final da lista.
 
-Agora precisamos usar esta estrutura para responder rapidamente a uma pergunta da forma~${ \textsc{Calcula}(\Cl{E},i) }$ com~$i \in [n]$. Queremos encontrar o elemento~$j$ ótimo na coluna~$i$. Este elemento é válido e, portanto, pertence a~$\Cl{E}$. Vamos definir~$j$ como o maior elemento de~$\Cl{E}$ tal que~$s(j) \leq i$. Pela total monotonicidade todo elemento de~$J$ menor do que~$j$ é pior do que~$j$ a partir de~$s(j)$, em particular em~$i$. Além disso já que para todo~$j' \in \Cl{E}$ maior do que~$j$ vale~$s(j') > i$ vale também que~$j$ é melhor do que~$j'$ em~$i$ pela total monotonicidade. O valor~$j$ pode ser encontrado com uma busca binária na lista~$\Cl{E}$.
+Agora precisamos usar esta estrutura para responder rapidamente a uma pergunta da forma~${ \textsc{Calcula}(\Cl{E},i) }$ com~$i \in [n]$. Queremos encontrar o elemento~$j^*$ ótimo na coluna~$i$. Este elemento é válido e, portanto, pertence a~$\Cl{E}$. Chamamos de~$j$ o maior elemento de~$\Cl{E}$ tal que~$s(j) \leq i$. É possível encontrar este valor com uma busca binária em~$\Cl{E}$. É verdade que~$j^*$ coincide com~$j$. Se~${ j^* < j }$ fosse verdade, teríamos~${ s(j) > i }$, um absurdo. Se~${ j^* > j }$, já que~$j$ é ótimo em~$i$, pela total monotonicidade,~$j^*$ seria inválido e não pertenceria a~$\Cl{E}$.
 
-Assumimos que a nossa implementação da lista~$\Cl{E}$ é capaz de visitar um elemento em uma dada posição em tempo~$\Cl{O}(1)$ além de adicionar e remover elementos do final da lista. Em \texttt{C++}, isso pode ser implementado utilizando a estrutura~\texttt{vector} da biblioteca padrão. Podemos criar uma estrutura que guarda tanto o valor~$j$ quanto o~$s(j)$ correspondente e montar nossa lista fazendo com que cada elemento seja um objeto deste tipo. Com isso, acessar ou atualizar o~$s(j)$ de um~$j$ é equivalente a acessar o valor de~$j$. Uma implementação em~\texttt{C++} que respeita estas hipóteses pode ser encontrada em~\texttt{envelope\_convex}.
+Assumimos que a nossa implementação da lista~$\Cl{E}$ é capaz de visitar um elemento em uma dada posição e adicionar e remover elementos do final da lista em tempo~$\Cl{O}(1)$. Em \texttt{C++}, isso pode ser implementado utilizando a estrutura~\texttt{vector} da biblioteca padrão. Podemos criar uma estrutura que guarda tanto o valor~$j$ quanto o~$s(j)$ correspondente e montar nossa lista fazendo com que cada elemento seja um objeto deste tipo. Com isso, acessar ou atualizar o~$s(j)$ de um~$j$ é equivalente a acessar o valor de~$j$. Uma implementação em~\texttt{C++} que respeita estas hipóteses pode ser encontrada em~\texttt{envelope\_convex}.
 
 Vamos calcular a complexidade dos algoritmos sugeridos. Cada operação~\textsc{Calcula} envolve apenas uma busca binária na lista~$\Cl{E}$ onde cada iteração custa tempo constante. Já que esta lista tem tamanho no máximo~$n$, estas chamadas custam~$\Cl{O}(\lg(n))$ cada. Uma operação~\textsc{Insere} pode remover vários elementos de~$\Cl{E}$, custando tempo potencialmente linear, porém, cada elemento de~$\Cl{E}$ só pode ser removido uma única vez, fazendo com que a soma de todas as remoções custe tempo~$\Cl{O}(n)$. Além disso, esta operação insere um novo elemento em~$\Cl{O}(1)$ e calcula o valor~$s$ do novo elemento em tempo~$\Cl{O}(\lg(n))$. Ao todo cada operação custa tempo~$\Cl{O}(\lg(n))$ amortizado.
 
@@ -206,9 +205,11 @@ Vamos calcular a complexidade dos algoritmos sugeridos. Cada operação~\textsc{
 
 As matrizes triangulares como definidas não dão espaço para o caso côncavo. Não faz sentido ter uma matriz côncava triangular pois a única forma de respeitar ambas as condições seria ter uma matriz com todas as entradas iguais a~$+\infty$. Poderíamos definir matrizes triangulares com entradas~$-\infty$ em vez de~$+\infty$, porém, em problemas de minimização, isso não faz sentido. Qual é, então, o equivalente ao problema resolvido para o caso convexo?
 
-Como já foi comentado, é possível definir matrizes triangulares com entradas indefinidas ao invés de entradas infinitas. Esta definição, porém, foge do padrão que adotamos até agora e faz com que seja necessário repensar as provas e definições da Seção~\ref{Monge}. Dizemos que uma matriz deste tipo é Monge côncava se respeita a desigualdade quadrangular côncava apenas para as entradas definidas, isto é, se para todo~${ i,i',j,j' \in [n] }$ tais que~${ i \leq i' < j \leq j'}$ vale~${ A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j] }$. 
+Como já foi comentado, é possível definir matrizes triangulares com entradas indefinidas ao invés de entradas infinitas. Esta definição, porém, foge do padrão que adotamos até agora e faz com que seja necessário repensar as provas e definições da Seção~\ref{Monge}. 
 
-Na Seção~\ref{Envelopes} vamos generalizar a estrutura de envelope apresentada no caso convexo. Com tal generalização ficará fácil descrever um algoritmo que resolve o problema proposto aqui.
+Dizemos que uma matriz deste tipo é Monge côncava se respeita a desigualdade quadrangular côncava apenas para as entradas definidas, isto é, se para todo~${ i,i',j,j' \in [n] }$ tais que~${ i \leq i' < j \leq j'}$ vale~${ A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j] }$. Similarmente, ela é totalmente monótona côncava nas linhas se~${ A[i'][j] > A[i'][j'] }$ implica~${ A[i][j] > A[i][j'] }$. 
+
+Na Seção~\ref{Envelopes} vamos generalizar a estrutura de envelope apresentada no caso convexo. Com tal generalização descreveremos um algoritmo que encontra os mínimos das linhas de uma matriz triangular inferior (neste novo sentido) online nas linhas totalmente monótona côncava nas linhas.
 
 %------------------------------------------------------------------
 
@@ -220,9 +221,9 @@ Este é um bom exemplo de caso para a qual a função~\textsc{Intersecta} pode s
 
 Sabemos que, para encontrar os mínimos das linhas de uma matriz triangular inferior online nas linhas, as operações~\textsc{Calcula} do envelope são chamadas com parâmetro crescente. Apesar disso, a cada chamada desta função, na implementação do Algoritmo~\ref{Online:envelope:convex}, realizamos uma busca binária ignorando o resultado da busca anterior. Já que as chamadas possuem parâmetro crescente, pela total monotonicidade da matriz, os índices das linhas também são crescentes. 
 
-Podemos guardar um ponteiro~$\ell$ que aponta para um certo elemento da estrutura~$\Cl{E}$ de forma que, para encontrar a resposta de uma pergunta~\textsc{Calcula}, basta incrementar este ponteiro até achar o elemento ótimo da estrutura e, depois retorná-lo. Além de adaptar a função~\textsc{Calcula} é necessário alterar~\textsc{Insere}. Isso é necessário pois o elemento apontado por~$\ell$ pode se tornar inválido ao inserirmos uma coluna nova, removendo a apontada da estrutura.
+Podemos guardar um ponteiro~$\ell$ que aponta para um certo elemento da estrutura~$\Cl{E}$ de forma que, para encontrar a resposta de uma pergunta~\textsc{Calcula}, basta incrementar este ponteiro até achar o elemento ótimo da estrutura e, depois devolvê-lo. Além de adaptar a função~\textsc{Calcula} é necessário alterar~\textsc{Insere}. Isso é necessário pois o elemento apontado por~$\ell$ pode se tornar inválido ao inserirmos uma coluna nova, removendo a apontada da estrutura.
 
-Para implementar esta otimização, então, manteremos a invariante de que~$\ell$ sempre aponta para o elemento em~$\Cl{E}$ de menor índice que tem índice pelo menos igual à última resposta de~$\textsc{Calcula}$. Inicialmente,~$ell$ aponta para~$\Cl{E}_1$. Nos referimos a~$\ell + 1$ como o elemento que sucede~$\ell$ na estrutura. O Algoritmo~\ref{Online:envelope:linear} mostra como implementar estas operações mantendo a invariante de maneira eficiente.
+Para implementar esta otimização, então, manteremos a invariante de que~$\ell$ sempre aponta para o elemento em~$\Cl{E}$ de menor índice que tem índice pelo menos igual à última resposta de~$\textsc{Calcula}$. Inicialmente,~$\ell$ aponta para~$\Cl{E}_1$. Nos referimos a~$\ell + 1$ como o elemento que sucede~$\ell$ na estrutura. O Algoritmo~\ref{Online:envelope:linear} mostra como implementar estas operações mantendo a invariante de maneira eficiente.
 
 \begin{algorithm}[h]
 \caption{Calcula no envelope convexo em tempo linear}
