@@ -56,7 +56,10 @@ T(n,m) = \left\{
 
 Vamos provar que~$T(n,m) \leq (m+n)\lg(n + 2)$ para quaisquer dois inteiros~${ n \geq 0 }$ e~$m > 0$ usando indução em~$n$. Se~${ n = 0 }$, então~${ T(n,m) = T(0,m) = 1 \leq m = m\lg(2) =  (m + n)\lg(n+2) }$. Com~${ n > 1 }$ assumimos que a tese vale para todo~${ n' \in [n-1] }$ e, para todo~$m > 0$, sabemos que existe um~${ j \in [m] }$ tal que~${ T(n,m) = T(\floor{ \frac{n}{2} },j) + T(\ceil{ \frac{n}{2} } - 1, m - j + 1) }$. Já que tanto~$\floor{ \frac{n}{2} }$ quanto~$\ceil{ \frac{n}{2} } - 1$ estão em~$[n-1]$, aplicamos a hipótese de indução e obtemos que~${ T(n,m) \leq (\floor{ \frac{n}{2} } + j)\lg(\floor{ \frac{n}{2} } + 2) + (\ceil{ \frac{n}{2} } + m - j)\lg(\ceil{ \frac{n}{2} } + 1) }$. Com esta desigualdade, obtemos que~${ T(n,m) \leq (\floor{ \frac{n}{2} } + j)\lg(n + 2) + (\ceil{ \frac{n}{2} } + m - j)\lg(n + 2) = (n + m)\lg(n+2) }$, o que conclui esta prova.
 
+%----------------------------------------------------------------------------------------
+
 \subsection{Aplicação em programação dinâmica} \label{DivConq:DP}
+
 Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. A prova em questão pode ser encontrada no link \url{http://maratona.ime.usp.br/hist/2016/resultados/contest.pdf}.  
 
 \begin{prob} \label{DivConq:InternetTrouble}
@@ -81,3 +84,29 @@ t(r+1,j+1) - t(r+1,j) & = (j-r)v_{j+1} \\
 \end{equation*}
  
 Com este resultado concluímos que~${ t(r'+1,j) - t(r+1,j) \leq t(r'+1,j+1) - t(r+1,j+1) }$ e, desta, temos que~${ E[\ell-1][i] + s(i,r) + t(r+1,j+1) < E[\ell-1][i'] + s(i',r') + t(r'+1,j+1) }$, portanto, vale que~${ B_\ell[i][j+1] < B_\ell[i][j+1] }$. Isso nos diz que se algum~${ i \leq j }$ é o índice de mínimo da coluna~$j$, o índice de mínimo da coluna~${j+1}$ não pode ser menor do que~$i$, já que, pelo fato de~${ B_\ell[i][j] = +\infty }$ para todo~${ i > j }$, o índice de mínimo da coluna~$j$ sempre ser menor do que~$j$, este fato nos diz que as matrizes~$B_\ell$ são crescentes nos mínimos das colunas.
+
+%----------------------------------------------------------------------------------------
+
+\subsection{Interpretação em programação dinâmica} \label{DivConq:Inter_DP}
+
+Muitas das técnicas apresentadas neste trabalho possuem formatos específicos de programas dinâmicos relacionados à técnica. Um bom exemplo é a Otimização de Knuth-Yao da Seção~\ref{KY}, que é definida à partir da sua interpretação em programação dinâmica. 
+
+Em competições de programação, é comum pensar e apresentar estas técnicas com uma visão fortemente voltada para programação dinâmica. Este tipo de pensamento é bom e especialmente interessante para competições de programação por ser mais fácil de identificar e visível à partir da recorrência. Por este motivo, é interessante discutir esta interpretação também aqui.
+
+\begin{prob} \label{DivConq:DP}
+Dados inteiros~$n$ e~$k$ com~$1 \leq k \leq n$ e uma função~$f(i,j)$ definida para todo~${ i,j \in [n] }$ onde~$i \leq j$. Calcular~$E[k][n]$ onde, para todo~${ j \in [0 \tdots n] }$ e~${ \ell \in k }$ vale que
+\begin{equation*}
+E[\ell][j] = \begin{cases}
+A[1][j] & \text{,  se } \ell = 1 \text{ e } \\
+\min\{ E[\ell-1][i] + A[i][j] \mid i \in [j] \} & \text{, caso contrário.}
+\end{cases}
+\end{equation*}
+\end{prob}
+
+O Problema~\ref{DivConq:DP} segue um formato clássico de programação dinâmica e indica uma solução clara que custa tempo~$\Cl{O}(kn^2)$. O Problema~\ref{DivConq:InternetTrouble} cabe perfeitamente no formato descrito por este problema e foi otimizado utilizando a técnica da divisão e conquista. Para provar que a otimização era possível, precisamos construir uma série de matrizes e provar que estas eram monótonas e que o problema original se reduzia a encontrar os mínimos destas matrizes.
+
+Definimos a matriz de cortes ótimos~$P$ da recorrência~$E$. Para toda entrada~$\ell,j$ de~$E$ onde~$\ell > 1$ vale que~$P[\ell][j]$ é o menor valor em~$[j]$ que respeita~${ E[\ell][j] = A[1][P[\ell][j]] + A[P[\ell][j]][j] }$. É claro da definição de~$E$ que esta matriz existe. É fácil calcular, junto com~$E$, as entradas da matriz~$P$. Esta matriz representa as escolhas que devem ser feitas em cada busca de mínimo da definição~$E$ para encontrar os valores verdadeiros das entradas da matriz.
+
+Se as linhas da matriz~$P$ forem todas monótonas, isto é, se vale~${ P[\ell][i] \leq P[\ell][i'] }$ sempre que~${ i,i' \in [n] }$ e~$i < i'$, é possível utilizar a divisão e conquista para resolver o problema. É fácil ver isso construindo matrizes~$B_\ell$ iguais às construídas na solução do Problema~\ref{DivConq:InternetTrouble} e verificando que~$P[\ell][i]$ é o índice de mínimo da linha~$i$ matriz~$B_\ell$.
+
+Geralmente é intuitivo, quando se está pensando em programação dinâmica, imaginar a matriz~$P$ e pensar sobre suas propriedades. A observação de que as linhas desta matriz, quando monótonas, permitem a aplicação do método da divisão e conquista é uma boa maneira de perceber a pertinência desta otimização em problemas e configura uma habilidade especialmente útil em competições de programação.
