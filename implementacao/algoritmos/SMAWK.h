@@ -26,12 +26,12 @@ public:
 	SMAWK(std::function< double(int,int) > A, int n, int m);
 
 	// Devolve um vetor com os índices dos mínimos das linhas da matriz
-	vector<int> FindRowMinima();
+	std::vector<int> FindRowMinima();
 
 private:
 	std::function< double(int,int) > A;
 	int n;
-	list<int> col;
+	std::list<int> col;
 	int p;
 
 	// Remove as linhas pares da matriz
@@ -41,6 +41,8 @@ private:
 	void Reduce();
 
 	// Preenche o vetor R com os índices dos mínimos das linhas da matriz
-	void FindRowMinima(vector<int> & R);
+	void FindRowMinima(std::vector<int> & R);
 
 };
+
+#endif
