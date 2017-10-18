@@ -1,8 +1,8 @@
 /**
     Algoritmo SMAWK
+	Seção 4
 
-    Encontra os índices de mínimos das linhas de uma matriz totalmente 
-    monótona convexa nas linhas.
+    Encontra os índices de mínimos das linhas de uma matriz totalmente monótona convexa nas linhas.
 
     Autor: Victor Sena Molero <victorsenam>
     Projeto: "Algoritmos em matrizes monótonas e Monge convexas"
@@ -16,51 +16,30 @@
 #include <functional>
 
 /**
-    Remove colunas inúteis de uma matriz
+	Representa uma matriz na qual pode ser aplicado o algoritmo SMAWK
 
-    Recebe uma função que representa uma matriz A com n linhas e considera
-    removidas todas as linhas que não são da forma kp com k inteiro e todas
-    as colunas que não pertencem à lista col.
-
-    Retorna uma nova lista res que contém apenas colunas úteis (que podem
-    conter algum índice de mínimo de linha) da matriz recebida com tamanho 
-    exatamente (n+p-1)/p.
-
-    Assume:
-    - Matriz (A,n,p,col) recebida é totalmente monótona convexa nas linhas.
-
-    Garante:
-    - Matriz (A,n,p,res) devolvida é totalmente monótona convexa nas linhas
-    e tem índices de mínimos de linhas iguais às da matriz recebida.
+	A matriz tem como entradas os valores dados pela função A. As linhas da matriz são os inteiros da forma k*p onde k é inteiro não negativo e k*p < n. As colunas da matriz são os inteiros presentes em col. A estrutura col deve estar ordenada crescentemente.  A matriz A deve ser totalmente monótona convexa nas linhas.
 **/
-std::list<int> Reduce (std::function< double(int,int) > A, int n, int p, std::list<int> col);
+class SMAWK {
+public:
+	// Constrói uma matriz dada pela função A com n linhas e m colunas
+	SMAWK(std::function< double(int,int) > A, int n, int m);
 
-/**
-    Encontra os índices de mínimos das linhas de uma matriz
+	// Remove as linhas pares da matriz
+	void RemoveEvenRows();
 
-    Recebe uma função que representa uma matriz A com n linhas e considera
-    removidas todas as linhas que não são da forma kp com k inteiro e todas
-    as colunas que não pertencem à lista col.
+	// Remove colunas inúteis da matriz
+	void Reduce();
 
-    Preenche o vetor res com os valores dos índices de mínimos das linhas da
-    matriz recebida nas posições apropriadas.
-    
-    Assume: 
-    - Matriz (A,n,p,col) recebida é quadrada e totalmente monótona convexa
-    nas linhas.
-**/
-void SMAWK (std::function< double(int,int) > A, int n, int p, const std::list<int> & col, std::vector <int> & res);
+	// Devolve um vetor com os índices dos mínimos das linhas da matriz
+	vector<int> FindRowMinima();
 
-/**
-    Encontra os índices de mínimos das linhas de uma matriz
+	// Preenche o vetor R com os índices dos mínimos das linhas da matriz
+	void FindRowMinima(vector<int> & R);
 
-    Recebe uma função que representa uma matriz A com n linhas e m colunas.
-    
-    Retorna o vetor dos índices de mínimos das linhas da matriz A.
-
-    Assume:
-    - Matriz (A,n,m) recebida é totalmente monótona convexa.
-**/
-std::vector<int> SMAWK (std::function< double(int,int) > A, int n, int m);
-
-#endif
+private:
+	std::function< double(int,int) > A;
+	int n;
+	list<int> col;
+	int p;
+};

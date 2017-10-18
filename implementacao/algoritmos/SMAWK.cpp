@@ -1,15 +1,29 @@
 #include "SMAWK.h"
-#include <iostream>
-    
-std::list<int> Reduce (std::function< double(int,int) > A, int n, int p, std::list<int> col) {
-    int k = 0;
-    std::list<int>::iterator it = col.begin();
+
+SMAWK::SMAWK (std::function< double(int, int) A, int n, int m) {
+	::A = A;
+	::n = n;
+	p = 1;
+	for (int i = 0; i < m; i++)
+		col.push_back(i);
+}
+
+void SMAWK::RemoveEvenRows () {
+	p += p;
+}
+
+void SMAWK::Reduce () {
+	int k = 0;
+	std::list<int>::iterator it = col.begin();
 
     while (col.size() > unsigned(n + p - 1)/p) {
-        if (A(p*k, *it) > A(p*k, *next(it))) {
-            it = col.erase(it);
-            it = std::prev(it);
-            k -= !!k;
+        if (A(p*k, *it) > A(p*k, *std::next(it))) {
+			it = std::next(it);
+            it = col.erase(std::prev(it));
+			if (k != 1) {
+				k--;
+				it = std::prev(it);
+			}
         } else {
             if (p*(k+1) >= n) {
                 col.erase(std::next(it));
@@ -19,52 +33,35 @@ std::list<int> Reduce (std::function< double(int,int) > A, int n, int p, std::li
             }
         }
     }
-
-    return col;
 }
 
-void SMAWK (std::function< double(int,int) > A, int n, int p, const std::list<int> & col, std::vector<int> & res) {
-    if (p >= n) {
-        res[0] = *(col.begin());
-    } else {
-        SMAWK(A, n, p+p, Reduce(A, n, p+p, col), res);
-
-        std::list<int>::const_iterator it = col.begin();
-        while (it != col.end() && *it <= res[0])
-            it = std::next(it);
-
-        for (int i = p; i < n; i += p+p) {
-            res[i] = res[i-p];
-
-            while (it != col.end() && (i + p >= n || *it <= res[i+p])) {
-                if (A(i,*it) < A(i,res[i]))
-                    res[i] = *it;
-                it = std::next(it);
-            }
-        }
-    }
+vector<int> SMAWK::FindRowMinima () {
+	vector<int> R(n);
+	FindRowMinima(R);
+	return R;
 }
 
-std::vector<int> SMAWK (std::function< double(int,int) > A, int n, int m) {
-    std::vector<int> res(n);
+void SMAWK::FindRowMinima (vector<int> & R) {
+	if (p >= n) {
+		R[0] = *(col.begin());
+	} else {
+		SMAWK B = (*this);
+		B.RemoveEvenRows();
+		B.Reduce();
+		B.FindRowMinima(R);
+		
+		std::list<int>::const_iterator it = col.begin();
+		while (*it <= R[0])
+			it = std::next(it);
 
-    if (n > m) {
-        std::function< double(int,int) > sA = A;
-        int sm = m;
-        A = [sA, sm] (int i, int j) {
-            if (j >= sm)
-                return 1./0.;
-            else
-                return sA(i,j);
-        };
+		for (int i = p; i < n; i += p+p) {
+			R[i] = R[i-p];
 
-        m = n;
-    }
-
-    std::list<int> col;
-    for (int i = 0; i < m; i++)
-        col.push_back(i);
-
-    SMAWK(A, n, 1, Reduce(A, n, 1, col), res);
-    return res;
+			while (it != col.end() && (i + p >= n || *it <= R[i+p])) {
+				if (A(i,*it) < A(i,R[i]))
+					R[i] = *it;
+				it = std::next(it);
+			}
+		}
+	}
 }

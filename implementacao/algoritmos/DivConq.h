@@ -1,8 +1,8 @@
 /**
     Otimização da divisão e conquista
+	Seção 3
 
-    Encontra os índices de mínimos das linhas de uma matriz monótona
-    crescente nos mínimos das linhas.
+    Encontra os índices de mínimos das linhas de uma matriz monótona crescente nos mínimos das linhas.
 
     Autor: Victor Sena Molero <victorsenam>
     Projeto: "Algoritmos em matrizes monótonas e Monge convexas"
@@ -15,29 +15,24 @@
 #include <functional>
 
 /**
-    Encontra os índices de mínimos das linhas de uma matriz
-
-    Recebe uma função que representa uma matriz A e considera presentes
-    apenas as linhas em [rs..rt] e as colunas em [cs..ct].
-
-    Preenche o vetor res com os valores dos índices de mínimos das linhas
-    da matriz recebida nas posições apropriadas.
-
-    Assume:
-    - Matriz (A,rs,rt,cs,ct) monótona crescente nos mínimos das linhas.
+	Representa uma matriz na qual pode ser aplicado o algoritmo DivConq
+	
+	A matriz tem como entradas os valores dados pela função A. As linhas da matriz são os inteiros de 0 até n-1. As colunas da matriz são os inteiros de 0 até m-1. A matriz A deve ser monótona crescente nos mínimos das linhas.
 **/
-void DivConq (std::function< double(int,int) > A, int rs, int rt, int cs, int ct, std::vector<int> & r);
 
-/**
-    Encontra os índices de mínimos das linhas de uma matriz
+class DivConq {
+public:
+	// Constrói uma matriz dada pela função A com n linhas e m colunas
+	DivConq(std::function< double(int,int) > A, int n, int m);
 
-    Recebe uma função que representa uma matriz A com n linhas e m colunas.
+	// Devolve um vetor com os índices dos mínimos das linhas da matriz
+	std::vector<int> FindRowMinima();
 
-    Retorna o vetor dos índices de mínimos das linhas da matriz A.
+private:
+	std::function< double(int,int) > A;
+	int n;
+	int m;
 
-    Assume:
-    - Matriz (A,n,m) recebida é totalmente monótona convexa.
-**/
-std::vector<int> DivConq (std::function< double(int,int) > A, int n, int m);
-
-#endif
+	// Preenche o vetor R com os índices dos mínimos das linhas da submatriz com linhas [rs..rt] e colunas [cs..ct]
+	void FindRowMinima(int rs, int rt, int cs, int ct, vector<int> & R);
+};
