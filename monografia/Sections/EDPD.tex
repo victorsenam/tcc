@@ -53,7 +53,7 @@ A fronteira de Pareto~$\Cl{P}(S)$ de um conjunto finito~$S \subset \B{Q}^2$ é u
 \end{description}
 \end{defi}
 
-Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária ordenada crescentemente pela primeira coordenada. Esta ordenação nos garante uma propriedade poderosa descrita pela Proposição~\ref{EDPD:doubleorder}.
+Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária ordenada lexicograficamente, isto é, crescentemente pela primeira coordenada e, em caso de empate, crescentemente pela segunda. Se dois elementos~${ a,b \in \B{Q}^2 }$ são tais que~$b$ é maior lexicograficamente do que~$a$, denotamos~${ b \geq a }$. Já que em uma fronteira de Pareto é impossível existir dois elementos com primeira coordenada igual, esta ordem é equivalente a ordenar apenas a primeira coordenada crescentemente. Apesar disso, especificar o comportamento em caso de empate nos ajudará a implementar as operações nesta estrutura. Esta ordenação nos garante uma propriedade poderosa descrita pela Proposição~\ref{EDPD:doubleorder}.
 
 \begin{prop} \label{EDPD:doubleorder}
 Se~$S \subset \B{Q}^2$ é finito e os elementos de~$\Cl{P}(S)$ estão em ordem crescente na primeira coordenada, eles estão em ordem decrescente na segunda coordenada.
@@ -82,31 +82,31 @@ Para todo~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$ vale~$M(S,c) = M(\Cl{P}(S),
 Já que~${ \Cl{P}(S) \subseteq S }$ segue que~${ M(S,c) \geq M(\Cl{P}(S) }$. Vamos provar o outro sentido da igualdade. Suponha que~${ M(S,c) > M(\Cl{P}(S),c) }$. Existe, portanto, algum elemento~$a = (a_1,a_2) \in S$ tal que~${ a \notin \Cl{P}(S) }$,~${ a_2 \geq c }$ e~${ a_1 > M(\Cl{P}(S),c) }$. Porém, já que~${ a \notin \Cl{P}(S) }$ ele é dominado em~$S$ e, pela Proposição~\ref{EDPD:DomP}, dominado em~$\Cl{P}(S)$, logo, existe~${ b \in \Cl{P}(S) }$ tal que~${ b \succeq a }$. Concluímos que~${ b_2 \geq a_2 \geq c }$ e~${ M(\Cl{P}(S),c) \geq b_1 \geq a_1 = M(S,c) }$, um absurdo.
 \end{proof}
 
-Para um~${ x = (x_1,x_2) \in \B{Q}^2 }$ qualquer, podemos realizar a operação~$\textsc{Insere}(\Cl{P}(S),x)$ eficientemente utilizando a árvore de busca binária proposta. Primeiramente, devemos remover de~$\Cl{P}(S)$ os elementos dominados por~$x$. Se algum elemento de~$\Cl{P}(S)$ for dominado por~$x$, aquele que possui primeira coordenada imediatamente menor ou igual a~$x_1$ também é dominado por~$x$. Este fato é consequência da Proposição~\ref{EDPD:doubleorder}. Aproveitando este fato, para remover os elementos dominados por~$x$, buscamos aquele com primeira coordenada imediatamente menor ou igual a~$x_1$. Se este não existir ou não for dominado por~$x$, não há nada a fazer. Se este for dominado por~$x$, removemos tal elemento da estrutura e repetimos o processo até que todos os dominados estejam removidos. 
+Para um~${ x \in \B{Q}^2 }$ qualquer, podemos realizar a operação~$\textsc{Insere}(\Cl{P}(S),x)$ eficientemente. Primeiramente, devemos verificar se~$x$ é dominado em~$\Cl{P}(S)$. Se ele é dominado, existe um elemento lexicograficamente maior ou igual com segunda coordenada maior ou igual a ele. Se este elemento não existe, todo elemento com primeira coordenada maior ou igual a~$x$ possui a segunda coordenada menor, portanto, ele não é dominado. Perceba que basta buscar o menor elemento lexicograficamente maior do que~$x$ na fronteira, graças à Proposição~\ref{EDPD:doubleorder}, se este não domina~$x$, nenhum domina. Caso exista tal elemento, interrompemos a execução da operação. Caso contrário, progredimos.
 
-Além de remover todos os pontos dominados por~$x$, devemos descobrir se~$x$ é dominado por alguém de~$\Cl{P}(S)$. Perceba que a ordem em que estas partes da operação são realizadas é irrelevante, já que só uma delas irá obter algum resultado, isto é, é impossível dominar alguém em~$\Cl{P}(S)$ e, ao mesmo tempo, ser dominado por~$\Cl{P}(S)$. Para se~$x$ é dominado, basta descobrir o elemento que tem primeira coordenada imediatamente maior ou igual a~$x_1$. A Proposição~\ref{EDPD:doubleorder} garante que, se algum elemento da estrutura domina~$x$,~$x$ é dominado por tal elemento. Caso~$x$ seja dominado, a execução da função deve ser interrompida. Caso contrário, seguimos normalmente.
+Além de descobrir se~$x$ é dominado, precisamos remover os elementos dominados por~$x$ de~$\Cl{P}(S)$. Para tanto, perceba que se algum elemento de~$\Cl{P}(S)$ for dominado por~$x$, aquele que precede imediatamente~$x$ na ordem lexicográfica será, também, dominado por~$x$. Graças a este fato, podemos buscar este elemento e removê-lo, caso seja dominado, sucessivamente, até que tal elemento não exista ou não seja dominado.
 
-Note que todo elemento pode ser removido da estrutura apenas uma vez e que encontrar (e remover) elementos de primeira coordenada igual, imediatamente menor e imediatamente maior do que um dado valor custa tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$ por busca. Portanto, a operação~$\textsc{Insere}$ é realizada em tempo~$\Cl{O}(\lg(|S|))$ amortizado. O Algoritmo~\ref{EDPD:FP:code} implementa as operações descritas aqui. Note que o uso de~$\leq$ nas linhas~\ref{EDPD:FP:code:upper} e~\ref{EDPD:FP:code:lower} tratam, de forma elegante, os casos onde existe um elemento com primeira coordenada igual a~$x_1$.
+Note que todo elemento pode ser removido da estrutura apenas uma vez e que encontrar (e remover) elementos que sucedem ou precedem~$x$ lexicograficamente exige apenas uma busca binária na árvore, o que custa tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$ por busca. Concluímos que a operação~$\textsc{Insere}$ é realizada em tempo~$\Cl{O}(\lg(|S|))$ amortizado.  O Algoritmo~\ref{EDPD:FP:code} implementa as operações descritas aqui. 
 
 \begin{algorithm}[h]
 \caption{Operações sobre a fronteira de Pareto de um conjunto}
 \label{EDPD:FP:code}
 \begin{algorithmic}[1]
 \Function{\textsc{Insere}}{\Cl{P}(S),x = (x_1,x_2)}
-    \State $y = (y_1,y_2) \rec$ primeiro elemento tal que~$y_1 \geq x_1$ \label{EDPD:FP:code:upper}
+    \State $y \rec$ primeiro elemento de~$\Cl{P}(S)$ tal que~$y \geq x$
     \If{$y$ existe e $y \succeq x$}
         \State Interrompe a execução da função
     \EndIf
 
-    \State $y = (y_1,y_2) \rec$ último elemento tal que~$y_1 \leq x_1$ \label{EDPD:FP:code:lower}
+    \State $y \rec$ último elemento de~$\Cl{P}(S)$ tal que~$x \geq y$
     \While{ $y$ existe e $x \succeq y$}
-        \State Remove~$y$ da árvore de busca de~$\Cl{P}(S)$
-        \State $y = (y_1,y_2) \rec$ último elemento tal que~$y_1 \leq x_1$
+        \State Remove~$y$ de~$\Cl{P}(S)$
+        \State $y \rec$ último elemento de~$\Cl{P}(S)$ tal que~$x \geq y$
     \EndWhile
-    \State Insere~$x$ na árvore de busca de~$\Cl{P}(S)$
+    \State Insere~$x$ na árvore em~$\Cl{P}(S)$
 \EndFunction
 \Function{\textsc{CalculaM}}{\Cl{P}(S),c}
-    \State $y = (y_1,y_2) \rec$ primeiro elemento tal que~$y_1 \geq c$
+    \State $y = (y_1,y_2) \rec$ primeiro elemento de~$\Cl{P}(S)$ tal que~$y_1 \geq c$
     \If{$y$ existe}
         \State \Return $y_2$
     \Else
