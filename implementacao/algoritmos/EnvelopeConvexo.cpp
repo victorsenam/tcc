@@ -18,7 +18,7 @@ void EnvelopeConvexo::Insere (int j) {
 	E.push_back(el);
 }
 
-void EnvelopeConvexo::Calcula (int i) {
+int EnvelopeConvexo::Calcula (int i) {
 	int l = 0, r = E.size() - 1;
 	while (l < r) {
 		int p = (l+r)/2;
@@ -27,7 +27,7 @@ void EnvelopeConvexo::Calcula (int i) {
 		else
 			l = p+1;
 	}
-	return l;
+	return E[l].j;
 }
 
 EnvelopeConvexo::Elemento (int i_j, int i_s) : j(i_j), s(i_s) {}
