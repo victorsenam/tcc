@@ -41,10 +41,10 @@ private:
 
 	int n;
 	int l;
-	std::function< double(int,int,int) > A;
+	std::function< double(int,int,double) > A;
 	std::vector<Elemento> E;
 	std::vector<double> V;
 
 	// Devolve a intersecção entre as colunas a e b onde a <= b
-	int Intersecta(int a, int b);
+	virtual int Intersecta(int a, int b);
 };

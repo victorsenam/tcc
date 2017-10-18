@@ -40,7 +40,7 @@ private:
 	};
 
 	int n;
-	std::function< double(int,int,int) > A;
+	std::function< double(int,int,double) > A;
 	std::vector<Elemento> E;
 	std::vector<double> V;
 
