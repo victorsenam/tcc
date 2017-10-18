@@ -8,7 +8,7 @@ SMAWK::SMAWK (std::function< double(int, int) A, int n, int m) {
 		col.push_back(i);
 }
 
-void SMAWK::RemoveEvenRows () {
+void SMAWK::RemoveOddRows () {
 	p += p;
 }
 
@@ -46,7 +46,7 @@ void SMAWK::FindRowMinima (vector<int> & R) {
 		R[0] = *(col.begin());
 	} else {
 		SMAWK B = (*this);
-		B.RemoveEvenRows();
+		B.RemoveOddRows();
 		B.Reduce();
 		B.FindRowMinima(R);
 		

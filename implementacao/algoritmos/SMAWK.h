@@ -26,7 +26,7 @@ public:
 	SMAWK(std::function< double(int,int) > A, int n, int m);
 
 	// Remove as linhas pares da matriz
-	void RemoveEvenRows();
+	void RemoveOddRows();
 
 	// Remove colunas inúteis da matriz
 	void Reduce();
