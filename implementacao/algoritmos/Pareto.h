@@ -1,5 +1,12 @@
 /**
     Fronteira de Pareto
+	Seção 6
+
+	Estrutura de dados fronteira de Pareto.
+
+    Autor: Victor Sena Molero <victorsenam>
+    Projeto: "Algoritmos em matrizes monótonas e Monge convexas"
+    Disponível em: https://github.com/victorsenam/tcc/
 **/
 
 #ifndef TCC_Pareto
@@ -8,15 +15,20 @@
 #include <utility>
 #include <set>
 
-struct Pareto {
-    // insere um novo elemento
-    void insere (pair<double, double> x);
-    // calcula o valor de M(S,c) onde S são os elementos em s
-    double calculaM (double c);
+/**
+	Representa a fronteira de pareto de um conjunto S.
 
-    private:
-    // árvore de busca binária
-    std::set<std::pair<double, double> > s;
+	P é a árvore de busca binária balanceada que guarda os elementos da fronteira de S.
+**/
+class Pareto {
+public:
+	// Insere um novo elemento no conjunto
+    void Insere(std::pair<double,double> x);
+    // Calcula o valor de M(S,c)
+    double CalculaM(double c);
+
+private:
+    std::set<std::pair<double,double> > P;
 };
 
 #endif

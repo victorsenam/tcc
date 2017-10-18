@@ -25,21 +25,22 @@ public:
 	// Constrói uma matriz dada pela função A com n linhas e m colunas
 	SMAWK(std::function< double(int,int) > A, int n, int m);
 
-	// Remove as linhas pares da matriz
-	void RemoveOddRows();
-
-	// Remove colunas inúteis da matriz
-	void Reduce();
-
 	// Devolve um vetor com os índices dos mínimos das linhas da matriz
 	vector<int> FindRowMinima();
-
-	// Preenche o vetor R com os índices dos mínimos das linhas da matriz
-	void FindRowMinima(vector<int> & R);
 
 private:
 	std::function< double(int,int) > A;
 	int n;
 	list<int> col;
 	int p;
+
+	// Remove as linhas pares da matriz
+	void RemoveOddRows();
+
+	// Remove colunas inúteis da matriz
+	void Reduce();
+
+	// Preenche o vetor R com os índices dos mínimos das linhas da matriz
+	void FindRowMinima(vector<int> & R);
+
 };

@@ -1,23 +1,20 @@
 #include "Pareto.h"
 
-struct Pareto {
-    void insere (pair<double,double> x) {
-        auto it = s.upper_bound(pair<double,double>(x,1./0.));
+void Pareto::Insere (std::pair<double,double> x) {
+	auto y = s.lower_bound(x);
 
-        while (it != s.begin() && prev(it).second <= x.second)
-            s.erase(prev(it));
+	if (y != s.end() && y->second >= x.second)
+		return;
 
-        if (calculaM(x.first) < x.second)
-            s.insert(x);
-    }
+	while (y != s.begin() && std::prev(y)->second <= x.second)
+		s.erase(std::prev(y));
+		
+	s.insert(x);
+}
 
-    double calculaM (double c) {
-        auto it = s.lower_bound(pair<double,double>(c,-1./0.));
-        if (it == s.end())
-            return -1./0.;
-        return it->second;
-    }
-
-    private:
-    std::set<std::pair<double, double> > s;
-};
+double Pareto::CalculaM (double c) {
+	auto y = s.lower_bound(std::pair<double,double>(c,-1./0.));
+	if (y != s.end())
+		return y->second;
+	return -1./0.;
+}
