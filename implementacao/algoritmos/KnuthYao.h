@@ -1,5 +1,6 @@
 /**
     Otimização de Knuth-Yao
+	Seção 5
 
     Resolve uma recorrência de intervalos Knuth-Yao otimizável.
 
@@ -14,16 +15,22 @@
 #include <functional>
 
 /**
-    Resolve uma recorrência de intervalos.
+	Representa uma recorrência de intervalos
 
-    Recebe uma função que representa uma matriz C com n linhas e colunas.
-
-    Retorna a solução da recorrência de intervalos com matriz de custo C.
-
-    Assume:
-    - A recorrência de intervalos com matriz de custos C é Knuth-Yao 
-    otimizável.
+ 	A matriz de custos é representada pela matriz C. As linhas desta matriz são os inteiros de 0 até n-1. A recorrência de intervalos com matriz de custo C deve ser Knuth-Yao otimizável.
 **/
-std::vector<std::vector<double> > KnuthYao (std::function< double(int,int) > C, int n);
+
+class KnuthYao {
+public:
+	// Contrói a recorrência de intervalos com matriz de custo C com n linhas
+	KnuthYao(std::function< double(int,int) > C, int n);
+
+	// Devolve a solução da recorrência de intervalos
+	std::vector<std::vector<double> > Solve();
+
+private:
+	std::function< double(int,int) > C;
+	int n;
+};
 
 #endif
