@@ -34,5 +34,7 @@ private:
 	int m;
 
 	// Preenche o vetor R com os índices dos mínimos das linhas da submatriz com linhas [rs..rt] e colunas [cs..ct]
-	void FindRowMinima(int rs, int rt, int cs, int ct, vector<int> & R);
+	void FindRowMinima(int rs, int rt, int cs, int ct, std::vector<int> & R);
 };
+
+#endif

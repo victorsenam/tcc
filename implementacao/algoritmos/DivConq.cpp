@@ -1,18 +1,18 @@
 #include "DivConq.h"
 
 DivConq::DivConq (std::function< double(int,int) > A, int n, int m) {
-	::A = A;
-	::n = n;
-	::m = m;
+	this->A = A;
+	this->n = n;
+	this->m = m;
 }
 
-vector<int> DivConq::FindRowMinima () {
-	vector<int> R(n);
-	FindRowMinima(R, 0, n-1, 0, m-1);
+std::vector<int> DivConq::FindRowMinima () {
+	std::vector<int> R(n);
+	FindRowMinima(0, n-1, 0, m-1, R);
 	return R;
 }
 
-void DivConq::FindRowMinima (int rs, int rt, int cs, int ct, vector<int> & R) {
+void DivConq::FindRowMinima (int rs, int rt, int cs, int ct, std::vector<int> & R) {
 	if (rs <= rt) {
 		int l = (rs + rt)/2;
 
@@ -22,7 +22,7 @@ void DivConq::FindRowMinima (int rs, int rt, int cs, int ct, vector<int> & R) {
 				R[l] = j;
 		}
 
-		DivConq(A, rs, l-1, cs, R[l], R);
-		DivConq(A, l+1, rt, R[l], ct, R);
+		FindRowMinima(rs, l-1, cs, R[l], R);
+		FindRowMinima(l+1, rt, R[l], ct, R);
 	}
 }
