@@ -26,3 +26,12 @@ exemplos/InternetTroubleSimples/InternetTroubleSimples.DivConq.out : %.out : %.c
 
 exemplos/InternetTroubleSimples/InternetTroubleSimples.Trivial.out : %.out : %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/InternetTrouble/InternetTrouble.SMAWK.out : %.out : %.cpp algoritmos/SMAWK.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/InternetTrouble/InternetTrouble.DivConq.out : %.out : %.cpp algoritmos/DivConq.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/InternetTrouble/InternetTrouble.Trivial.out : %.out : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
