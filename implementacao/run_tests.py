@@ -37,7 +37,7 @@ for test in map(os.path.basename, filter(os.DirEntry.is_dir,os.scandir(root))):
 	
 
 	cases = list(map(os.path.basename, filter(lambda x : x.name.endswith('.in'), os.scandir(os.path.join(root, test, test_folder_name)))))
-	print("= Generating trivial input =")
+	print("= Generating trivial output =")
 	makeExample(trivial_path + ".out")
 	expected = {}
 	for case in cases:
