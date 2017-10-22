@@ -4,44 +4,52 @@ import difflib
 import subprocess
 import sys
 
-def parseFileName (filename):
-	parts = filename.split('.')
-	if len(parts) != 3 or parts[1] == "Trivial" or parts[2] != "cpp":
-		return False
-	return parts
+root = "./exemplos"
+test_folder_name = "tests"
+
+def makeExample(path):
+	os.system("make " + path)
+
+def runCase(path, example, case, timeout=3):
+	sys.stdout.write(case + "...")
+	sys.stdout.flush()
+	case_file = open(os.path.join(path, test_folder_name, case))
+	return subprocess.check_output(os.path.join(path, example), shell=True, stdin=case_file, timeout=timeout)
 	
-for root, dirs, files in os.walk("."):
-	if ("tests" not in dirs):
-		continue
-	tests = list(filter(lambda x : x.endswith('.in'), os.listdir(root + '/tests')))
+for test in map(os.path.basename, filter(os.DirEntry.is_dir,os.scandir(root))):
+	print("== \33[0;32;40m" + test + "\33[m ==")
 
-	examples = filter(lambda x : x != False, map(parseFileName, files))
+	if (not os.path.isdir(os.path.join(root, test, test_folder_name))):
+		print("= \33[0;33;40mNo tests!\33[m =")
+	
+	trivial_path = os.path.join(root, test, test + ".Trivial")
+	if (not os.path.exists(trivial_path + ".cpp")):
+		print("= \33[0;33;40mNo trivial!\33[m =")
+	
+
+	cases = list(map(os.path.basename, filter(lambda x : x.name.endswith('.in'), os.scandir(os.path.join(root, test, test_folder_name)))))
+	print("= Generating trivial input =")
+	makeExample(trivial_path + ".out")
+	expected = {}
+	for case in cases:
+		expected[case] = runCase(os.path.join(root, test), test + ".Trivial.out", case, 10)
+		sys.stdout.write(" Done\n")
+
+	examples = filter(lambda x : x.startswith(test + ".") and x.endswith(".cpp") and x != test + ".Trivial.cpp", map(os.path.basename, os.scandir(os.path.join(root, test))))
 	for example in examples:
-		example_name = example[0] + '.' + example[1]
-		print("\33[0;32;40m" + example_name + "\33[m")
+		example = example.rstrip(".cpp")
+		example_path = os.path.join(root, test, example)
 
-		trivial_name = example[0] + '.Trivial'
-		if (trivial_name + '.cpp' not in files):
-			print("Trivial not found!")
-			continue
+		print("= Running \33[0;32;40m" + example + "\33[m =")
+		makeExample(example_path + ".out")
 
-		os.system("make " + root + "/" + trivial_name + ".out")
-		os.system("make " + root + "/" + example_name + ".out")
-
-		for test in tests:
-			test_file = open(root + "/tests/" + test, 'r')
-			sys.stdout.write(test + " Running solution...")
-			sys.stdout.flush()
-			example_out = subprocess.check_output(root + "/" + example_name + ".out", shell=True, stdin=test_file, timeout=2)
-
-			test_file = open(root + "/tests/" + test, 'r')
-			sys.stdout.write("\r" + test + " Running trivial...                      ")
-			sys.stdout.flush()
-			trivial_out = subprocess.check_output(root + "/" + trivial_name + ".out", shell=True, stdin=test_file, timeout=10)
-			
-			if example_out == trivial_out:
-				sys.stdout.write("\r" + test + " \33[0;32;40mOK\33[m...                      \n")
+		for case in cases:
+			output = runCase(os.path.join(root, test), ".".join([example,"out"]), case)
+			if output == expected[case]:
+				print(" \33[0;32;40mOK\33[m | " + str(output))
 			else:
-				sys.stdout.write("\r" + test + " \33[0;30;41mFAIL\33[m(found " + str(example_out) + " expected " + str(trivial_out) + ")\n")
-			sys.stdout.flush()
-
+				print(" \33[0;30;41mFAIL\33[m")
+				print("Expected:")
+				print(str(expected[case]))
+				print("Found:")
+				print(str(output))
