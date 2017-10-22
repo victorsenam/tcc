@@ -22,6 +22,11 @@
 #include <cstdio>
 #include <vector>
 
+// Calcula g(x)
+inline double g (double x) {
+	return x*x;
+}
+
 // Calcula A[i][j] à partir do vetor a
 inline double A (std::vector<double> & a, int i, int j) {
 	return (a[j] - a[i])*(a[j] - a[i]);
@@ -51,7 +56,7 @@ int main () {
 		// Calcula a linha l da matriz E
 		for (int i = 0; i <= n; i++) {
 			next_E[i] = 1./0.;
-			for (int j = 0; j <= n; j++)
+			for (int j = i; j <= n; j++)
 				next_E[i] = std::min(next_E[i], A(a,i,j) + E[j]);
 		}
 		E = next_E;

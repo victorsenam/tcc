@@ -6,4 +6,5 @@ n = int(input())
 print(str(random.randint(1,n)) + " " + str(n))
 output = ""
 for i in range(n):
-	print(str(10000*random.random())),
+	#print(str(random.randint(0,1000)))
+	print(str(random.random()))

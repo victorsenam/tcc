@@ -22,9 +22,13 @@
 #include "../../algoritmos/DivConq.h"
 #include <cstdio>
 
+// Calcula g(x)
+inline double g (double x) {
+	return x*x;
+}
 // Calcula A[i][j] à partir do vetor a
 inline double A (std::vector<double> & a, int i, int j) {
-	return (a[j] - a[i])*(a[j] - a[i]);
+	return g(a[j] - a[i]);
 }
 
 int main () {
