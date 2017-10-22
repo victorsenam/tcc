@@ -1,6 +1,5 @@
 #include "SMAWK.h"
 #include <iostream>
-#include <cassert>
 
 SMAWK::SMAWK (std::function< double(int, int) > A, int n, int m) {
 	this->n = n;
@@ -24,20 +23,19 @@ void SMAWK::Reduce () {
 	std::list<int>::iterator it = col.begin();
 
     while (col.size() > unsigned(n + p - 1)/p) {
-		assert(it != col.end() && std::next(it) != col.end());
-        if (A(p*k, *it) <= A(p*k, *std::next(it))) {
-			if (p*(k+1) >= n) {
-                col.erase(std::next(it));
-			} else {
-				it = std::next(it);
-				k++;
-			}
-		} else { 
+		if (A(p*k, *it) > A(p*k, *std::next(it))) {
 			it = std::next(it);
             it = col.erase(std::prev(it));
 			if (k != 0) {
 				k--;
 				it = std::prev(it);
+			}
+		} else { 
+			if (p*(k+1) >= n) {
+                col.erase(std::next(it));
+			} else {
+				it = std::next(it);
+				k++;
 			}
         }
     }
@@ -51,7 +49,6 @@ std::vector<int> SMAWK::FindRowMinima () {
 
 void SMAWK::FindRowMinima (std::vector<int> & R) {
 	if (p >= n) {
-		assert(col.size() == 1u);
 		R[0] = *(col.begin());
 	} else {
 		SMAWK B = (*this);
