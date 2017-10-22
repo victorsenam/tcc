@@ -6,6 +6,9 @@ import sys
 
 root = "./exemplos"
 test_folder_name = "tests"
+test_id_match = ""
+if len(sys.argv) > 1:
+	test_id_match = sys.argv[1]
 
 def makeExample(path):
 	os.system("make " + path)
@@ -15,8 +18,14 @@ def runCase(path, example, case, timeout=3):
 	sys.stdout.flush()
 	case_file = open(os.path.join(path, test_folder_name, case))
 	return subprocess.check_output(os.path.join(path, example), shell=True, stdin=case_file, timeout=timeout)
+
+def simplifyOutput(output):
+	return (output[:72] + '\33[0;32;40m...\33[m') if len(output) > 75 else output
 	
 for test in map(os.path.basename, filter(os.DirEntry.is_dir,os.scandir(root))):
+	if (test_id_match not in test):
+		continue
+
 	print("== \33[0;32;40m" + test + "\33[m ==")
 
 	if (not os.path.isdir(os.path.join(root, test, test_folder_name))):
@@ -46,7 +55,7 @@ for test in map(os.path.basename, filter(os.DirEntry.is_dir,os.scandir(root))):
 		for case in cases:
 			output = runCase(os.path.join(root, test), ".".join([example,"out"]), case)
 			if output == expected[case]:
-				print(" \33[0;32;40mOK\33[m | " + str(output))
+				print(" \33[0;32;40mOK\33[m | " + simplifyOutput(str(output)))
 			else:
 				print(" \33[0;30;41mFAIL\33[m")
 				print("Expected:")
