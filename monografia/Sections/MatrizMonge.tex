@@ -3,7 +3,11 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção serão apresentados e explorados os conceitos de monotonicidade, convexidade e matrizes Monge. Além disso, alguns resultados referentes a estes conceitos serão demonstrados. As definições e os resultados desta seção são fundamentais para o desenvolvimento do restante do trabalho.  
+Nesta seção serão apresentados e explorados os conceitos de monotonicidade, convexidade e matrizes Monge. Além disso, alguns resultados referentes a estes conceitos serão demonstrados. As definições e os resultados desta seção são fundamentais para o desenvolvimento do restante do trabalho.  Na Subseção~\ref{Monge:Basic} apresentamos vários destes conceitos básicos. Na Subseção~\ref{Monge:Monge} apresenta as matrizes Monge e as relaciona com os conceitos básicos já apresentados. A Subseção~\ref{Monge:Triangular} define e discute brevemente a ideia de matrizes triangulares.
+
+%----------------------------------------------------------------------------------------
+
+\subsection{Conceitos básicos} \label{Monge:Basic}
 
 \begin{defi}[Vetor monótono]
 Um vetor~${ a \in \B{Q}^n }$ é dito monótono quando vale uma das propriedades abaixo.
@@ -99,6 +103,9 @@ Finalmente, se $A'$ é uma submatriz de $A$, então $A'$ é totalmente monótona
 As demonstrações no caso côncavo e nos casos relacionados a colunas são análogas.
 \end{proof}
 
+%----------------------------------------------------------------------------------------
+\subsection{Matrizes Monge} \label{Monge:Monge}
+
 \begin{defi}[Monge convexidade] \label{defi:MatrizMonge}
 Seja $A \in \B{Q}^{n \times m}$.
     \begin{enumerate}
@@ -191,3 +198,22 @@ Sejam~$A$ e~$g$ uma matriz e uma função quaisquer que respeitem as condições
 
 Consideramos o caso em que~${ 0 < a \leq b }$. Temos que~${ z < z+a \leq z + b < z + a + b }$. Definimos~${ \lambda = \frac{a}{a+b} }$. Já que~${ 0 \leq \lambda \leq 1 }$,~${ z + a = \lambda z + (1 - \lambda)(z+a+b) }$ e~${ z + b = (1 - \lambda)z + \lambda(z+a+b) }$, pela convexidade de~$g$, obtemos que~${ g(z+a) \leq \lambda g(z) + (1 - \lambda)g(z+a+b) }$ e também que~${ g(z+b) \leq (1-\lambda) g(z) + \lambda g(z+a+b) }$. Somando as duas desigualdades, concluímos que vale~${ g(z+a) + g(z+b) \leq g(z) + g(z+a+b) }$. No caso em que~${ 0 < b \leq a }$ o mesmo resultado segue de maneira análoga. Finalmente, no caso onde~${ 0 = a = b }$ vale que~${ g(z) = g(z+a) = g(z+b) = g(z+a+b) }$ e o resultado é trivial.
 \end{proof}
+
+%----------------------------------------------------------------------------------------
+
+\subsection{Matrizes triangulares} \label{Monge:Triangular} 
+
+Para alguns dos problemas e algoritmos discutidos neste trabalho, é interessante pensar em matrizes com entradas indefinidas. É possível definir uma matriz Monge com entradas arbitrárias indefinidas~\cite{Burkard:1996}. Vamos limitar quais posições podem ser indefinidas em uma matriz. Desta forma, elas se relacionam facilmente com os resultados já obtidos nesta seção. 
+
+\begin{defi}[Matriz triangular]
+Seja~$c$ um inteiro. Uma matriz~$A \in \B{Q}^{n \times n}$ é triangular inferior em~$c$ se, para todo~${ i,j \in [n] }$,~$A[i][j]$ é indefinido se e somente se~${ i + c \leq j }$. Similarmente, se, para todo~${i,j \in [n]}$,~$A[i][j]$ é indefinido se e somente se~${ i + c \geq j }$, a matriz~$A$ é triangular superior em~$c$.
+\end{defi}
+
+Adaptaremos os conceitos e resultados apresentados nesta seção para matrizes triangulares. Por simplicidade, vamos realizar estas adaptações em termos de matrizes triangulares inferiores. Primeiro, várias das linhas ou colunas de uma matriz triangular podem ser totalmente indefinidas. Isso faz com que os vetores de índices ótimos da matriz sejam mal definidos. Podemos considerar que o vetor não contém estas entradas. Por exemplo, o vetor de índices de mínimos das linhas de uma matriz~$A \in \B{Q}^{n \times n}$ triangular inferior em~$1$ pertence a~$[n]^{[2 \tdots n]}$. Com isso, a monotonicidade de uma matriz~$A$ triangular fica bem definida.
+
+Para que uma matriz~$A \in \B{Q}^{n \times n}$ triangular inferior em~$c$ seja totalmente monótona convexa nas linhas, é necessário que, para todo~${ i,i',j,j' \in [n] }$ onde~${ i + c \leq i' + c \leq j \leq j'}$, valha que~${ A[i'][j] \leq A[i'][j'] }$ implica em~${ A[i][j] \leq A[i][j'] }$. Isso quer dizer que toda submatriz de~$A$ que tem todas as entradas definidas é totalmente monótona convexas nas linhas. A definição análoga serve nos outros casos de total monotonicidade. Desta forma, o Lema~\ref{lema:MonotoneTotallyMonotone} 
+vale para toda submatriz que tem todas as entradas definidas, também.
+
+De maneira similar, dizemos que uma~$A$ triangular inferior em~$c$ de lado~$n$ é Monge convexa se a desigualdade quadrangular vale para todo~${ i,i',j,j' \in [n]}$ onde~${ i + c \leq i' + c \leq j \leq j' }$. O Lema~\ref{Monge:MCtoTM} também vale para toda submatriz inteiramente definida de~$A$. O Teorema~\ref{Monge:theo+1} neste contexto, no caso convexo, diz que, se~${ A[i][j] + A[i+1][j+1] \leq A[i][j+1] + A[i+1][j] }$ sempre que~${ i,j \in [n-1] }$ e~${ i + c + 1 \leq j }$, então~$A$ é Monge convexa. O caso côncavo vale analogamente.
+
+É interessante perceber que, se~$B \in \B{Q}^n$ é uma matriz Monge qualquer, uma matriz~$A \in \B{Q}^n$ triangular tal que~$A[i][j] = B[i][j]$ para toda entrada~$A[i][j]$ definida de~$A$ também é Monge no mesmo sentido. Esta observação prova, imediatamente, o Lema~\ref{Monge:keepConvex} e o Teorema~\ref{theo:MongeConvex_and_Convex} para matrizes triangulares.
