@@ -15,15 +15,14 @@ Vamos discutir os resultados observados por Yao, descrever a técnica desenvolvi
 
 \subsection{Definições básicas} \label{KY:defs}
 
-Vamos apresentar a otimização de Knuth-Yao para problemas de minimização, o que nos leva a trabalhar com convexidade. É fácil adaptar o conhecimento discutido nesta seção para problemas de maximização, porém, em vez da convexidade, a concavidade deve ser usada para provar os resultados e modelar os problemas de interesse. Note que, para realizar esta adaptação, alguns conceitos devem ser definidos de maneira levemente diferente. As entradas com~$+\infty$ da Definição~\ref{ KY:recint } abaixo, por exemplo, se tornam~$-\infty$.
+Vamos apresentar a otimização de Knuth-Yao para problemas de minimização, o que nos leva a trabalhar com convexidade. É fácil adaptar o conhecimento discutido nesta seção para problemas de maximização, porém, em vez da convexidade, a concavidade deve ser usada para provar os resultados e modelar os problemas de interesse.
 
 \begin{defi}[Recorrência de intervalos] \label{ KY:recint }
-Uma matriz~$A \in \B{Q}^{n \times n}$ é considerada uma recorrência de intervalos se existe uma matriz~$C \in \B{Q}^{n \times n}$ tal que, para todo~$i,j \in [n]$,
+Uma matriz~$A \in \B{Q}^{n \times n}$ triangular inferior em 0 é considerada uma recorrência de intervalos se existe uma matriz~$C \in \B{Q}^{n \times n}$ tal que, para todo~$i,j \in [n]$,
 \begin{equation*}
 A[i][j] = \begin{cases}
 C[i][j]                                                           & \text{, se } i = j \text{, }  \\
-C[i][j] + \min\{A[i][k-1] + A[k][j] \mid i < k \leq j \}          & \text{, se } i < j \text{ e } \\
-+\infty                                                           & \text{ caso contrário. }
+C[i][j] + \min\{A[i][k-1] + A[k][j] \mid i < k \leq j \}          & \text{, se } i < j \text{.}
 \end{cases}
 \end{equation*}
 A matriz~$C$ é chamada de matriz de custos de~$A$.
@@ -62,7 +61,7 @@ Vamos mostrar que se~$A \in \B{Q}^{n \times n}$ é Knuth-Yao otimizável, tanto~
         \For{$i$ de $1$ até $n-d$}
             \State $j \rec i+d$
             \State $A[i][j] \rec +\infty$
-            \For{$k$ de $P[i][j-1]$ até $P[i+1][j]$} \label{KY:algo:loop}
+            \For{$k$ de $\max(i+1, P[i][j-1])$ até $P[i+1][j]$} \label{KY:algo:loop}
                 \State $v \rec C[i][j] + A[i][k-1] + A[k][j]$
                 \If{$v < A[i][j]$} 
                     \State $A[i][j] \rec v$
@@ -83,9 +82,7 @@ Se calcularmos também as entradas da matriz~$P$ enquanto calculamos as da~$A$, 
 A[i][j] = C[i][j] + \min\{A[i][k-1] + A[k][j] \mid i < k \leq j \text{ e } P[i][j-1] \leq k \leq P[i+1][j]\} \text{.}
 \end{equation}
 
-Esta observação induz o Algoritmo~\ref{KY:algo} para calcular as entradas das matrizes~$A$ e~$P$. Na linha~\ref{KY:algo:loop} a variável~$k$ varia de~$P[i][j-1]$ até~$P[i+1][j]$ e não de~${ \max(i+1,P[i][j-1]) }$ até~$\min(j,P[i+1][j])$, como indica a igualdade~\eqref{KY:eq}. Perceba que~${ P[i+1][j] \leq j }$, portanto~${ \min(j,P[i+1][j]) = P[i+1][j] }$. Além disso, sabemos que~${ P[i][j-1] \geq i }$, portanto separamos em dois casos. No primeiro,~${ P[i][j-1] > i }$ e vale~$\max(i+1,P[i][j-1]) = P[i][j-1]$. No outro, onde~$P[i][j-1] = i$, a iteração onde~$k=i$ ocorre indevidamente mas, note que, quando~$k = i$,~$i > k-1$ e~$A[i][k-1] = +\infty$, portanto~$C[i][j] + A[i][k-1] + A[k][j] = +\infty$ e esta iteração será irrelevante para a resposta final do algoritmo, o que nos permite realizar a iteração~$k=i$ sem problemas.
-
-A implementação em~\texttt{C++} deste algoritmo como descrito acima pode ser encontrado na pasta de implementações com o nome~\texttt{KnuthYao.cpp}.
+Esta observação induz o Algoritmo~\ref{KY:algo} para calcular as entradas das matrizes~$A$ e~$P$. Na linha~\ref{KY:algo:loop} a variável~$k$ termina em~$P[i+1][j]$ e não em~${ \min(j,P[i+1][j]) }$, como indicado pelo igualdade~\eqref{KY:eq}. Perceba que~${ P[i+1][j] \leq j }$, portanto,~${ \min(j,P[i+1][j]) = P[i+1][j] }$. A implementação em~\texttt{C++} deste algoritmo como descrito acima pode ser encontrado na pasta de implementações com o nome~\texttt{KnuthYao.cpp}.
 
 %----------------------------------------------------------------------------------------
 
@@ -137,11 +134,9 @@ Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos com matriz de cu
 \end{lema}
 
 \begin{proof}
-Sejam~$A$ e~$C$ matrizes que respeitam as condições do enunciado e~$P$ a matriz de cortes ótimos de~$A$. Sejam ainda~$i,i',j$ e $j' \in [n]$ onde~$i \leq i'$ e $j \leq j'$. Queremos mostrar que sempre vale a desigualdade de Monge, isto é,~${A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]}$. Seja~$l = j' - i$. Usaremos indução em~$l$. Se~${l < 0}$, vale que~${j > i'}$ e, portanto~${A[i'][j] = +\infty}$ o que faz valer a desigualdade.
+Sejam~$A$ e~$C$ matrizes que respeitam as condições do enunciado e~$P$ a matriz de cortes ótimos de~$A$. Sejam ainda~$i,i',j$ e $j' \in [n]$ onde~$i \leq i' \leq j \leq j'$. Queremos mostrar que sempre vale a desigualdade de Monge, isto é,~${A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j]}$. Seja~$l = j' - i$. Usaremos indução em~$l$. Se~${l = 0}$, vale que~${i = i' = j = j'}$ e a desigualdade vale trivialmente.
 
-Fixamos~$l \geq 0$, assumindo que a desigualdade vale nos casos onde~${j' - i < l}$. Note que se~${i = i'}$ ou~${j = j'}$, a desigualdade vale trivialmente, bem como no caso onde~${j > i'}$, analisado acima. Podemos assumir que~$i < i' \leq j < j'$ e separamos isso em dois casos: quando~$i' = j$ e quando~$i' < j$.
-
-Olhamos para o caso em que~${i' = j}$. Seja~${x = P[i][j']}$ o ponto de corte ótimo do estado~$A[i][j']$, ou seja,~${A[i][j'] = C[i'][j] + A[i'][x-1] + A[x][j]}$. Assumimos que~${x \leq j}$ e temos que
+Fixamos~$l > 0$, assumindo que a desigualdade vale nos casos onde~${j' - i < l}$. Se~$i = i'$ ou~$j = j'$, a desigualdade vale trivialmente. Se~${i < i' = j < j'}$, tomamos~${x = P[i][j']}$ o ponto de corte ótimo do estado~$A[i][j']$, ou seja,~${A[i][j'] = C[i'][j] + A[i'][x-1] + A[x][j]}$. Assumimos que~${x \leq j}$ e temos que
 \begin{align}
 A[i][j] + A[i'][j'] - A[i'][j] &= A[i][j] + A[j][j'] - A[j][j] \nonumber \\
                                &\leq C[i][j] + A[i][x-1] + A[x][j] + A[j][j'] - A[j][j] \label{KY:CtoA:1} \\
@@ -149,21 +144,21 @@ A[i][j] + A[i'][j'] - A[i'][j] &= A[i][j] + A[j][j'] - A[j][j] \nonumber \\
                                &\leq C[i][j'] + A[i][x-1] + A[x][j'] \label{KY:CtoA:3} \\
                                &= A[i][j'] \text{,} \nonumber
 \end{align}
-onde~\eqref{KY:CtoA:1} vale pois~${i < x \leq j}$ e~${A[i][j] = C[i][j] + \min\limits \{ A[i][k-1] + A[k][j]) \mid k \in [i+1 \tdots j]\} }$, a desigualdade~\eqref{KY:CtoA:2} vale pois~${x \leq j \leq j'}$ e~$j' - x < l$, portanto, pela hipótese de indução, vale que~${A[x][j] + A[j][j'] \leq A[x][j'] + A[j][j]}$ e, finalmente, também vale~\eqref{KY:CtoA:3} pois~$C$ é monótona nos intervalos. Com isso, provamos que~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$. No caso em que~${x > j}$, basta utilizar~${A[j][j'] \leq C[j][j'] + A[j][x-1] + A[x][j']}$ em vez do que foi utilizado em~\eqref{KY:CtoA:1} e adaptar o passo~\eqref{KY:CtoA:2} para aplicar a hipótese de indução em~${i \leq j \leq x-1}$.
+A desigualdade~\eqref{KY:CtoA:1} vale pois~${i < x \leq j}$ e~${A[i][j] = C[i][j] + \min\limits \{ A[i][k-1] + A[k][j]) \mid k \in [i+1 \tdots j]\} }$. A~\eqref{KY:CtoA:2} vale pois~${x \leq j \leq j'}$ e~$j' - x < l$, portanto, pela hipótese de indução, vale que~${A[x][j] + A[j][j'] \leq A[x][j'] + A[j][j]}$. Finalmente, vale~\eqref{KY:CtoA:3} pois~$C$ é monótona nos intervalos. Com isso, provamos que~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$. No caso em que~${x > j}$, basta utilizar~${A[j][j'] \leq C[j][j'] + A[j][x-1] + A[x][j']}$ em vez do que foi utilizado em~\eqref{KY:CtoA:1} e adaptar o passo~\eqref{KY:CtoA:2} para aplicar a hipótese de indução em~${i \leq j \leq x-1}$.
 
-Agora, vamos resolver o caso onde~${i' < j}$. Definimos os pontos ótimos de corte~${x = P[i][j']}$ e~${y = P[i'][j]}$ e seguimos um raciocínio parecido com o caso anterior. Assumindo que~${x \leq y}$, temos 
+Se~${i' < j}$, definimos os pontos ótimos de corte~${x = P[i][j']}$ e~${y = P[i'][j]}$ e seguimos um raciocínio parecido com o caso anterior. Assumindo que~${x \leq y}$, temos 
 \begin{align}
 A[i][j] + A[i'][j'] &\leq C[i][j] + C[i'][j'] + A[i][x-1] + A[x][j] + A[i'][y-1] + A[y][j'] \label{KY:CtoA:4} \\
                     &\leq C[i][j] + C[i'][j'] + A[x][j'] + A[y][j] + A[i][x-1] + A[i'][y-1] \label{KY:CtoA:5} \\
                     &\leq C[i][j'] + A[i][x-1] + A[x][j'] + C[i'][j] + A[i'][y-1] + A[y][j] \label{KY:CtoA:6} \\
                     &= A[i][j'] + A[i'][j] \text{,} \nonumber
 \end{align}
-onde~\eqref{KY:CtoA:4} se justifica pois~${i < x \leq j}$ e~${i' < y \leq j'}$, a hipótese de indução é aplicada em~\eqref{KY:CtoA:5} pois~${x \leq y \leq j \leq j'}$ e~${j' - x < l}$ e, por fim,~\eqref{KY:CtoA:6} vale pelo fato de que~$C$ é Monge convexa. O caso em que~${x > y}$ é similar. Basta observar que~${i' < x \leq j'}$ e~${i < y \leq j}$, o que implica que~${A[i][j] + A[i'][j'] \leq C[i][j] + C[i'][j'] + A[i][y-1] + A[y][j] + A[i'][x-1] + A[x][j']}$ e substituir o passo~\eqref{KY:CtoA:4} por essa desigualdade, adaptando o passo~\eqref{KY:CtoA:5} de acordo, usando indução em~${i \leq i' \leq y - 1 \leq x - 1}$.
+onde~\eqref{KY:CtoA:4} se justifica pois~${i < x \leq j}$ e~${i' < y \leq j'}$. A hipótese de indução é aplicada em~\eqref{KY:CtoA:5} ,pois~${x \leq y \leq j \leq j'}$ e~${j' - x < l}$. Por fim,~\eqref{KY:CtoA:6} vale pelo fato de que~$C$ é Monge convexa. O caso em que~${x > y}$ é similar. Primeiro, basta observar que~${i' < x \leq j'}$ e~${i < y \leq j}$, o que implica que~${A[i][j] + A[i'][j'] \leq C[i][j] + C[i'][j'] + A[i][y-1] + A[y][j] + A[i'][x-1] + A[x][j']}$. Depois, é necessário substituir o passo~\eqref{KY:CtoA:4} por essa desigualdade adaptando o passo~\eqref{KY:CtoA:5} de acordo, usando indução em~${i \leq i' \leq y - 1 \leq x - 1}$.
 \end{proof}
 
-Com o Lema~\ref{KY:CtoA}, percebemos que a matriz~$A$ que representa o nosso problema atual é Monge convexa.
+Com o Lema~\ref{KY:CtoA}, mostramos que a matriz~$A$ que representa o nosso problema atual é Monge convexa.
 
-\begin{theo} \label{KY:TMtoKY}
+\begin{theo} \label{KY:MCtoKY}
 Uma recorrência de intervalos~$A$ Monge convexa é Knuth-Yao otimizável.
 \end{theo}
 
@@ -175,4 +170,4 @@ Sejam~${x,y \in[n]}$ tais que~$x < y$. Vamos mostrar que se~${A[i][x-1] + A[x][j
 De forma simétrica, para mostrar que~${P[i][j] \leq P[i+1][j]}$, basta perceber que se~${x,y \in [n]}$ e~${x > y}$, então será verdade que a desigualdade~${A[i][x-1] + A[x][j] < A[i][y-1] + A[y][j]}$ implica que~${A[i+1][x-1] + A[x][j] < A[i+1][y-1] + A[y][j]}$, o que contradiz~${P[i][j] > P[i+1][j]}$, provando que~${P[i][j] \leq P[i+1][j]}$.
 \end{proof}
 
-Com o Lema~\ref{Monge:MCtoTM} e o Teorema~\ref{KY:TMtoKY}, vale que~$A$ é Knuth-Yao otimizável e podemos aplicar a otimização de Knuth-Yao para resolver o problema em tempo~$\Cl{O}(n^2)$.
+Com o Teorema~\ref{KY:MCtoKY}, vale que~$A$ é Knuth-Yao otimizável e podemos aplicar a otimização de Knuth-Yao para resolver o problema em tempo~$\Cl{O}(n^2)$.
