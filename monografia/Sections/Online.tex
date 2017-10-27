@@ -1,91 +1,64 @@
 \section{Busca em matrizes online}
 \label{Online}
 
-Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex}. Na Subseção~\ref{Online:concave} discutimos brevemente o caso côncavo, que só é resolvido inteiramente na Seção~\ref{Envelopes} seguinte. Em alguns casos, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
+Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex}. Na Subseção~\ref{Online:concave} mostramos como adaptar o que foi discutido para o caso côncavo. Em certas matrizes, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
 
-Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, é necessário explicitar um formato que deve ser respeitado, definindo quais dependências podem aparecer nestas matrizes. O formato descrito pela Definição~\ref{Online:matrix} abaixo aparece naturalmente em recorrências de programação dinâmica, portanto, é útil para esta aplicação. Desde já, discutiremos os algoritmos apenas em termos de buscas de índices de mínimos nestas matrizes. É fácil adaptar os conhecimentos e definições para os casos de busca de índices de máximos.
+Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, é necessário explicitar um formato que deve ser respeitado, definindo quais dependências podem aparecer nestas matrizes. O formato descrito pela Definição~\ref{Online:matrix} abaixo aparece naturalmente em recorrências de programação dinâmica, portanto, é útil para esta aplicação. Desde já, discutiremos os algoritmos apenas em termos de buscas de índices de mínimos de linhas em matrizes triangulares superiores em~0. É fácil adaptar os conhecimentos e definições para os casos de busca de índices de máximos, bem como para matrizes triangulares superiores ou inferiores em~$c$, desde que~$c \geq 0$. Também é possível trabalhar com buscas de índices ótimos de colunas.
 
 \begin{defi}[Matriz triangular online] \label{Online:matrix}
-Dizemos que a matriz~$A \in \B{Q}^{n \times n}$ com vetor de índices de mínimos de linhas~$R$ é triangular inferior online nas linhas se, para todo~${ i,j \in [n] }$, vale que~${ A[i][j] = +\infty }$ quando~${ i \leq j }$ e que o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i > j }$. Similarmente, se~$A$ é triangular superior online nas linhas, vale que~${ A[i][j] = +\infty }$ quando~${ i \geq j }$ e que o valor de~$A[i][j]$ depende de~$R[j]$ quando~${ i < j}$. Se~$A$ é online nas colunas, as entradas~$A[i][j]$ dependem de~$R[i]$ em vez de depender de~$R[j]$.
+Dizemos que a matriz~$A \in \B{Q}^{n \times n}$ triangular superior em~0 com índices de mínimos de linhas~$R$ é online nas linhas se as entradas de uma coluna~$j$ da matriz podem depender de qualquer~$R[j']$ onde~$j' \geq j$, isto é, o índice de mínimo das linhas de índice maior ou igual a~$j$.
 \end{defi}
 
-É possível definir matrizes triangulares também em termos de entradas indefinidas, em vez de infinitas. Esta ideia será útil para o caso côncavo. Galil e Park~\cite{Galil:1992} utilizam o conceito de matrizes escadaria (em inglês, staircase), que generalizam matrizes triangulares utilizando entradas indefinidas, e discutem problemas sobre estas matrizes. Klawe e Kleitman~\cite{Klawe:1990}, também, exploram as matrizes escadaria totalmente monótonas. Matrizes triangulares num sentido equivalente ao da Definição~\ref{Online:matrix} são usadas por Burkard, Klinz e Rudolf~\cite[Seções 2.1 e 3.8]{Burkard:1996}.
+Dizemos que uma entrada~$A[i][j]$ da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se os índices de mínimos da linhas de índice maior ou igual~$j$ já foram calculados. Inicialmente, apenas as entradas da coluna~$n$ estão disponíveis, já que~$R[n] = 1$ em toda matriz triangular superior em 0. Este fato faz com que, inicialmente, apenas a linha~$n-1$ esteja disponível e, portanto, seja a única para a qual podemos calcular o índice de mínimo. Assim que calculamos a resposta da linha~$n-1$, a coluna~$n-1$ e, consequentemente, a linha~$n-2$ se tornam disponíveis. Calculamos a resposta para a linha~$n-2$, seguida da~$n-3$ e assim por diante. Isso nos diz que é necessário calcular o vetor~$R$ em ordem decrescente de seus índices, o que inviabiliza os algoritmos já discutidos nas Seções~\ref{DivConq} e~\ref{SMAWK} para encontrar índices ótimos, já que estes exigem que o calculo seja realizado em ordens diferentes desta.
 
-Dizemos que uma entrada da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se for conhecida à priori ou se o mínimo de linha ou coluna da qual ela depende já foi calculado. Consideramos que calcular o valor de uma entrada disponível custa tempo~$\Cl{O}(1)$. Vamos trabalhar, a partir daqui, com matrizes triangulares inferiores online nas linhas. Não é difícil adaptar as discussões desta seção para outras matrizes triangulares online.
-
-Se~$A$ é uma matriz triangular inferior online nas linhas, as entradas do triângulo inferior da matriz em uma coluna~$j$ qualquer se tornam disponíveis assim que o valor~$R[j]$ for conhecido. Isso faz com que seja necessário calcular o vetor~$R$ primeiro na posição 1, depois em 2 e assim por diante. Esta restrição inviabiliza os algoritmos para encontrar valores ótimos já discutidos, uma vez que aqueles calculam os valores de~$R$ em ordens diferentes desta.
-
-A Figura~\ref{Online:matrix:fig} ilustra as relações de dependência nas matrizes tratadas nesta seção. As entradas com valor~$+\infty$ estão pintadas em cinza. As entradas da coluna com linhas verticais em verde dependem dos valores das entradas da linha correspondente hachurada em vermelho. 
+A Figura~\ref{Online:matrix:fig} ilustra as relações de dependência nas matrizes tratadas nesta seção. As entradas da coluna com linhas verticais em verde dependem dos valores das entradas das linhas correspondentes hachuradas em vermelho. O Problema~\ref{Online:prob} exemplifica a utilidade de trabalhar com matrizes como deste tipo.
 
 \begin{figure}[h]
     \centering
     \input{Figures/Online_Online.tikz}
-    \caption{Dependências de uma matriz triangular inferior online nas linhas.} \label{Online:matrix:fig}
+    \caption{Dependências de uma matriz triangular superior online nas linhas.} \label{Online:matrix:fig}
 \end{figure}
 
-Lembramos que, já que estamos trabalhando com minimização de linhas, dizemos que uma coluna~$a$ de~$A$ é melhor do que uma outra coluna~$b$ de~$A$ em uma linha~$i$ de~$A$ se tem valor menor ou se tem valor igual e índice menor, isto é, se~$A[i][a] < A[i][b]$ ou se~$A[i][a] = A[i][b]$ e~$a < b$, dizemos também que~$a$ é pior do que~$b$ quando~$b$ é melhor do que~$a$.
+\begin{prob} \label{Online:prob}
+Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[n] = 0$ e, para todo~$i \in [n-1]$, vale que~$E[i] = \min\limits_{j > i} C[i][j] + E[j]$.
+\end{prob}
+
+Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, criamos a matriz~$B \in \B{Q}^{n \times n}$ triangular superior em 0 de forma que, para todo~$i,j \in [n]$ onde~$i < j$, vale que~$B[i][j] = C[i][j] + E[j]$. Se~$R$ é o vetor de índices de mínimos das linhas de~$B$, temos que~$E[i] = B[i][R[i]]$ para toda linha~$i \in [n-1]$ de~$B$. Além disso, a matriz~$B$ é online nas linhas. Resolver o problema dado é equivalente a encontrar os índices de mínimos das linhas de~$B$. O Lema~\ref{Monge:keepConvex} garante que se~$C$ é Monge, então~$B$ é Monge no mesmo sentido e, portanto, totalmente monótona nas linhas no mesmo sentido.
+
+Lembramos que, já que estamos trabalhando com minimização de linhas, dizemos que uma coluna~$a$ de~$A$ é melhor do que uma outra coluna~$b$ de~$A$ em uma linha~$i$ de~$A$ se tem valor menor ou se tem valor igual e índice menor, isto é, se~$A[i][a] < A[i][b]$ ou se~$A[i][a] = A[i][b]$ e~$a < b$, dizemos também que~$a$ é pior do que~$b$ quando~$b$ é melhor do que~$a$. Vamos supor, também, que, quando disponíveis, as entradas de uma matriz online podem ser calculadas em tempo~$\Cl{O}(1)$.
 
 %------------------------------------------------------------------
 
 \subsection{Caso convexo} \label{Online:convex}
 
-Vamos apresentar um método para encontrar os índices de mínimos das linhas de matrizes triangulares inferiores online nas linhas totalmente monótonas convexas por linhas. O Problema~\ref{Online:prob} exemplifica a utilidade de trabalhar com matrizes deste tipo.
+Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos das linhas de uma matriz~$A$ triangular superior em 0 online nas linhas totalmente monótona por linhas qualquer. Como já observado, devemos encontrar estes valores um a um da última até a primeira linha, necessariamente nesta ordem. 
 
-\begin{prob} \label{Online:prob}
-Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[1] = 0$ e, para todo~$i \in [2 \tdots n]$, vale que~$E[i] = \min\limits_{j < i} C[i][j] + E[j]$.
-\end{prob}
+É fácil deduzir um algoritmo~$\Cl{O}(n^2)$ para encontrar o vetor~$R$. Basta percorrer as linhas na ordem já dita e, para cada uma delas, buscar o mínimo olhando para todas as entradas da linha. Em vez de realizar esta busca ingênua, vamos fazer como na Seção~\ref{EDPD} e manter uma estrutura de dados com informações úteis nesta busca.
 
-Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, criamos a matriz~$B \in \B{Q}^{n \times n}$ de forma que, para todo~$i,j \in [n]$, vale que
-\begin{equation} \label{Online:Bmat}
-    B[i][j] = \begin{cases}
-        +\infty & \text{, se } i \leq j \text{ e } \\
-        C[i][j] + E[j]    & \text{, caso contrário.}
-    \end{cases}
-\end{equation}
-
-Primeiramente, é fácil observar que a matriz~$B$ é online triangular inferior nas linhas. Se~$R$ é o vetor de índices de mínimos das linhas de~$B$, vale~$E[i] = B[i][R[i]]$ para toda linha~$i \in [2 \tdots n]$ de~$B$. Portanto, resolver o Problema~\ref{Online:prob} é encontrar os índices de mínimos das linhas de~$B$. Os Lemas~\ref{Monge:keepConvex} e~\ref{Online:triangLema} garantem que se~$C$ é Monge convexa, a matriz~$B$ também será Monge convexa e, portanto, totalmente monótona nas linhas. 
-
-\begin{lema} \label{Online:triangLema}
-Sejam~${ A \in \B{Q}^{n \times n} }$ e~${ B \in \B{Q}^{n \times n} }$ tais que, para todo~${ i,j \in [n] }$,~${ B[i][j] = A[i][j] }$ se~${ i > j }$ e~${ B[i][j] = +\infty }$ caso contrário. Se~$A$ é Monge convexa, então~$B$ é Monge convexa.
-\end{lema}
-
-\begin{proof}
-Tome~${ i,i',j,j' \in [n] }$ quaisquer tais que~${ i < i' }$ e~${ j < j' }$. Se~${ i' < j }$ vale a desigualdade~${ B[i][j] + B[i'][j'] \leq B[i'][j] + B[i][j'] }$ pois todas as entradas visitadas por esta desigualdade são iguais às entradas de mesmo índice na matriz~$A$ e estas respeitam a desigualdade já que~$A$ é Monge. Se~${ i' \geq j }$ então~${ B[i'][j] = +\infty }$ e a mesma desigualdade vale independente dos valores do lado esquerdo da mesma.
-\end{proof}
-
-Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos das linhas de uma matriz~$A$ triangular inferior online nas linhas totalmente monótona por linhas qualquer. Como já observado, devemos encontrar estes valores um a um da primeira até a última linha necessariamente nesta ordem. É verdade que, enquanto o valor~$R[i]$ é calculado para uma linha~$i$ qualquer, todos os valores em uma coluna~${ j < i }$ qualquer já estão disponíveis. Este fato é ilustrado pela Figura~\ref{Online:dep:fig}. A linha~$i$ aparece hachurada em vermelho. As entradas já disponíveis da matriz estão marcadas com linhas verticais verdes. Note que as entradas da linha~$i$ também já estão disponíveis.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Online_Disponiveis.tikz}
-    \caption{Entradas disponíveis em um momento qualquer do cálculo de~$R$} \label{Online:dep:fig}
-\end{figure}
-
-Em vez de buscar o mínimo de cada uma das linhas percorrendo todas as entradas daquela linha, vamos fazer como na Seção~\ref{EDPD} e manter uma estrutura de dados com informações úteis para a solução das linhas restantes. No nosso caso, guardamos, para cada uma das colunas disponíveis, os índices das linhas para as quais esta coluna é a melhor dentre todas as já disponíveis. 
-
-\begin{defi}
-Um envelope~$\Cl{E}$ sobre uma matriz~$A$ é uma estrutura de dados que mantém um conjunto de colunas~$J$ da matriz e é capaz de responder às operações:
+\begin{defi}[Envelope convexo]
+Um envelope convexo~$\Cl{E}$ é uma estrutura de dados que mantém uma matriz~${ A \in \B{Q}^{ n \times m } }$ e conjunto de colunas~$J$ e é capaz de realizar as seguintes operações:
 
 \begin{description}
-    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ disponível da matriz na estrutura de dados;
-    \item[\textsc{Calcula}($\Cl{E}$,$i$)] Devolve a melhor coluna de~$J$ na linha~$i$ onde~$J$ é não vazio e~${ i \in [n] }$. Formalmente, devolve~${ \min\{j \in J \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in J\} }$.
+    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere, em~$J$, uma coluna~$j$ de~$A$. A coluna~$j$ não pode possuir entradas indefinidas, deve estar disponível e deve ter índice menor do que todas as outras colunas já em~$J$;
+    \item[\textsc{Remove}($\Cl{E}$)] Remove a última linha da matriz~$A$;
+    \item[\textsc{Calcula}($\Cl{E})$] Devolve a melhor coluna de~$J$ na linha~$n$. Formalmente, esta operação devolve o valor~${ \min\{ j \in J \mid A[n][j] \leq A[n][j'] \text{ para todo } j' \in J \} }$.
 \end{description}
 \end{defi}
 
-Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:algo} que recebe a matriz~$A$ e devolve o vetor~$R$. Faltará apenas descrever a implementação do envelope.
+Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:algo} que recebe a matriz~$A$ e devolve o vetor~$R$. Faltará apenas descrever uma implementação eficiente da estrutura de envelope convexo.
 
 \begin{algorithm}[h]
 \caption{Mínimos de linhas online}
 \label{Online:algo}
 \begin{algorithmic}[1]
 \Function{Online}{A, n}
-    \State $\Cl{E}$ é um envelope sobre a matriz~$B$
-    \State $R[1] = 1$
-    \State $\textsc{Insere}(\Cl{E},1)$
+    \State Inicializa o envelope~$\Cl{E}$ com a matriz~$B$
+    \State $R[n] = 1$
 
-    \For{$i$ de $2$ até $n$} \label{Online:algo:loop}
-        \State $R[i] = \textsc{Calcula}(\Cl{E},i)$
-        \State $\textsc{Insere}(\Cl{E},i)$
+    \For{$i$ de $n-1$ até $1$} \label{Online:algo:loop}
+        \State $\textsc{Remove}(\Cl{E})$
+        \State $\textsc{Insere}(\Cl{E},i+1)$
+        \State $R[i] = \textsc{Calcula}(\Cl{E})$ \label{Online:algo:loop:calc}
     \EndFor
 
     \State \Return $R$
@@ -93,9 +66,9 @@ Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:alg
 \end{algorithmic}
 \end{algorithm}
 
-Ao calcular o valor~$R[i]$ para uma linha~$i$ qualquer, todas as colunas de índice menor do que~$i$ estão presentes no envelope, portanto, todas as colunas com entradas diferentes de~$+\infty$ serão consideradas na chamada da função~\textsc{Calcula}. Isso mostra que o Algoritmo~\ref{Online:algo} funciona corretamente.
+Ao calcular o valor~$R[i]$ para uma linha~$i$ qualquer, todas as colunas de índice maior do que~$i$ estão presentes no envelope e a matriz guardada pelo envelope tem~$i$ como sua última linha. Isso faz com que a função~\textsc{Calcula} retorne o índice de mínimo da linha~$i$ e prova que o Algoritmo~\ref{Online:algo} funciona corretamente.
 
-A Figura~\ref{Online:progress:fig} ilustra uma possível progressão deste algoritmo e da estrutura de envelope. Cada uma das quatro imagens representa uma iteração do~\textbf{para} da linha~\ref{Online:algo:loop}. A linha~$i$ fica circulada em vermelho. Em cada coluna disponível (e, portanto, presente na estrutura) estão marcadas com linhas verticais em verde as linhas para as quais esta coluna é melhor do que todas as outras disponíveis.
+A Figura~\ref{Online:progress:fig} ilustra uma possível progressão deste algoritmo e da estrutura de envelope. A primeira imagem (da esquerda para a direita) ilustra o estado do envelope durante a execução da linha~\ref{Online:algo:loop:calc} quando~${ i = n-1 }$. A três imagens seguintes ilustram o mesmo momento quando~$i$ é~$n-2$,~$n-3$ e~$n-4$, respectivamente. Em cada uma das imagens, a matriz~$A$ guardada pela estrutura é representada. A linha~$i$ fica circulada em vermelho. Em cada coluna disponível estão marcadas, com linhas verticais em verde, as linhas para as quais esta coluna é melhor do que todas as outras disponíveis. Note que, da maneira como foi descrita, a estrutura guarda todas (e somente) as colunas disponíveis da matriz.
 
 \begin{figure}[h]
     \centering
@@ -103,7 +76,9 @@ A Figura~\ref{Online:progress:fig} ilustra uma possível progressão deste algor
     \caption{Progressão do Algoritmo~\ref{Online:algo}.} \label{Online:progress:fig}
 \end{figure}
 
-Se o algoritmo for executado como indicado pela Figura~\ref{Online:progress:fig}, teremos, nas cinco primeiras posições do vetor~$R$ retornado, os valores~$1$,~$1$,~$1$,~$2$ e~$4$. Note também que na representação acima, em cada iteração, cada coluna é a melhor apenas em um intervalo (potencialmente vazio) das linhas e que o índice de início deste intervalo é crescente no índice da coluna. Veremos adiante que estas propriedades são sempre respeitadas e são convenientes para a implementação do envelope.
+Se o algoritmo for executado como indicado pela Figura~\ref{Online:progress:fig}, teremos, nas cinco primeiras posições do vetor~$R$ retornado, os valores~$1$,~$1$,~$1$,~$1$ e~$4$. Note também que, na representação acima, em cada iteração, cada coluna é a melhor apenas em um intervalo (potencialmente vazio) das linhas e que o índice de fim deste intervalo é decrescente no índice da coluna. Veremos adiante que estas propriedades são sempre respeitadas e são convenientes para a implementação do envelope.
+
+%% TODO
 
 O Algoritmo~\ref{Online:algo} garante que todas as chamadas a~\textsc{Insere} são realizadas em ordem crescente, bem como as chamadas a~\textsc{Calcula}. Este fato facilita a implementação da estrutura. Discutiremos agora a implementação de um envelope~$\Cl{E}$ sobre a matriz~$A$. Chamamos de~$J$ o conjunto de colunas já inseridas em~$\Cl{E}$.
 

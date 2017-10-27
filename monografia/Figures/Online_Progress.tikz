@@ -4,78 +4,42 @@
 % ================
 
 \begin{tikzpicture}[scale=.35]\footnotesize
- \pgfmathsetmacro{\xone}{0}
- \pgfmathsetmacro{\xtwo}{7}
- \pgfmathsetmacro{\yone}{0}
- \pgfmathsetmacro{\ytwo}{7}
+ \pgfmathsetmacro{\n}{7}
 
 \begin{scope}<+->;
-  \draw[step=1cm,gray,very thin] (\xone,\yone) grid (\xtwo,\ytwo);
+  \foreach \j in {0,...,3} {
+    \pgfmathsetmacro{\p}{\j*(\n+5)}
+    \pgfmathsetmacro{\st}{\j+1}
+    \pgfmathsetmacro{\en}{\n-\j}
 
-  \draw[step=1cm,gray,very thin] (\xone+10,\yone) grid (\xtwo+10,\ytwo);
-
-  \draw[step=1cm,gray,very thin] (\xone+20,\yone) grid (\xtwo+20,\ytwo);
-
-  \draw[step=1cm,gray,very thin] (\xone+30,\yone) grid (\xtwo+30,\ytwo);
-\end{scope}
-
-\begin{scope}[thin,gray,opacity=.3]
-  \filldraw (0,7) rectangle (7,6);
-  \filldraw (1,6) rectangle (7,5);
-  \filldraw (2,5) rectangle (7,4);
-  \filldraw (3,4) rectangle (7,3);
-  \filldraw (4,3) rectangle (7,2);
-  \filldraw (5,2) rectangle (7,1);
-  \filldraw (6,1) rectangle (7,0);
-
-  \filldraw (10,7) rectangle (17,6);
-  \filldraw (11,6) rectangle (17,5);
-  \filldraw (12,5) rectangle (17,4);
-  \filldraw (13,4) rectangle (17,3);
-  \filldraw (14,3) rectangle (17,2);
-  \filldraw (15,2) rectangle (17,1);
-  \filldraw (16,1) rectangle (17,0);
-
-  \filldraw (20,7) rectangle (27,6);
-  \filldraw (21,6) rectangle (27,5);
-  \filldraw (22,5) rectangle (27,4);
-  \filldraw (23,4) rectangle (27,3);
-  \filldraw (24,3) rectangle (27,2);
-  \filldraw (25,2) rectangle (27,1);
-  \filldraw (26,1) rectangle (27,0);
-
-  \filldraw (30,7) rectangle (37,6);
-  \filldraw (31,6) rectangle (37,5);
-  \filldraw (32,5) rectangle (37,4);
-  \filldraw (33,4) rectangle (37,3);
-  \filldraw (34,3) rectangle (37,2);
-  \filldraw (35,2) rectangle (37,1);
-  \filldraw (36,1) rectangle (37,0);
+    \foreach \i in {\st,...,\n} {
+        \draw[gray,very thin] (\p-\i,\i-1) -- (\p,\i-1);
+    }
+    \foreach \i in {1,...,\en} {
+        \draw[gray,very thin] (\p-\n+\i-1,\n-\i) -- (\p-\n+\i-1,\n);
+    }
+    \pgfmathsetmacro{\een}{\n-\j+1}
+    \foreach \i in {\een,...,\n} {
+        \draw[gray,very thin] (\p-\n+\i-1,\j) -- (\p-\n+\i-1,\n);
+    }
+    \draw[gray,very thin] (\p-\n,\n) -- (\p,\n);
+    \draw[gray,very thin] (\p,\j) -- (\p,\n);
+    
+    \draw[color=red] (\p-1-\j,\j) rectangle (\p,\j+1);
+  }
 \end{scope}
 
 \begin{scope}[pattern=vertical lines,pattern color=green]
-  \fill (0,0) rectangle (1,6);
+  \fill (0,0) rectangle (-1,7);
 
-  \fill (10,6) rectangle (11,4);
-  \fill (11,4) rectangle (12,0);
+  \fill (\n+5,1) rectangle (\n+4,3);
+  \fill (\n+4,3) rectangle (\n+3,7);
 
-  \fill (20,6) rectangle (21,4);
-  \fill (21,4) rectangle (22,3);
-  \fill (22,3) rectangle (23,0);
+  \fill (2*\n+10,2) rectangle (2*\n+9,3);
+  \fill (2*\n+9,3) rectangle (2*\n+8,5);
+  \fill (2*\n+8,5) rectangle (2*\n+7,7);
 
-  \fill (30,6) rectangle (31,4);
-  \fill (31,4) rectangle (32,3);
-  \fill (33,3) rectangle (34,0);
-\end{scope}
-
-\begin{scope}[color=red]
-  \draw (0,5) rectangle (1,6);
-
-  \draw (10,4) rectangle (12,5);
-
-  \draw (20,3) rectangle (23,4);
-
-  \draw (30,2) rectangle (34,3);
+  \fill (3*\n+12,3) rectangle (3*\n+11,7);
 \end{scope}
 
 \end{tikzpicture}
