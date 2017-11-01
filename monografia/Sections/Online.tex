@@ -150,7 +150,7 @@ Estamos prontos para descrever a implementação de um envelope no caso convexo.
 \EndFunction
 
 \Function{Insere}{\Cl{E},j}
-    \If{ existe~$\Cl{E}_{1}$ e este é pior do que~$j$ em~$1$} \label{Online:Convexo:algo:InsTira}
+    \If{ não existe~$\Cl{E}_{1}$ ou~$\Cl{E}_1$ é pior do que~$j$ em~$1$} \label{Online:Convexo:algo:InsTira}
         \While{ existe~$\Cl{E}_{1}$ e este é pior do que~$j$ em~$t_\Cl{E}(\Cl{E}_{1})$ }
             \State Tira~$\Cl{E}_{1}$ de~$\Cl{E}$
         \EndWhile
@@ -216,7 +216,7 @@ Comparar as Figuras~\ref{Online:progress:fig} e~\ref{Online:progressConcave:fig}
 \EndFunction
 
 \Function{Insere}{\Cl{E},j}
-    \If{ existe~$\Cl{E}_{1}$ e este é pior do que~$j$ em~$n$} \label{Online:Convexo:algo:InsTira}
+    \If{ não existe~$\Cl{E}_{1}$ ou~$\Cl{E}_1$ é pior do que~$j$ em~$n$} \label{Online:Convexo:algo:InsTira}
         \While{ existe~$\Cl{E}_{1}$ e este é pior do que~$j$ em~$s_\Cl{E}(\Cl{E}_{1})$ }
             \State Tira~$\Cl{E}_{1}$ de~$\Cl{E}$
         \EndWhile
