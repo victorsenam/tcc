@@ -1,9 +1,8 @@
 #include "EnvelopeConvexo.h"
 
-EnvelopeConvexo::EnvelopeConvexo (std::function< double(int,int,double) > A, int n) {
-	::A = A;
-	::n = n;
-	V.resize(n);
+EnvelopeConvexo::EnvelopeConvexo (std::function< double(int,int) > A, int n) {
+	this->A = A;
+	this->n = n;
 }
 
 int EnvelopeConvexo::Calcula () {

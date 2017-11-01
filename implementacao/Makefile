@@ -35,3 +35,9 @@ exemplos/InternetTrouble/InternetTrouble.DivConq.out : %.out : %.cpp algoritmos/
 
 exemplos/InternetTrouble/InternetTrouble.Trivial.out : %.out : %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/ProblemaOnline/ProblemaOnline.EnvelopeConvexo.out : %.out : %.cpp algoritmos/EnvelopeConvexo.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/ProblemaOnline/ProblemaOnline.Trivial.out : %.out : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
