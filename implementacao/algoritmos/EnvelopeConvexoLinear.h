@@ -1,8 +1,8 @@
 /**
-	Envelope convexo em tempo linear
+	Envelope convexo linear
 	Seção 7
 
-	Envelope sobre uma matriz triangular inferior online nas linhas.
+	Envelope linear sobre uma matriz totalmente monótona convexa triangular superior em 0 online nas linhas.
 
     Autor: Victor Sena Molero <victorsenam>
     Projeto: "Algoritmos em matrizes monótonas e Monge convexas"
@@ -12,39 +12,25 @@
 #ifndef TCC_EnvelopeConvexoLinear
 #define TCC_EnvelopeConvexoLinear
 
+#include "EnvelopeConvexo.h"
 #include <functional>
 #include <vector>
 
 /**
-	Representa um envelope sobre uma matriz triangular inferior online nas linhas.
+	Envelope linear sobre uma matriz totalmente monótona convexa triangular superior em 0 online nas linhas.
 
-	A matriz tem como entradas os valores da função A que recebe 3 argumentos, i, j e R[j], onde R[j] é o mínimo da linha j. A matriz deve ser totalmente monótona convexa nas linhas. Os elementos do envelope são guardados em E. Os valores dos mínimos das linhas da matriz A são guardados em V. O inteiro l representa o ponteiro para o elemento da estrutura que ajuda a otimizar a complexidade desta estrutura.
+	A matriz tem como entradas os valores da função A que recebe 3 argumentos, i, j e R[j], onde R[j] é o mínimo da linha j. A matriz deve ser totalmente monótona convexa nas linhas. Os elementos do envelope são guardados em E. Os valores dos mínimos das linhas da matriz A são guardados em V.
 **/
 
-class EnvelopeConvexoLinear {
-public:
-	// Constrói um envelope sobre a matriz A de tamanho n x n
-	EnvelopeConvexo(std::function< double(int,int,double) > A, int n);
-
-	// Insere uma coluna disponível no envelope
-	void Insere(int j);
-
-	// Descobre o índice de mínimo da coluna i
-	int Calcula(int i);
-
+class EnvelopeConvexoLinear : public EnvelopeConvexo {
 private:
-	// Estrutura usada para guardar uma coluna j e seu s(j)
-	struct Elemento {
-		int j, s;
-		Elemento (int i_j, int i_s);
-	};
-
-	int n;
-	int l;
-	std::function< double(int,int,double) > A;
-	std::vector<Elemento> E;
-	std::vector<double> V;
+	// Contrói um envelope sobrea a matriz de tamanho n x n dada pelos vetores alpha e beta como descrito em 7.3
+	EnvelopeConvexoLinear(std::vector<double> alpha, std::vector<double> beta, int n);
 
 	// Devolve a intersecção entre as colunas a e b onde a <= b
-	virtual int Intersecta(int a, int b);
+	override int Intersecta(int a, int b);
+
+	// Vetores alpha e beta descritas no texto
+	std::vector<double> alpha;
+	std::vector<double> beta;
 };
