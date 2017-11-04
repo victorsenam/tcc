@@ -106,7 +106,7 @@ Tome duas colunas válidas~$j$ e~$j'$ de~$\Cl{E}$ tais que~$j < j'$. Suponha, po
 
 A definição de~$s$ é muito útil para descobrir qual é o intervalo de linhas para o qual uma coluna de~$\Cl{E}$ é ótima. Tome um inteiro~$k \in [1 \tdots |\Cl{E}|-1]$ e considere a coluna~$\Cl{E}_k$, isto é, uma coluna válida do envelope diferente da última. Sabemos que esta coluna é ótima no intervalo~$[s_\Cl{E}(\Cl{E}_k) \tdots s_\Cl{E}(\Cl{E}_{k+1}) - 1]$. Além disso, a coluna~$\Cl{E}_{-1}$ é ótima no intervalo~$[s_\Cl{E}(\Cl{E}_{-1}) \tdots n]$ onde~$n$ é a última linha da matriz guardada pelo envelope. De forma similar a~$s$, definimos, para cada~$j$ válido de~$\Cl{E}$, o valor~$t_\Cl{E}(j)$, que nos dá o índice da última linha para a qual~$j$ é ótimo em~$\Cl{E}$.
 
-Será interessante calcular o valor de~$s$ para colunas válidas do envelope. Para isso, definimos uma outra operação importante. Se~$a$ e~$b$ são duas colunas do envelope onde~$a < b$, vale que~$\textsc{Intersecta}(\Cl{E},a,b)$ é a primeira linha do envelope onde~$b$ é melhor do que~$a$. Para calcular este valor, podemos realizar uma busca binária nas linhas da matriz guardada por~$\Cl{E}$. Se~$m$ é uma linha onde~$A[m][a] \leq A[m][b]$, pela total monotonicidade, este valor é pelo menos~$m$. Caso contrário, também pela total monotonicidade, este valor é menor do que~$m$. O Algoritmo~\ref{Online:Intersecta:algo} mostra como aplicar esta ideia.
+Será interessante calcular o valor de~$s$ para colunas válidas do envelope. Para isso, definimos uma outra operação importante. Se~$a$ e~$b$ são duas colunas do envelope onde~$a < b$, vale que~$\textsc{Intersecta}(\Cl{E},a,b)$ é a primeira linha do envelope onde~$b$ é melhor do que~$a$. Para calcular este valor, podemos realizar uma busca binária nas linhas da matriz guardada por~$\Cl{E}$. Se~$m$ é uma linha onde~$A[m][a] \leq A[m][b]$, pela total monotonicidade,~$b$ só é melhor do que~$a$ a partir de alguma linha maior do que~$m$. Caso contrário, também pela total monotonicidade,~$b$ supera a no máximo na linha~$m$. O Algoritmo~\ref{Online:Intersecta:algo} mostra como aplicar esta ideia.
 
 \begin{algorithm}[h]
 \caption{Intersecção de colunas no caso convexo}
@@ -119,9 +119,9 @@ Será interessante calcular o valor de~$s$ para colunas válidas do envelope. Pa
     \While{ $\ell < r$ }
         \State $m \rec \floor{(\ell+r)/2}$
         \If{$A[m][a] \leq A[m][b]$} \label{Online:Intersecta:algo:comp}
-            \State $\ell \rec m$
+            \State $\ell \rec m + 1$
         \Else
-            \State $r \rec m-1$
+            \State $r \rec m$
         \EndIf
     \EndWhile
 

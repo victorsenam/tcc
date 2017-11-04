@@ -14,7 +14,6 @@
 
 #include <functional>
 #include <queue>
-#include <vector>
 
 /**
 	Envelope sobre uma matriz totalmente monótona convexa triangular superior em 0 online nas linhas.

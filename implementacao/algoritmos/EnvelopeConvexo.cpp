@@ -16,7 +16,7 @@ void EnvelopeConvexo::Remove () {
 }
 
 void EnvelopeConvexo::Insere (int j) {
-	if (E.empty() || A(1,j) <= A(1,E.front())) {
+	if (E.empty() || A(0,j) <= A(0,E.front())) {
 		while (!E.empty() && A(t(E.begin()),j) <= A(t(E.begin()),E.front()))
 			E.pop_front();
 		E.push_front(j);
@@ -28,9 +28,9 @@ int EnvelopeConvexo::Intersecta (int a, int b) {
 	while (l < r) {
 		int m = (l+r)/2;
 		if (A(m,a) <= A(m,b))
-			l = m;
+			l = m + 1;
 		else
-			r = m - 1;
+			r = m;
 	}
 	return l;
 }
