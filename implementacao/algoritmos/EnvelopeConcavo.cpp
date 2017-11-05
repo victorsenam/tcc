@@ -1,9 +1,8 @@
 #include "EnvelopeConcavo.h"
 
-EnvelopeConcavo::EnvelopeConcavo (std::function< double(int,int,double) > A, int n) {
-	::A = A;
-	::n = n;
-	V.resize(n);
+EnvelopeConcavo::EnvelopeConcavo (std::function< double(int,int) > A, int n) {
+	this->A = A;
+	this->n = n;
 }
 
 int EnvelopeConcavo::Calcula () {
@@ -29,21 +28,21 @@ int EnvelopeConcavo::Intersecta (int a, int b) {
 	while (l < r) {
 		int m = (l+r)/2;
 		if (A(m,a) < A(m,b))
-			l = m;
+			l = m + 1;
 		else
-			r = m - 1;
+			r = m;
 	}
 	return l;
 }
 
 int EnvelopeConcavo::s (std::deque<int>::iterator it) {
-	if (it == E.begin())
+	if (std::next(it) == E.end())
 		return 0;
-	return Intersecta(*it, *std::prev(it));
+	return Intersecta(*std::next(it), *it);
 }
 
 int EnvelopeConcavo::t (std::deque<int>::iterator it) {
-	if (std::next(it) == E.end())
-		return n-1;
-	return Intersecta(*std::next(it), *it);
+	if (it == E.begin())
+		return 0;
+	return Intersecta(*it, *std::prev(it));
 }

@@ -13,7 +13,7 @@
 #define TCC_EnvelopeConcavo
 
 #include <functional>
-#include <vector>
+#include <queue>
 
 /**
 	Envelope sobre uma matriz totalmente monótona côncava triangular superior em 0 online nas linhas.
@@ -24,7 +24,7 @@
 class EnvelopeConcavo {
 public:
 	// Constrói um envelope sobre a matriz A de tamanho n x n
-	EnvelopeConvexo(std::function< double(int,int,double) > A, int n);
+	EnvelopeConcavo(std::function< double(int,int) > A, int n);
 
 	// Descobre o índice de mínimo da coluna i
 	int Calcula();
@@ -37,9 +37,8 @@ public:
 
 private:
 	int n;
-	std::function< double(int,int,double) > A;
+	std::function< double(int,int) > A;
 	std::deque<int> E;
-	std::vector<double> V;
 
 	// Devolve a intersecção entre as colunas a e b onde a <= b
 	int Intersecta(int a, int b);
@@ -48,3 +47,5 @@ private:
 	int s(std::deque<int>::iterator it);
 	int t(std::deque<int>::iterator it);
 };
+
+#endif

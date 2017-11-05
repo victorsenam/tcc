@@ -41,3 +41,9 @@ exemplos/ProblemaOnlineConvexo/ProblemaOnlineConvexo.EnvelopeConvexo.out : %.out
 
 exemplos/ProblemaOnlineConvexo/ProblemaOnlineConvexo.Trivial.out : %.out : %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/ProblemaOnlineConcavo/ProblemaOnlineConcavo.EnvelopeConcavo.out : %.out : %.cpp algoritmos/EnvelopeConcavo.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/ProblemaOnlineConcavo/ProblemaOnlineConcavo.Trivial.out : %.out : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
