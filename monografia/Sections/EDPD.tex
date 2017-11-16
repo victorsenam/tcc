@@ -28,14 +28,14 @@ Um caso especial deste problema onde o vetor~$w$ é um vetor unitário é o prob
 Apresentaremos uma estrutura de dados que vai nos ajudar a resolver o Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(n\lg(n))$, para isso, vamos utilizar algumas definições e resultados.
 
 \begin{defi}[Relação de dominância]
-Sejam~${ a = (a_1,a_2) }$ e~${ b = (b_1,b_2) }$ elementos de~$\B{Q}^2$. Se~${ a_1 \geq b_1 }$ e~${ a_2 \geq b_2 }$ dizemos que~${ a \succeq b }$ ($a$ domina~$b$). Além disso, se~${ S \subseteq \B{Q}^2 }$, um ponto~${ a \in \B{Q} }$ é dominado em~$S$ se existe um outro ponto~$b \in S$ que domina~$a$.
+Sejam~${ a = (a_1,a_2) }$ e~${ b = (b_1,b_2) }$ elementos de~$\B{Q}^2$. Se~${ a_1 \geq b_1 }$ e~${ a_2 \geq b_2 }$ escrevemos~${ a \succeq b }$ ($a$ domina~$b$). Além disso, se~${ S \subseteq \B{Q}^2 }$, um ponto~${ a \in \B{Q} }$ é dominado em~$S$ se existe um outro ponto~$b \in S$ que domina~$a$.
 \end{defi}
 
 \begin{prop}
 A relação de dominância é uma ordem parcial~\cite[Apêndice B]{CLRS} em~$\B{Q}^2$.
 \end{prop}
 \begin{proof}
-Se~$a = (a_1,a_2) \in \B{Q}^2$, vale~$a_1 \geq a_1$ e~$a_2 \geq a_2$, portanto~$a \succeq a$ e~$\succeq$ é reflexiva. Se~$a = (a_1,a_2)$ e~$b = (b_1,b_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq a$, vale~$a_1 = b_1$ e~$a_2 = b_2$, portanto~$a = b$ e~$\succeq$ é antissimétrica. Se~$a = (a_1,a_2), b = (b_1,b_2)$ e~$c = (c_1,c_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq c$,~$a_1 \geq c_1$ e~$a_2 \geq c_2$, logo,~$a \succeq c$ e~$\succeq$ é transitiva.
+Se~$a = (a_1,a_2) \in \B{Q}^2$, vale~$a_1 \geq a_1$ e~$a_2 \geq a_2$, portanto~$a \succeq a$ e~$\succeq$ é reflexiva. Se~$a = (a_1,a_2)$ e~$b = (b_1,b_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq a$, então~$a_1 = b_1$ e~$a_2 = b_2$, portanto~$a = b$ e~$\succeq$ é antissimétrica. Se~$a = (a_1,a_2), b = (b_1,b_2)$ e~$c = (c_1,c_2) \in \B{Q}^2$ são tais que~$a \succeq b$ e~$b \succeq c$, então~$a_1 \geq c_1$ e~$a_2 \geq c_2$, logo~$a \succeq c$ e~$\succeq$ é transitiva.
 \end{proof}
 
 Como dito, desenvolveremos uma estrutura de dados que irá agilizar o cálculo de uma recorrência. Tal estrutura será capaz de calcular, para todo~${ c \in \B{Q} }$, o máximo atingido pela segunda coordenada de algum elemento que tem valor pelo menos~$c$ na primeira coordenada e já foi adicionado à estrutura. A função~$M(S,c)$ da Definição~\ref{EDPD:M} abaixo ajuda a descrever este valor, já que, se~$S$ é o conjunto dos elementos adicionados na estrutura,~$M(S,c)$ define exatamente o valor calculado pela estrutura.
@@ -49,20 +49,24 @@ A fronteira de Pareto~$\Cl{P}(S)$ de um conjunto finito~$S \subset \B{Q}^2$ é u
 
 \begin{description}
 \item[$\textsc{Insere}(\Cl{P}(S),x)$] Inserir um novo elemento~$x \in \B{Q}^2$ em~$S$ em tempo~$\Cl{O}(\lg(|S|))$ amortizado.
-\item[$\textsc{CalculaM}(\Cl{P}(S),c)$] Descobrir, dado um~$c \in \B{Q}$ o valor~$M(S,c)$ em tempo~$\Cl{O}(\lg(|S|))$.
+\item[$\textsc{CalculaM}(\Cl{P}(S),c)$] Descobrir, dado um~$c \in \B{Q}$, o valor~$M(S,c)$ em tempo~$\Cl{O}(\lg(|S|))$.
 \end{description}
 \end{defi}
 
-Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária ordenada lexicograficamente, isto é, crescentemente pela primeira coordenada e, em caso de empate, crescentemente pela segunda. Se dois elementos~${ a,b \in \B{Q}^2 }$ são tais que~$b$ é maior lexicograficamente do que~$a$, denotamos~${ b \geq a }$. Já que em uma fronteira de Pareto é impossível existir dois elementos com primeira coordenada igual, esta ordem é equivalente a ordenar apenas a primeira coordenada crescentemente. Apesar disso, especificar o comportamento em caso de empate nos ajudará a implementar as operações nesta estrutura. Esta ordenação nos garante uma propriedade poderosa descrita pela Proposição~\ref{EDPD:doubleorder}.
+Para implementar esta estrutura de dados, vamos manter os elementos de~$\Cl{P}(S)$ em uma árvore de busca binária balanceada ordenada lexicograficamente, isto é, crescentemente pela primeira coordenada e, em caso de empate, crescentemente pela segunda. Se dois elementos~${ a,b \in \B{Q}^2 }$ são tais que~$b$ é maior lexicograficamente do que~$a$, denotamos~${ b \geq a }$. 
+
+Definimos as operações~$\textsc{Sucessor}(\Cl{P}(S),a)$ e~$\textsc{Predecessor}(\Cl{P}(S),a)$ para cada elemento~${ a \in \B{Q}^2 }$. A primeira retorna o menor elemento lexicograficamente maior ou igual a~$a$ e a segunda, similarmente, retorna o maior elemento lexicograficamente menor ou igual a~$a$. Em ambas as operações, se o elemento desejado não existe, o valor~$\textsc{NULL}$ é retornado. Já que a árvore de busca binária é balanceada e está ordenada lexicograficamente, é possível realizar estas operações em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$.  Permitimos a realização de chamadas onde a segunda coordenada de~$a$ é~$-\infty$ ou~$\infty$. É possível implementar este tipo de operação como um caso especial da primeira, porém, também é possível definir, para cada aplicação, um valor suficientemente pequeno para~$-\infty$ e um outro suficientemente grande para~$\infty$ que torne esta chamada conveniente.
+
+Guardar os elementos da fronteira nesta ordem mantém os elementos ordenados crescentemente pela primeira coordenada, o que garante uma propriedade interessante, descrita pela Proposição~\ref{EDPD:doubleorder} a seguir. 
 
 \begin{prop} \label{EDPD:doubleorder}
-Se~$S \subset \B{Q}^2$ é finito e os elementos de~$\Cl{P}(S)$ estão em ordem crescente na primeira coordenada, eles estão em ordem decrescente na segunda coordenada.
+Se~$S \subset \B{Q}^2$ é finito e os elementos de~$\Cl{P}(S)$ estão em ordem crescente na primeira coordenada, então eles estão em ordem decrescente na segunda coordenada.
 \end{prop}
 \begin{proof}
-Suponha que existam~$x = (x_1,x_2)$ e~$y = (y_1,y_2) \in \Cl{P}(S)$ tais que~$x_1 \leq x_2$ e~$y_1 \leq y_2$, assim,~$y \succeq x$ e~$x \notin \Cl{P}(S)$.
+Suponha que existam~$x = (x_1,x_2)$ e~$y = (y_1,y_2) \in \Cl{P}(S)$ tais que~$x_1 \leq x_2$ e~$y_1 \leq y_2$. Assim,~$y \succeq x$ e~$x \notin \Cl{P}(S)$.
 \end{proof}
 
-Além disso, guardando apenas os elementos~$\Cl{P}(S)$, ainda é possível descobrir se um novo elemento é dominado ou não pelo conjunto~$S$, como demonstrado na Proposição~\ref{EDPD:DomP} a seguir.
+A Proposição~\ref{EDPD:doubleorder} mostra que~${ M(\Cl{P}(S),c) = \textsc{Sucessor}(\Cl{P}(S),(c,-\infty) }$ para todo~$c \in \B{Q}$.
 
 \begin{prop} \label{EDPD:DomP}
 Se~$S$ é um conjunto finito e um ponto~$x \in \B{Q}^2$ é dominado em~$S$, então,~$x$ é dominado em~$\Cl{P}(S)$.
@@ -71,43 +75,41 @@ Se~$S$ é um conjunto finito e um ponto~$x \in \B{Q}^2$ é dominado em~$S$, ent�
 Sejam~$S$ e~$x$ dados como no enunciado. Se~$x$ é dominado em~$S$ existe pelo menos um elemento em~$S$ que domina~$x$, dentre estes, tome por~$y$ algum que é maximal em relação a~$\succeq$, isto é, que não seja dominado em~$S$. Isto é possível pois~$\succeq$ é uma ordem parcial e~$S$ é finito. Vale que~${ y \in \Cl{P}(S) }$, portanto,~$x$ é dominado em~$\Cl{P}(S)$.
 \end{proof}
 
-Para calcular~$M(\Cl{P}(S),c)$ basta encontrar o elemento em~$\Cl{P}(S)$ com menor primeira coordenada que seja maior ou igual a~$c$ e devolver a segunda coordenada deste ponto. Isso funciona por sabermos que qualquer elemento que tenha maior valor na primeira coordenada do que o encontrado terá menor valor na segunda, graças à Proposição~\ref{EDPD:doubleorder}. É possível encontrar este elemento em tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, já que a nossa estrutura mantém uma árvore de busca binária dos elementos ordenada pela primeira coordenada. 
-
-A Proposição~\ref{EDPD:keepM} abaixo garante que~${ M(\Cl{P}(S),c) = M(S,c) }$, portanto, realizar esta busca na estrutura responde à operação~$\textsc{CalculaM}$. Já que~${\Cl{O}(\lg(|\Cl{P}(S)|)) \subseteq \Cl{O}(\lg(|S|))}$, esta busca e, consequentemente, o cálculo da operação~$\textsc{CalculaM}$, são realizados em tempo~$\Cl{ O(\lg(|S|) }$.
+A Proposição~\ref{EDPD:keepM} abaixo garante que~${ M(\Cl{P}(S),c) = M(S,c) }$ para todo~$c \in \B{Q}$. Já que~${\lg(|\Cl{P}(S)|) = \Cl{O}(\lg(|S|))}$ e calcular~$M(\Cl{P}(S),c)$ a partir de uma chamada a~$\textsc{Sucessor}$  custa tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$, o cálculo da operação~$\textsc{CalculaM}$ é realizado em tempo~$\Cl{ O(\lg(|S|)) }$.
 
 \begin{prop} \label{EDPD:keepM}
 Para todo~$S \subset \B{Q}^2$ finito e~$c \in \B{Q}$ vale~$M(S,c) = M(\Cl{P}(S),c)$.
 \end{prop}
 \begin{proof}
-Já que~${ \Cl{P}(S) \subseteq S }$ segue que~${ M(S,c) \geq M(\Cl{P}(S) }$. Vamos provar o outro sentido da igualdade. Suponha que~${ M(S,c) > M(\Cl{P}(S),c) }$. Existe, portanto, algum elemento~$a = (a_1,a_2) \in S$ tal que~${ a \notin \Cl{P}(S) }$,~${ a_2 \geq c }$ e~${ a_1 > M(\Cl{P}(S),c) }$. Porém, já que~${ a \notin \Cl{P}(S) }$ ele é dominado em~$S$ e, pela Proposição~\ref{EDPD:DomP}, dominado em~$\Cl{P}(S)$, logo, existe~${ b \in \Cl{P}(S) }$ tal que~${ b \succeq a }$. Concluímos que~${ b_2 \geq a_2 \geq c }$ e~${ M(\Cl{P}(S),c) \geq b_1 \geq a_1 = M(S,c) }$, um absurdo.
+Já que~${ \Cl{P}(S) \subseteq S }$ segue que~${ M(S,c) \geq M(\Cl{P}(S) }$. Vamos provar o outro sentido da igualdade. Suponha que~${ M(S,c) > M(\Cl{P}(S),c) }$. Existe, portanto, algum elemento~$a = (a_1,a_2) \in S$ tal que~${ a \notin \Cl{P}(S) }$,~${ a_2 \geq c }$ e~${ a_1 > M(\Cl{P}(S),c) }$. Porém, já que~${ a \notin \Cl{P}(S) }$, vale que~$a$ é dominado em~$S$ e, pela Proposição~\ref{EDPD:DomP}, dominado em~$\Cl{P}(S)$, logo, existe~${ b \in \Cl{P}(S) }$ tal que~${ b \succeq a }$. Concluímos que~${ b_2 \geq a_2 \geq c }$ e~${ M(\Cl{P}(S),c) \geq b_1 \geq a_1 = M(S,c) }$, um absurdo.
 \end{proof}
 
-Para um~${ x \in \B{Q}^2 }$ qualquer, podemos realizar a operação~$\textsc{Insere}(\Cl{P}(S),x)$ eficientemente. Primeiramente, devemos verificar se~$x$ é dominado em~$\Cl{P}(S)$. Se ele é dominado, existe um elemento lexicograficamente maior ou igual com segunda coordenada maior ou igual a ele. Se este elemento não existe, todo elemento com primeira coordenada maior ou igual a~$x$ possui a segunda coordenada menor, portanto, ele não é dominado. Perceba que basta buscar o menor elemento lexicograficamente maior do que~$x$ na fronteira, graças à Proposição~\ref{EDPD:doubleorder}, se este não domina~$x$, nenhum domina. Caso exista tal elemento, interrompemos a execução da operação. Caso contrário, progredimos.
+Para um~${ a \in \B{Q}^2 }$ qualquer, podemos realizar a operação~$\textsc{Insere}(\Cl{P}(S),a)$ eficientemente. Primeiramente, devemos verificar se~$a$ é dominado em~$\Cl{P}(S)$. Para tanto, basta verificar se~$\textsc{Sucessor}(\Cl{P}(S),a)$ domina~$a$. Se esta chamada retornar~$\textsc{NULL}$, todo elemento com primeira coordenada maior ou igual à primeira coordenada de~$a$, tem a segunda coordenada menor do que a de~$a$, portanto, o elemento~$a$ não é dominado. Se a chamada retornar um elemento~$b$ que não domina~$a$, este deve ter a segunda coordenada menor do que a segunda coordenada de~$a$. Com isso, sabemos que todo elemento lexicograficamente maior do que~$b$ não domina~$a$, graças à Proposição~\ref{EDPD:doubleorder} e, portanto, não existe outro elemento em~$\Cl{P}(S)$ que domina~$a$.
 
-Além de descobrir se~$x$ é dominado, precisamos remover os elementos dominados por~$x$ de~$\Cl{P}(S)$. Para tanto, perceba que se algum elemento de~$\Cl{P}(S)$ for dominado por~$x$, aquele que precede imediatamente~$x$ na ordem lexicográfica será, também, dominado por~$x$. Graças a este fato, podemos buscar este elemento e removê-lo, caso seja dominado, sucessivamente, até que tal elemento não exista ou não seja dominado.
+Além de descobrir se~$a$ é dominado, precisamos remover os elementos dominados por~$a$ de~$\Cl{P}(S)$. Para tanto, perceba que se algum elemento de~$\Cl{P}(S)$ for dominado por~$a$, o elemento~$\textsc{Predecessor}(\Cl{P}(S),a)$ será, também, dominado por~$a$. Graças a este fato, podemos buscar este elemento e removê-lo, caso seja dominado, sucessivamente, até que~$\textsc{Predecessor}(\Cl{P}(S),a)$ seja~$\textsc{NULL}$ ou não seja dominado por~$a$.
 
-Note que todo elemento pode ser removido da estrutura apenas uma vez e que encontrar (e remover) elementos que sucedem ou precedem~$x$ lexicograficamente exige apenas uma busca binária na árvore, o que custa tempo~$\Cl{O}(\lg(|\Cl{P}(S)|))$ por busca. Concluímos que a operação~$\textsc{Insere}$ é realizada em tempo~$\Cl{O}(\lg(|S|))$ amortizado.  O Algoritmo~\ref{EDPD:FP:code} implementa as operações descritas aqui. 
+Note que todo elemento pode ser removido da estrutura apenas uma vez. Concluímos, levando em conta os custos das chamadas a~$\textsc{Predecessor}$ e~$\textsc{Sucessor}$, que a operação~$\textsc{Insere}$ é realizada em tempo~$\Cl{O}(\lg(|S|))$ amortizado. O Algoritmo~\ref{EDPD:FP:code} implementa as operações descritas aqui. 
 
 \begin{algorithm}[h]
 \caption{Operações sobre a fronteira de Pareto de um conjunto}
 \label{EDPD:FP:code}
 \begin{algorithmic}[1]
 \Function{\textsc{Insere}}{\Cl{P}(S),x = (x_1,x_2)}
-    \State $y \rec$ primeiro elemento de~$\Cl{P}(S)$ tal que~$y \geq x$
-    \If{$y$ existe e $y \succeq x$}
+    \State $y \rec \textsc{Sucessor}(\Cl{P}(S),x)$
+    \If{$y \neq \textsc{NULL}$ e $y \succeq x$}
         \State Interrompe a execução da função
     \EndIf
 
-    \State $y \rec$ último elemento de~$\Cl{P}(S)$ tal que~$x \geq y$
-    \While{ $y$ existe e $x \succeq y$}
+    \State $y \rec \textsc{Predecessor}(\Cl{P}(S),x)$
+    \While{ $y \neq \textsc{NULL}$ e $x \succeq y$}
         \State Remove~$y$ de~$\Cl{P}(S)$
-        \State $y \rec$ último elemento de~$\Cl{P}(S)$ tal que~$x \geq y$
+        \State $y \rec \textsc{Predecessor}(\Cl{P}(S),x)$
     \EndWhile
-    \State Insere~$x$ na árvore em~$\Cl{P}(S)$
+    \State Insere~$x$ na árvore de~$\Cl{P}(S)$
 \EndFunction
 \Function{\textsc{CalculaM}}{\Cl{P}(S),c}
-    \State $y = (y_1,y_2) \rec$ primeiro elemento de~$\Cl{P}(S)$ tal que~$y_1 \geq c$
-    \If{$y$ existe}
+    \State $y = (y_1,y_2) \rec \textsc{Sucessor}(\Cl{P}(S),(c,-\infty))$
+    \If{$y \neq \textsc{NULL}$}
         \State \Return $y_2$
     \Else
         \State \Return $-\infty$
@@ -121,9 +123,9 @@ Uma implementação de fronteira de Pareto como descrita pelo algoritmo acima em
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Otimizando subsequência crescente de peso máximo}
+\subsection{Otimização para a subsequência crescente de peso máximo}
 
-Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~$\B{Q}^2$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(\lg(n))$. Para isso basta notar que podemos reescrever a recorrência~\ref{EDPD:HIS:rec} como~$f(i) = M(S_i,-v_i)$ onde~$S_i = \{(-v_j,f(j)) \mid j < i\} \cup \{(0,\infty)\}$. Com isso, o Algoritmo~\ref{EDPD:HIS:code} calcula todos os~$f$ em tempo~$\Cl{O}(n\lg(n))$ e retorna o máximo entre 0 e todos os valores da função~$f$, já que esta é a resposta para o problema proposto.
+Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~$\B{Q}^2$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(\lg(n))$ onde~$n$ é o tamanho dos vetores~$v$ e~$w$ dados pelo problema. Para isso basta notar que podemos reescrever a recorrência~\eqref{EDPD:HIS:rec} como~$f(i) = M(S_i,-v_i)$ onde~$S_i = \{(-v_j,f(j)) \mid j < i\} \cup \{(0,\infty)\}$. Aproveitando a estrutura da fronteira de Pareto, escrevemos o Algoritmo~\ref{EDPD:HIS:code} que calcula todos os valores de~$f$ em tempo~$\Cl{O}(n\lg(n))$ e retorna o máximo entre 0 e todos estes valores calculados, já que esta é a resposta para o problema proposto.
 
 \begin{algorithm}[h]
 \caption{Solução do Problema~\ref{EDPD:HIS}}
@@ -134,7 +136,7 @@ Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~
     \State $r \rec 0$
     \For{$i$ de $1$ até $n$}
         \State $f(i) = \textsc{CalculaM}(P,-v_i)$
-        \State $\textsc{Insere}(P,(f(i),-v_i))$
+        \State $\textsc{Insere}(P,(-v_i,f(i)))$
         \State $r \rec \max(r,f(i))$
     \EndFor
     \State \Return $r$
