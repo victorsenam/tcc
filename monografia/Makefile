@@ -1,4 +1,4 @@
-SECTION_NAMES=Introducao MatrizMonge DivisaoEConquista SMAWK KnuthYao EDPD Online Envelopes
+SECTION_NAMES=Introducao MatrizMonge DivisaoEConquista SMAWK KnuthYao EDPD Online Envelopes Exemplos Subjetiva
 SECTION_PATHS=$(addprefix Sections/,${SECTION_NAMES})
 SECTION_TEX=$(addsuffix .tex,${SECTION_PATHS})
 SECTION_AUX=$(addsuffix .aux,${SECTION_PATHS})
