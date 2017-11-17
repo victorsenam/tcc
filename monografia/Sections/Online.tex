@@ -1,7 +1,7 @@
 \section{Busca em matrizes online}
 \label{Online}
 
-Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas à priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex}. Na Subseção~\ref{Online:concave} mostramos como adaptar o que foi discutido para o caso côncavo. Em certas matrizes, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
+Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas a priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex}. Na Subseção~\ref{Online:concave} mostramos como adaptar o que foi discutido para o caso côncavo. Em certas matrizes, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
 
 Para conseguir lidar com matrizes que não são inteiramente conhecidas à priori, é necessário especificar um formato que deve ser respeitado, definindo quais dependências podem aparecer nestas matrizes. O formato descrito pela Definição~\ref{Online:matrix} abaixo aparece naturalmente em recorrências de programação dinâmica, portanto, é útil para esta aplicação. Desde já, discutiremos os algoritmos apenas em termos de buscas de índices de mínimos de linhas em matrizes triangulares superiores em~0. É fácil adaptar os conhecimentos e definições para os casos de busca de índices de máximos, bem como para matrizes triangulares superiores ou inferiores em~$c$, desde que~$c \geq 0$. Também é possível trabalhar com buscas de índices ótimos de colunas.
 
@@ -9,7 +9,7 @@ Para conseguir lidar com matrizes que não são inteiramente conhecidas à prior
 Dizemos que a matriz~$A \in \B{Q}^{n \times n}$ triangular superior em~0 com índices de mínimos de linhas~$R$ é online nas linhas se as entradas de uma coluna~$j$ da matriz podem depender de qualquer~$R[j']$ onde~$j' \geq j$, isto é, o índice de mínimo das linhas de índice maior ou igual a~$j$.
 \end{defi}
 
-Dizemos que uma entrada~$A[i][j]$ da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se os índices de mínimos da linhas de índice maior ou igual~$j$ já foram calculados. Inicialmente, apenas as entradas da coluna~$n$ estão disponíveis, já que~$R[n]$ é indefinido em toda matriz triangular superior em 0. Este fato faz com que, inicialmente, apenas a linha~$n-1$ esteja disponível e, portanto, seja a única para a qual podemos calcular o índice de mínimo. Assim que calculamos a resposta da linha~$n-1$, a coluna~$n-1$ e, consequentemente, a linha~$n-2$ se tornam disponíveis. Calculamos a resposta para a linha~$n-2$, seguida da~$n-3$ e assim por diante. Isso nos diz que é necessário calcular o vetor~$R$ em ordem decrescente de seus índices. Esta restrição inviabiliza os algoritmos já discutidos nas Seções~\ref{DivConq} e~\ref{SMAWK} para encontrar índices ótimos, já que estes exigem que o calculo seja realizado em ordens diferentes desta.
+Dizemos que uma entrada~$A[i][j]$ da matriz está disponível se for possível calcular imediatamente seu valor, isto é, se os índices de mínimos da linhas de índice maior ou igual~$j$ já foram calculados. Se todas as entradas de uma linha (coluna) estão disponíveis, dizemos que tal linha (coluna) está disponível. Inicialmente, apenas a coluna~$n$ está disponível, já que~$R[n]$ é indefinido em toda matriz triangular superior em 0. Este fato faz com que, inicialmente, apenas a linha~$n-1$ esteja disponível e, portanto, seja a única para a qual podemos calcular o índice de mínimo. Assim que calculamos a resposta da linha~$n-1$, a coluna~$n-1$ e, consequentemente, a linha~$n-2$ se tornam disponíveis. Calculamos a resposta para a linha~$n-2$, seguida da~$n-3$ e assim por diante. Isso nos diz que é necessário calcular o vetor~$R$ em ordem decrescente de seus índices. Esta restrição inviabiliza os algoritmos já discutidos nas Seções~\ref{DivConq} e~\ref{SMAWK} para encontrar índices ótimos, já que estes exigem que o calculo seja realizado em ordens diferentes desta.
 
 A Figura~\ref{Online:matrix:fig} ilustra as relações de dependência nas matrizes tratadas nesta seção. As entradas da coluna com linhas verticais em verde dependem dos valores das entradas das linhas correspondentes hachuradas em vermelho. O Problema~\ref{Online:prob} exemplifica a utilidade de trabalhar com matrizes deste tipo.
 
@@ -20,7 +20,7 @@ A Figura~\ref{Online:matrix:fig} ilustra as relações de dependência nas matri
 \end{figure}
 
 \begin{prob} \label{Online:prob}
-Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[n] = 0$ e, para todo~$i \in [n-1]$, vale que~$E[i] = \min\limits_{j > i} C[i][j] + E[j]$.
+Dada uma matriz de custos~$C \in \B{Q}^{n \times n}$, computar o vetor~$E$ tal que~$E[n] = 0$ e~${ E[i] = \min\limits_{j>i} \{ C[i][j] + E[j] \} }$ para todo~$i \in [n-1]$.
 \end{prob}
 
 Com uma matriz~$C$ e um vetor~$E$ definidos como no Problema~\ref{Online:prob}, criamos a matriz~$B \in \B{Q}^{n \times n}$ triangular superior em 0 de forma que, para todo~$i,j \in [n]$ onde~$i < j$, vale que~$B[i][j] = C[i][j] + E[j]$. Se~$R$ é o vetor de índices de mínimos das linhas de~$B$, temos que~$E[i] = B[i][R[i]]$ para toda linha~$i \in [n-1]$ de~$B$. Além disso, a matriz~$B$ é online nas linhas. Resolver o problema dado é equivalente a encontrar os índices de mínimos das linhas de~$B$. O Lema~\ref{Monge:keepConvex} garante que se~$C$ é Monge, então~$B$ é Monge no mesmo sentido e, portanto, totalmente monótona nas linhas no mesmo sentido.
@@ -36,12 +36,13 @@ Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos
 É fácil deduzir um algoritmo~$\Cl{O}(n^2)$ para encontrar o vetor~$R$. Basta percorrer as linhas na ordem já dita e, para cada uma delas, buscar o mínimo olhando para todas as entradas da linha. Em vez de realizar esta busca ingênua, vamos fazer como na Seção~\ref{EDPD} e manter uma estrutura de dados com informações úteis nesta busca.
 
 \begin{defi}[Envelope]
-Um envelope~$\Cl{E}$ é uma estrutura de dados que mantém uma matriz~${ A \in \B{Q}^{ n \times m } }$ e conjunto de colunas~$J$ e é capaz de realizar as seguintes operações:
+Um envelope~$\Cl{E}$ é uma estrutura de dados que mantém uma matriz~${ A \in \B{Q}^{ n \times m } }$, o inteiro~$n$ que representa a quantidade de linhas de~$A$ e um conjunto de colunas de~$A$ e da suporte às seguintes operações:
 
 \begin{description}
-    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere, em~$J$, uma coluna~$j$ de~$A$. A coluna~$j$ não pode possuir entradas indefinidas, deve estar disponível e deve ter índice menor do que todas as outras colunas já em~$J$;
-    \item[\textsc{Remove}($\Cl{E}$)] Remove a última linha da matriz~$A$;
-    \item[\textsc{Calcula}($\Cl{E})$] Devolve a melhor coluna de~$J$ na linha~$n$. Formalmente, esta operação devolve o valor~${ \min\{ j \in J \mid A[n][j] \leq A[n][j'] \text{ para todo } j' \in J \} }$.
+    \item[\textsc{Constrói}($A$,$n$,$m$)] Devolve um envelope sobre a matriz~$A$ de~$n$ linhas e~$m$ colunas guardando um conjunto vazio de colunas;
+    \item[\textsc{Insere}($\Cl{E}$,$j$)] Insere uma coluna~$j$ de~$A$ no envelope. A coluna~$j$ não pode possuir entradas indefinidas, deve estar disponível e deve ter índice menor do que todas as outras colunas já em~$J$;
+    \item[\textsc{Remove}($\Cl{E}$)] Remove a última linha da matriz~$A$ e decresce o valor~$n$ de acordo;
+    \item[\textsc{Calcula}($\Cl{E})$] Devolve a melhor coluna de~$\Cl{E}$ na linha~$n$. Formalmente, esta operação devolve o valor~${ \min\{ j \in \Cl{E} \mid A[n][j] \leq A[n][j'] \text{ para todo } j' \in \Cl{E} \} }$.
 \end{description}
 \end{defi}
 
@@ -52,8 +53,7 @@ Com esta definição, estamos prontos para descrever o Algoritmo~\ref{Online:alg
 \label{Online:algo}
 \begin{algorithmic}[1]
 \Function{Online}{A, n}
-    \State Inicializa o envelope~$\Cl{E}$ com a matriz~$A$
-    \State $R[n] = 1$
+    \State $\Cl{E} \rec \textsc{Constrói}(A,n,n)$
 
     \For{$i$ de $n-1$ até $1$} \label{Online:algo:loop}
         \State $\textsc{Remove}(\Cl{E})$
@@ -76,17 +76,17 @@ A Figura~\ref{Online:progress:fig} ilustra uma possível progressão deste algor
     \caption{Progressão do Algoritmo~\ref{Online:algo}.} \label{Online:progress:fig}
 \end{figure}
 
-Se o algoritmo for executado como indicado pela Figura~\ref{Online:progress:fig}, teremos, nas quatro últimas posições, 7, 6, 5 e 4 do vetor~$R$ retornado, os valores, 8, 8, 8 e 5. Dizemos que uma coluna~$j$ é ótima para~$\Cl{E}$ em uma linha~$i$ se ela é melhor do que todas as outras colunas de~$\Cl{E}$ naquela linha. Note que, na representação acima, em cada iteração, cada coluna é ótima apenas em um intervalo (potencialmente vazio) das linhas e que o índice de início deste intervalo é crescente no índice da coluna. Veremos adiante que estas propriedades são sempre respeitadas e são convenientes para a implementação do envelope. O Lema~\ref{Online:IntOpt} prova a primeira delas.
+Se o algoritmo for executado como indicado pela Figura~\ref{Online:progress:fig}, teremos, nas quatro últimas posições, 7, 6, 5 e 4 do vetor~$R$ retornado, os valores, 8, 8, 8 e 5. Dizemos que uma coluna~$j$ é ótima para~$\Cl{E}$ em uma linha qualquer de~$A$ se ela é melhor do que todas as outras colunas de~$\Cl{E}$ naquela linha. Note que, na representação acima, em cada iteração, cada coluna é ótima para~$\Cl{E}$ apenas em um intervalo (potencialmente vazio) das linhas e que o índice de início deste intervalo é crescente no índice da coluna. Veremos adiante que estas propriedades são sempre respeitadas e são convenientes para a implementação do envelope. O Lema~\ref{Online:IntOpt} prova a primeira delas.
 
 \begin{lema} \label{Online:IntOpt}
-Se~$j$ é uma coluna de~$\Cl{E}$ ótima em duas linhas~$a$ e~$b$ tais que~$a \leq b$, então ela é ótima para qualquer linha~$c \in [a \tdots b]$.
+Se~$j$ é uma coluna de~$\Cl{E}$ ótima para~$\Cl{E}$ em duas linhas~$a$ e~$b$ tais que~$a \leq b$, então ela é ótima para~$\Cl{E}$ em qualquer linha~$c \in [a \tdots b]$.
 \end{lema}
 
 \begin{proof}
-Suponha que~$j$ é uma coluna de~$\Cl{E}$ ótima nas linhas~$a$ e~$b$. Seja~$c$ uma linha de~$A$ em~$[a \tdots b]$ e~$j'$ uma coluna de~$\Cl{E}$ melhor do que~$A$ em~$c$ diferente de~$j$. Se~$c = a$ ou~$c = b$, não há nada a provar. Assumimos que~$c \in [a + 1 \tdots b - 1]$. Se~$j' < j$, temos que~$A[b][j'] \leq A[b][j]$ e, pela total monotonicidade de~$A$, vale que~$A[a][j'] \leq A[a][j]$ e~$j'$ é melhor do que~$j$ em~$A$, um absurdo. Se~$j < j'$, de maneira similar, vale que~$A[c][j] \leq A[c][j']$ e, pela total monotonicidade de~$A$, vale que~$j$ é melhor do que~$j'$ em~$b$.
+Suponha que~$j$ é uma coluna de~$\Cl{E}$ ótima para~$\Cl{E}$ nas linhas~$a$ e~$b$. Seja~$c$ uma linha de~$A$ em~$[a \tdots b]$ e~$j'$ uma coluna de~$\Cl{E}$ diferente de~$j$ e melhor do que~$j$ em~$c$. Se~$c = a$ ou~$c = b$, não há nada a provar. Assumimos que~$c \in [a + 1 \tdots b - 1]$. Se~$j' < j$, temos que~$A[b][j'] \leq A[b][j]$. Pela total monotonicidade de~$A$, vale que~$A[a][j'] \leq A[a][j]$ e~$j'$ é melhor do que~$j$ em~$A$, um absurdo. Se~$j < j'$, de maneira similar, vale que~$A[c][j] \leq A[c][j']$. Pela total monotonicidade de~$A$, vale que~$j$ é melhor do que~$j'$ em~$b$.
 \end{proof}
 
-Considere um envelope~$\Cl{E}$ que guarda uma matriz~$A$. Se existe uma coluna~$j$ de~$\Cl{E}$ que é pior do que alguma outra coluna do envelope em cada linha da matriz~$A$, a coluna~$j$ pode ser ignorada pelo envelope. Dizemos que uma coluna deste tipo é inválida e que todas as outras são válidas. Durante a implementação do envelope, vamos remover todas as colunas inválidas da estrutura.
+Considere um envelope~$\Cl{E}$ que guarda uma matriz~$A$. Se existe uma coluna~$j$ de~$\Cl{E}$ que é pior do que alguma outra coluna do envelope em cada linha da matriz~$A$, a coluna~$j$ pode ser ignorada pelo envelope. Dizemos que uma coluna deste tipo é inválida em~$\Cl{E}$ e que colunas que são ótimas para~$\Cl{E}$ em pelo menos uma linha são válidas em~$\Cl{E}$. Durante a implementação do envelope, vamos remover todas as colunas inválidas da estrutura.
 
 \begin{defi}[Coluna válida]
 Uma coluna~${ j \in J }$ é inválida em um envelope~$\Cl{E}$ com uma matriz~$A$ se, para toda linha~$i$ de~$A$, existe uma outra coluna~$j'$ de~$A$ melhor do que~$j$ em~$i$.
@@ -94,31 +94,31 @@ Uma coluna~${ j \in J }$ é inválida em um envelope~$\Cl{E}$ com uma matriz~$A$
 
 Além de remover as colunas inválidas, manteremos as colunas ordenadas crescentemente no envelope. Assim, podemos denotar por~$\Cl{E}_k$ a coluna válida de~$k$-ésimo menor índice em~$\Cl{E}$. Com isso temos, por exemplo, que~$\Cl{E}_1$ é a menor coluna válida de~$\Cl{E}$. Por simplicidade, denotamos~$\Cl{E}_{-k} = \Cl{E}_{|\Cl{E}|-k}$ para todo~$k$ inteiro onde~$-|\Cl{E}| \leq k < 0$. Assim, por exemplo,~$\Cl{E}_{-1}$ é a coluna de~$\Cl{E}$ válida de maior índice.
 
-Definimos o valor~$s_\Cl{E}(j)$ para toda coluna~$j$ válida de~$\Cl{E}$ que nos dá a primeira linha para a qual esta é a melhor coluna de~$\Cl{E}$. Pela definição de válida, se não existe tal linha, a coluna~$j$ não é válida.
+Definimos o valor~$s_\Cl{E}(j)$ para toda coluna~$j$ válida de~$\Cl{E}$ que nos dá a primeira linha para a qual esta é ótima em~$\Cl{E}$. Pela definição de válida, se não existe tal linha, a coluna~$j$ é inválida.
 
 \begin{lema} \label{Online:Ordered}
 Se~$j$ e~$j'$ são duas colunas válidas de um envelope~$\Cl{E}$ onde~$j < j'$, vale que~${ s_\Cl{E}(j) < s_\Cl{E}(j') }$.
 \end{lema}
 
 \begin{proof}
-Tome duas colunas válidas~$j$ e~$j'$ de~$\Cl{E}$ tais que~$j < j'$. Suponha, por absurdo,  que~${b  = s_\Cl{E}(j) \geq s_\Cl{E}(j') = a}$. Vale que~$A[b][j] \leq A[b][j']$ já que~$j$ é ótima em~$b$. Pela total, monotonicidade de~$A$, vale que~$A[a][j] \leq A[a][j']$, uma contradição, já que~$j'$ é ótima em~$a$.
+Tome duas colunas válidas~$j$ e~$j'$ de~$\Cl{E}$ tais que~$j < j'$. Suponha, por absurdo,  que~${b  = s_\Cl{E}(j) \geq s_\Cl{E}(j') = a}$. Vale que~$A[b][j] \leq A[b][j']$ já que~$j$ é ótima para~$\Cl{E}$ em~$b$. Pela total, monotonicidade de~$A$, vale que~$A[a][j] \leq A[a][j']$, uma contradição, já que~$j'$ é ótima para~$\Cl{E}$ em~$a$.
 \end{proof}
 
-A definição de~$s$ é muito útil para descobrir qual é o intervalo de linhas para o qual uma coluna de~$\Cl{E}$ é ótima. Tome um inteiro~$k \in [1 \tdots |\Cl{E}|-1]$ e considere a coluna~$\Cl{E}_k$, isto é, uma coluna válida do envelope diferente da última. Sabemos que esta coluna é ótima no intervalo~$[s_\Cl{E}(\Cl{E}_k) \tdots s_\Cl{E}(\Cl{E}_{k+1}) - 1]$. Além disso, a coluna~$\Cl{E}_{-1}$ é ótima no intervalo~$[s_\Cl{E}(\Cl{E}_{-1}) \tdots n]$ onde~$n$ é a última linha da matriz guardada pelo envelope. De forma similar a~$s$, definimos, para cada~$j$ válido de~$\Cl{E}$, o valor~$t_\Cl{E}(j)$, que nos dá o índice da última linha para a qual~$j$ é ótimo em~$\Cl{E}$.
+Definir~$s$ é muito útil para descobrir qual é o intervalo de linhas para o qual uma coluna de~$\Cl{E}$ é ótima. Tome um inteiro~$k \in [1 \tdots |\Cl{E}|-1]$ e considere a coluna~$\Cl{E}_k$, isto é, uma coluna válida do envelope diferente da última. Sabemos que esta coluna é ótima no intervalo~$[s_\Cl{E}(\Cl{E}_k) \tdots s_\Cl{E}(\Cl{E}_{k+1}) - 1]$. Além disso, a coluna~$\Cl{E}_{-1}$ é ótima no intervalo~$[s_\Cl{E}(\Cl{E}_{-1}) \tdots n]$ onde~$n$ é a última linha da matriz guardada pelo envelope. De forma similar a~$s$, definimos, para cada~$j$ válido de~$\Cl{E}$, o valor~$t_\Cl{E}(j)$, que nos dá o índice da última linha para a qual~$j$ é ótimo em~$\Cl{E}$.
 
-Será interessante calcular o valor de~$s$ para colunas válidas do envelope. Para isso, definimos uma outra operação importante. Se~$a$ e~$b$ são duas colunas do envelope onde~$a < b$, vale que~$\textsc{Intersecta}(\Cl{E},a,b)$ é a primeira linha do envelope onde~$b$ é melhor do que~$a$. Para calcular este valor, podemos realizar uma busca binária nas linhas da matriz guardada por~$\Cl{E}$. Se~$m$ é uma linha onde~$A[m][a] \leq A[m][b]$, pela total monotonicidade,~$b$ só é melhor do que~$a$ a partir de alguma linha maior do que~$m$. Caso contrário, também pela total monotonicidade,~$b$ supera a no máximo na linha~$m$. O Algoritmo~\ref{Online:Intersecta:algo} mostra como aplicar esta ideia.
+Será interessante calcular o valor de~$s$ para colunas válidas do envelope. Para isso, definimos uma outra operação importante. Se~$a$ e~$b$ são duas colunas do envelope onde~$a < b$, vale que~$\textsc{Intersecta}(\Cl{E},a,b)$ é a primeira linha do envelope onde~$b$ é melhor do que~$a$. Para calcular este valor, podemos realizar uma busca binária nas linhas da matriz guardada por~$\Cl{E}$. Se~$m$ é uma linha onde~$a$ é melhor do que~$b$, pela total monotonicidade,~$b$ só é melhor do que~$a$ a partir de alguma linha maior do que~$m$. Caso contrário, também pela total monotonicidade,~$b$ supera a no máximo na linha~$m$. O Algoritmo~\ref{Online:Intersecta:algo} mostra como aplicar esta ideia.
 
 \begin{algorithm}[h]
 \caption{Intersecção de colunas no caso convexo}
 \label{Online:Intersecta:algo}
 \begin{algorithmic}[1]
-\Function{Intersecta}{\Cl{E},a,b}
+\Function{Intersecta}{\Cl{E},a,b} \Comment{$a < b$}
     \State $\ell \rec 1$
     \State $r \rec $ última linha da matriz de~$\Cl{E}$
 
     \While{ $\ell < r$ }
         \State $m \rec \floor{(\ell+r)/2}$
-        \If{$A[m][a] \leq A[m][b]$} \label{Online:Intersecta:algo:comp}
+        \If{$A[m][a] \leq A[m][b]$} \label{Online:Intersecta:algo:comp} \Comment{$a$ é melhor do que~$b$ em~$m$}
             \State $\ell \rec m + 1$
         \Else
             \State $r \rec m$
@@ -132,7 +132,7 @@ Será interessante calcular o valor de~$s$ para colunas válidas do envelope. Pa
 
 Se~$k \in [2 \tdots \Cl{E}]$ vale que~$\Cl{E}_{k-1}$ é melhor do que~$\Cl{E}_k$ em toda linha antes de~$s_\Cl{E}(\Cl{E}_k)$ e pior em todas as outras. Isso faz com que valha a igualdade~$s_\Cl{E}(\Cl{E}_k) = \textsc{Intersecta}(\Cl{E},\Cl{E}_{k-1},\Cl{E}_k)$. Além disso, vale que~$s_\Cl{E}(\Cl{E}_1) = 1$. Isso nos dá uma forma de calcular~$s_\Cl{E}$ com facilidade à partir da função~\textsc{Intersecta}.
 
-Estamos prontos para descrever a implementação de um envelope no caso convexo. O envelope deve guardar uma lista~$\Cl{E}$ das colunas válidas adicionadas e o valor~$n$ que representa o índice da última linha da matriz. Cada operação sobre~$\Cl{E}$ deve manter duas invariantes: a lista~$\Cl{E}$ está ordenada crescentemente e só guarda colunas válidas.
+Estamos prontos para descrever a implementação de um envelope no caso convexo. O envelope deve guardar uma lista~$\Cl{E}$ das colunas válidas adicionadas e o valor~$n$ que representa o índice da última linha da matriz. Cada operação sobre~$\Cl{E}$ deve manter duas invariantes: a lista~$\Cl{E}$ está ordenada crescentemente e guarda uma coluna que foi adicionada se e somente se ela é válida em~$\Cl{E}$. Note que estas duas invariantes são suficientes para mostrar que~$s$ pode ser calculada da maneira descrita no parágrafo anterior.
 
 \begin{algorithm}[h]
 \caption{Implementação de envelope no caso convexo}
@@ -144,30 +144,30 @@ Estamos prontos para descrever a implementação de um envelope no caso convexo.
 
 \Function{Remove}{\Cl{E}}
     \If{ existe~$\Cl{E}_{-1}$ e $s_\Cl{E}(\Cl{E}_{-1}) = n$} \label{Online:Convexo:algo:RemTira}
-        \State Tira~$\Cl{E}_{-1}$ de~$\Cl{E}$
+        \State Remove~$\Cl{E}_{-1}$ de~$\Cl{E}$
     \EndIf
     \State $n \rec n-1$
 \EndFunction
 
-\Function{Insere}{\Cl{E},j}
-    \If{ não existe~$\Cl{E}_{1}$ ou~$\Cl{E}_1$ é pior do que~$j$ em~$1$} \label{Online:Convexo:algo:InsTira}
-        \While{ existe~$\Cl{E}_{1}$ e este é pior do que~$j$ em~$t_\Cl{E}(\Cl{E}_{1})$ }
-            \State Tira~$\Cl{E}_{1}$ de~$\Cl{E}$
+\Function{Insere}{\Cl{E},j} \Comment{$j$ é menor do que~$\Cl{E}_1$}
+    \If{ não existe~$\Cl{E}_{1}$ ou~$A[1][\Cl{E}_1] \geq A[1][j]$} \Comment{$\Cl{E}_1$ é pior do que~$j$ em 1}
+        \While{ existe~$\Cl{E}_{1}$ e~$A[t_\Cl{E}(\Cl{E}_1)][\Cl{E}_1] \label{Online:Convexo:algo:InsTira} \geq A[t_\Cl{E}(\Cl{E}_1)][\Cl{E}_1]$ } \Comment{$\Cl{E}_1$ é pior do que~$j$ em~$t_\Cl{E}(\Cl{E}_1)$ }
+            \State Remove~$\Cl{E}_{1}$ de~$\Cl{E}$
         \EndWhile
-        \State Insere~$j$ no início de~$\Cl{E}$
+        \State $j$ será o primeiro elemento de~$\Cl{E}$
     \EndIf
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-A operação~\textsc{Calcula} deve retornar a coluna ótima em~$n$. Já que~$\Cl{E}_{-1}$ é a válida de maior índice, ela é tal coluna. A operação~\textsc{Remove} deve remover a última linha da matriz. Se houver alguma coluna que é ótima apenas nesta última linha, para que as invariantes sejam mantidas, a operação deve remover esta coluna de~$\Cl{E}$. Finalmente, a operação~\textsc{Insere} deve considerar dois casos. Pode ser que a coluna~$j$ adicionada seja inválida. Pela Proposição~\ref{Online:newInvalid}, isso ocorre se e somente se existe pelo menos uma coluna em~$\Cl{E}$ e~$\Cl{E}_1$ é melhor do que~$j$ na linha 1. Se este for o caso, ignoramos a operação de inserção. Além disso, é possível que~$j$ invalide alguma coluna já presente em~$\Cl{E}$. Se isso ocorre, então, pela Proposição~\ref{Online:oldInvalid}, a coluna~$\Cl{E}_1$ é invalidada. Assim, para remover todas as colunas invalidadas por~$j$, basta checar se~$\Cl{E}_1$ é uma dessas. Caso não seja, o trabalho está feito. Caso seja, removemos esta e repetimos o procedimento até que não haja mais colunas invalidadas por~$j$.
+A operação~\textsc{Calcula} deve retornar a coluna ótima em~$n$. Já que~$\Cl{E}_{-1}$ é a válida de maior índice, ela é tal coluna. A operação~\textsc{Remove} deve remover a última linha da matriz. Se houver alguma coluna que é ótima apenas nesta última linha, para que as invariantes sejam mantidas, a operação deve remover esta coluna de~$\Cl{E}$. Finalmente, a operação~\textsc{Insere} deve considerar dois casos. Pode ser que a coluna~$j$ adicionada seja inválida. Pela Proposição~\ref{Online:newInvalid}, isso ocorre se e somente se existe pelo menos uma coluna em~$\Cl{E}$ e~$\Cl{E}_1$ é melhor do que~$j$ na linha 1. Se este for o caso, ignoramos a operação de inserção. Além disso, é possível que~$j$ invalide alguma coluna já presente em~$\Cl{E}$. Se isso ocorre, então, pela Proposição~\ref{Online:oldInvalid}, a coluna~$\Cl{E}_1$ é invalidada. Assim, para remover todas as colunas invalidadas por~$j$, basta checar se~$\Cl{E}_1$ é uma dessas. Caso não seja, o trabalho está feito. Caso seja, removemos esta e repetimos o procedimento até que não haja mais colunas invalidadas por~$j$. Além disso, é fácil se convencer de que a adição de novas colunas em~$\Cl{E}$ não torna válida uma coluna que já estava em~$\Cl{E}$ e era inválida. Isso mostra que as invariantes propostas são mantidas pelas operações descritas.
 
 \begin{prop} \label{Online:newInvalid}
-Uma coluna~$j$ menor do que todas as colunas em~$\Cl{E}$ é inválida para~$\Cl{E}$ se e somente se existe~$\Cl{E}_1$ e~$j$ é pior do que~$\Cl{E}_1$ na linha 1.
+Uma coluna~$j$ menor do que todas as colunas em~$\Cl{E}$ é inválida para~$\Cl{E}$ quando adicionada em~$\Cl{E}$ se e somente se existe~$\Cl{E}_1$ e~$j$ é pior do que~$\Cl{E}_1$ na linha 1.
 \end{prop}
 
 \begin{proof}
-Se~$j$ for pior do que~$\Cl{E}_1$ na linha 1, pela total monotonicidade, é pior do que~$\Cl{E}_1$ em toda linha maior do que 1, portanto, é inválida. Se~$j$ for melhor do que~$\Cl{E}_1$ na linha 1, é melhor do que todas as outras também na linha 1, já que~$\Cl{E}_1$ era ótima na linha 1. Se~$\Cl{E}$ é vazio, não há nada a provar.
+Se~$\Cl{E}$ é vazio~$j$ será ótima para~$\Cl{E}$ em todas as linhas após adicionada. Se~$j$ for pior do que~$\Cl{E}_1$ na linha 1, pela total monotonicidade, também é pior do que~$\Cl{E}_1$ em toda linha maior do que 1, portanto, seria inválida se adicionada em~$\Cl{E}$. Se~$j$ for melhor do que~$\Cl{E}_1$ na linha 1, é melhor do que todas as outras de~$\Cl{E}$ também na linha 1, já que~$\Cl{E}_1$ é ótima para~$\Cl{E}$ na linha 1, portanto, seria válida se adicionada.
 \end{proof}
 
 \begin{prop} \label{Online:oldInvalid}
@@ -175,16 +175,42 @@ Se alguma coluna de~$\Cl{E}$ é invalidada por uma coluna~$j$ de índice menor d
 \end{prop}
 
 \begin{proof}
-Suponha que~$j$ invalida uma coluna~$j'$ de~$\Cl{E}$ válida tal que~$j' > \Cl{E}_1$. Sabemos que~$\Cl{E}_1$ só pode ser ótima em linhas de índices menores do que~$s_\Cl{E}(j')$ pelos Lemas~\ref{Online:IntOpt} e~\ref{Online:Ordered}. Já que~$j$ é melhor do que~$j'$ em~$s_\Cl{E}(j')$, pela total monotonicidade, é melhor do que~$\Cl{E}_1$ em todas as linhas de índice menor do que~$s_\Cl{E}(j')$. Provamos que~$j$ invalida~$\Cl{E}_1$.
+Suponha que~$j$ invalida uma coluna~$j'$ de~$\Cl{E}$ válida tal que~$j' > \Cl{E}_1$. Sabemos que~$\Cl{E}_1$ só pode ser ótima para~$\Cl{E}$ em linhas de índices menores do que~$s_\Cl{E}(j')$ pelos Lemas~\ref{Online:IntOpt} e~\ref{Online:Ordered}. Já que~$j$ é melhor do que~$j'$ em~$s_\Cl{E}(j')$, pela total monotonicidade, é melhor do que~$\Cl{E}_1$ em todas as linhas de índice menor do que~$s_\Cl{E}(j')$. Provamos que~$j$ invalida~$\Cl{E}_1$.
 \end{proof}
 
-Vamos analisar a complexidade do Algoritmo~\ref{Online:algo} assumindo a nossa implementação de envelope descrita pelo Algoritmo~\ref{Online:Convexo:algo}. As verificações das linhas~\ref{Online:Convexo:algo:RemTira} e~\ref{Online:Convexo:algo:InsTira} custam tempo~$\Cl{O}(\lg(n))$ já que envolvem chamadas à função~\textsc{Intersecta}. Estas verificações são realizadas uma vez a cada chamada de~\textsc{Remove} e, em~\textsc{Insere}, podem ser realizadas uma vez caso a coluna inserida seja válida e uma outra vez para cada coluna removida de~$\Cl{E}$ por~$j$. Já que cada coluna só pode ser removida uma vez da estrutura e apenas~$\Cl{O}(n)$ colunas são adicionadas, estas chamadas ocorrem no máximo~$\Cl{O}(n)$ vezes. Remover uma linha de~$A$, bem como inserir ou remover colunas do início ou fim de~$\Cl{E}$ e devolver~$\Cl{E}_{-1}$, são operações realizadas em~$\Cl{O}(1)$. Esta análise mostra que o algoritmo~\ref{Online:Convexo:algo} leva tempo~$\Cl{O}(n\lg(n))$.
+Vamos analisar a complexidade do Algoritmo~\ref{Online:algo} assumindo a nossa implementação de envelope descrita pelo Algoritmo~\ref{Online:Convexo:algo}. As verificações das linhas~\ref{Online:Convexo:algo:RemTira} e~\ref{Online:Convexo:algo:InsTira} do Algoritmo~\ref{Online:Convexo:algo} custam tempo~$\Cl{O}(\lg(n))$ já que envolvem chamadas à função~\textsc{Intersecta}. Estas verificações são realizadas uma vez a cada chamada de~\textsc{Remove} e, em~\textsc{Insere}, podem ser realizadas uma vez caso a coluna inserida seja válida e uma outra vez para cada coluna invalidada em~$\Cl{E}$ por~$j$. Já que cada coluna só pode ser removida uma vez da estrutura e apenas~$\Cl{O}(n)$ colunas são adicionadas pelo Algoritmo~\ref{Online:algo}, estas chamadas ocorrem no máximo~$\Cl{O}(n)$ vezes. Remover uma linha de~$A$, bem como inserir ou remover colunas do início ou final da lista que mantém as colunas de~$\Cl{E}$ e devolver~$\Cl{E}_{-1}$, são operações realizadas em~$\Cl{O}(1)$. Esta análise mostra que o algoritmo~\ref{Online:Convexo:algo} leva tempo~$\Cl{O}(n\lg(n))$.
 
 Uma implementação da estrutura de envelope em~\texttt{C++} de acordo com o Algoritmo~\ref{Online:Convexo:algo} pode ser encontrada na pasta de implementações com o nome~\texttt{EnvelopeConvexo.cpp}. A estrutura~\texttt{std::deque} permite que se insira e remova elementos do início ou fim da lista~$\Cl{E}$ em tempo constante, como necessário para a análise feita no parágrafo anterior.
 
 %------------------------------------------------------------------
 
 \subsection{Caso côncavo} \label{Online:concave}
+
+\begin{algorithm}[b]
+\caption{Implementação de envelope no caso côncavo}
+\label{Online:Concave:algo}
+\begin{algorithmic}[1]
+\Function{Calcula}{\Cl{E}}
+    \State \Return $\Cl{E}_{1}$
+\EndFunction
+
+\Function{Remove}{\Cl{E}}
+    \If{ existe~$\Cl{E}_{1}$ e $s_\Cl{E}(\Cl{E}_{1}) = n$} \label{Online:Convexo:algo:RemTira}
+        \State Remove~$\Cl{E}_{1}$ de~$\Cl{E}$
+    \EndIf
+    \State $n \rec n-1$
+\EndFunction
+
+\Function{Insere}{\Cl{E},j} \Comment{$j$ é menor do que~$\Cl{E}_1$}
+    \If{ não existe~$\Cl{E}_{1}$ ou~$A[n][\Cl{E}_1] \geq A[n][j]$ } \Comment{$\Cl{E}_1$ é pior do que~$j$ em~$n$}
+        \While{ existe~$\Cl{E}_{1}$ e~$A[s_\Cl{E}(\Cl{E}_1)][\Cl{E}_1] \geq A[s_\Cl{E}(\Cl{E}_1)][j]$ } \Comment{ $\Cl{E}_1$ é pior do que~$j$ em~$s_\Cl{E}(\Cl{E}_{1})$ }
+            \State Tira~$\Cl{E}_{1}$ de~$\Cl{E}$
+        \EndWhile
+        \State Insere~$j$ no início de~$\Cl{E}$
+    \EndIf
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 Vamos resolver o problema de encontrar o vetor~$R$ de índices de mínimos das linhas de uma matriz~$A$ triangular superior em 0 online nas linhas totalmente monótona côncava por linhas qualquer. Este caso se desenvolve de maneira extremamente similar ao caso convexo. Basta apenas adaptar a estrutura de envelope já descrita. Com uma implementação adaptada de envelope, podemos utilizar o Algoritmo~\ref{Online:algo} exatamente da mesma forma como anteriormente. A definição de envelope também não muda, apenas a forma de implementar as operações.
 
@@ -200,33 +226,29 @@ Se o algoritmo for executado como indicado pela Figura~\ref{Online:progressConca
 
 Comparar as Figuras~\ref{Online:progress:fig} e~\ref{Online:progressConcave:fig} explicita a diferença entre os casos convexo e côncavo. No caso convexo, por exemplo, os valores~$s_\Cl{E}(j)$ são crescentes no índice da coluna~$j$. No caso côncavo, estes são decrescentes. A prova deste fato é análoga à do caso convexo, apresentada no Lema~\ref{Online:Ordered}.
 
-\begin{algorithm}[b]
-\caption{Implementação de envelope no caso côncavo}
-\label{Online:Concave:algo}
+A operação~\textsc{Intersecta} implementada no Algoritmo~\ref{Online:Intersecta:algo} é facilmente adaptável. Aqui, se~$a$ e~$b$ são colunas tais que~$a < b$, então~$b$ pode ser melhor do que~$a$ apenas em um prefixo das linhas e~$a$ pode ser melhor do que~$b$ apenas em um sufixo das linhas de~$A$. Por esse motivo, uma chamada de~$\textsc{Intersecta}(\Cl{E},a,b)$ só pode ser realizada se~$a > b$. Além desta diferença, graças a nossa definição de "melhor", na linha~\ref{Online:Intersecta:algo:comp}, em vez de uma comparação com~$\leq$, uma comparação estrita deve ser realizada. As implementações das três funções~\textsc{Calcula},~\textsc{Remove} e~\textsc{Insere} são diferentes do caso convexo. O Algoritmo~\ref{Online:Concave:algo} implementa esta versão adaptada.
+
+\begin{algorithm}[h]
+\caption{Intersecção de colunas no caso côncavo}
+\label{Online:Intersecta:algo}
 \begin{algorithmic}[1]
-\Function{Calcula}{\Cl{E}}
-    \State \Return $\Cl{E}_{1}$
-\EndFunction
+\Function{Intersecta}{\Cl{E},a,b} \Comment{$a > b$}
+    \State $\ell \rec 1$
+    \State $r \rec $ última linha da matriz de~$\Cl{E}$
 
-\Function{Remove}{\Cl{E}}
-    \If{ existe~$\Cl{E}_{1}$ e $s_\Cl{E}(\Cl{E}_{1}) = n$} \label{Online:Convexo:algo:RemTira}
-        \State Tira~$\Cl{E}_{1}$ de~$\Cl{E}$
-    \EndIf
-    \State $n \rec n-1$
-\EndFunction
+    \While{ $\ell < r$ }
+        \State $m \rec \floor{(\ell+r)/2}$
+        \If{$A[m][a] < A[m][b]$} \label{Online:Intersecta:algo:comp} \Comment{$a$ é melhor do que~$b$ em~$m$}
+            \State $\ell \rec m + 1$
+        \Else
+            \State $r \rec m$
+        \EndIf
+    \EndWhile
 
-\Function{Insere}{\Cl{E},j}
-    \If{ não existe~$\Cl{E}_{1}$ ou~$\Cl{E}_1$ é pior do que~$j$ em~$n$} \label{Online:Convexo:algo:InsTira}
-        \While{ existe~$\Cl{E}_{1}$ e este é pior do que~$j$ em~$s_\Cl{E}(\Cl{E}_{1})$ }
-            \State Tira~$\Cl{E}_{1}$ de~$\Cl{E}$
-        \EndWhile
-        \State Insere~$j$ no início de~$\Cl{E}$
-    \EndIf
+    \State \Return $\ell$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
-
-A operação~\textsc{Intersecta} implementada no Algoritmo~\ref{Online:Intersecta:algo} é facilmente adaptável. Aqui, se~$a$ e~$b$ são colunas tais que~$a < b$, então~$b$ pode ser melhor do que~$a$ apenas em um prefixo das linhas e~$a$ pode ser melhor do que~$b$ apenas em um sufixo das linhas de~$A$. Por esse motivo, uma chamada de~$\textsc{Intersecta}(\Cl{E},a,b)$ só pode ser realizada se~$a > b$. Além desta diferença, graças a nossa definição de "melhor", na linha~\ref{Online:Intersecta:algo:comp}, em vez de uma comparação com~$\leq$, uma comparação estrita deve ser realizada. As implementações das três funções~\textsc{Calcula},~\textsc{Remove} e~\textsc{Insere} são diferentes do caso convexo. O Algoritmo~\ref{Online:Concave:algo} implementa esta versão adaptada.
 
 Os argumentos para a validade da implementação do envelope convexo são análogos aos do caso côncavo, bem como a análise de complexidade. Uma implementação do envelope côncavo em~\texttt{C++} pode ser encontrada em~\texttt{EnvelopeConcavo.cpp}.
 
@@ -236,7 +258,7 @@ Os argumentos para a validade da implementação do envelope convexo são análo
 
 Um caso especial interessante do problema resolvido nesta seção é aquele onde a matriz~$A$ é definida em termos de retas com coeficientes angulares ordenados. Formalmente, existem vetores~$\alpha,\beta \in \B{Q}^n$ tais que~$\alpha$ é monótono e~$A[i][j] = \alpha_j i + \beta_j$ para toda entrada definida da matriz~$A$. É fácil provar que se~$\alpha$ é decrescente,~$A$ é totalmente monótona convexa nas linhas e, se~$\alpha$ é crescente,~$A$ é totalmente monótona côncava nas linhas.
 
-Este é um bom exemplo de caso para o qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. O Algoritmo~\ref{Online:linear:Intersecta:algo} implementa este cálculo para esta situação no caso convexo. Para adaptar esta implementação para o caso côncavo, basta trocar o chão tomado na linha~\ref{Online:linear:Intersecta:algo:floor} por um teto. Se substituirmos esta função pela antiga~\textsc{Intersecta}, tanto no caso convexo quanto no côncavo, fazemos com que o Algoritmo~\ref{Online:algo} consuma tempo~$\Cl{O}(n)$ em vez de~$\Cl{O}(n\lg(n))$.
+Este é um bom exemplo de caso para o qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. O Algoritmo~\ref{Online:linear:Intersecta:algo} implementa este cálculo para esta situação no caso convexo. Para adaptar esta implementação para o caso côncavo, basta trocar o chão tomado na linha~\ref{Online:linear:Intersecta:algo:floor} por um teto. Se substituirmos esta função pela antiga~\textsc{Intersecta}, tanto no caso convexo quanto a sua adaptação no côncavo, fazemos com que o Algoritmo~\ref{Online:algo} consuma tempo~$\Cl{O}(n)$ em vez de~$\Cl{O}(n\lg(n))$.
 
 
 \begin{algorithm}[h]
@@ -248,3 +270,5 @@ Este é um bom exemplo de caso para o qual a função~\textsc{Intersecta} pode s
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
+
+É importante observar que, na prática, se os valores dos vetores~$\alpha$ e~$\beta$ estiverem representados com ponto flutuante, não é trivial calcular, com exatidão, o valor~$\floor{(\beta_a - \beta_b)/(\alpha_b - \alpha_a)}$. Já que análise numérica não é o foco deste trabalho, a implementação desta técnica será realizada em~$\texttt{C++}$ com vetores~$\alpha$ e~$\beta$ do tipo~$\texttt{int}$. Esta implementação para o caso convexo pode ser encontrada na pasta de implementações com o nome~$\texttt{EnvelopeConvexoLinear.cpp}$.
