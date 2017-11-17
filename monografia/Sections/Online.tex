@@ -258,7 +258,7 @@ Os argumentos para a validade da implementação do envelope convexo são análo
 
 Um caso especial interessante do problema resolvido nesta seção é aquele onde a matriz~$A$ é definida em termos de retas com coeficientes angulares ordenados. Formalmente, existem vetores~$\alpha,\beta \in \B{Q}^n$ tais que~$\alpha$ é monótono e~$A[i][j] = \alpha_j i + \beta_j$ para toda entrada definida da matriz~$A$. É fácil provar que se~$\alpha$ é decrescente,~$A$ é totalmente monótona convexa nas linhas e, se~$\alpha$ é crescente,~$A$ é totalmente monótona côncava nas linhas.
 
-Este é um bom exemplo de caso para o qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. O Algoritmo~\ref{Online:linear:Intersecta:algo} implementa este cálculo para esta situação no caso convexo. Para adaptar esta implementação para o caso côncavo, basta trocar o chão tomado na linha~\ref{Online:linear:Intersecta:algo:floor} por um teto. Se substituirmos esta função pela antiga~\textsc{Intersecta}, tanto no caso convexo quanto a sua adaptação no côncavo, fazemos com que o Algoritmo~\ref{Online:algo} consuma tempo~$\Cl{O}(n)$ em vez de~$\Cl{O}(n\lg(n))$.
+Este é um bom exemplo de caso para o qual a função~\textsc{Intersecta} pode ser calculada em tempo~$\Cl{O}(1)$. O Algoritmo~\ref{Online:linear:Intersecta:algo} implementa este cálculo para esta situação no caso convexo. Para adaptar esta implementação para o caso côncavo, basta trocar o teto tomado na linha~\ref{Online:linear:Intersecta:algo:floor} pelo sucessor do chão da divisão, isto é~${\floor{(\beta_a - \beta_b)/\alpha_b - \alpha_a)} + 1}$. Se substituirmos esta função pela antiga~\textsc{Intersecta}, tanto no caso convexo quanto a sua adaptação no côncavo, fazemos com que o Algoritmo~\ref{Online:algo} consuma tempo~$\Cl{O}(n)$ em vez de~$\Cl{O}(n\lg(n))$.
 
 
 \begin{algorithm}[h]
@@ -266,7 +266,7 @@ Este é um bom exemplo de caso para o qual a função~\textsc{Intersecta} pode s
 \label{Online:linear:Intersecta:algo}
 \begin{algorithmic}[1]
 \Function{Intersecta}{\Cl{E},a,b}
-    \State \Return $\floor{(\beta_a - \beta_b)/(\alpha_b - \alpha_a)}$ \label{Online:linear:Intersecta:algo:floor}
+    \State \Return $\ceil{(\beta_a - \beta_b)/(\alpha_b - \alpha_a)}$ \label{Online:linear:Intersecta:algo:floor}
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
