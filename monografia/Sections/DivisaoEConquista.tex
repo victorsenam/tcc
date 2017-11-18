@@ -1,4 +1,4 @@
-\section{Divisão e conquista}
+\chapter{Divisão e conquista}
 \label{DivConq}
 
 %----------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. É fácil
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Técnica}
+\section{Técnica}
 Dada uma matriz $A \in \B{Q}^{n \times m}$ monótona crescente nos mínimos das linhas, queremos encontrar o vetor de índices de mínimos das linhas de $A$. Isto é, para todo $i \in [n]$, queremos encontrar
 $$ R[i] = \min\{j \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in [m]\} \text{.}$$  
 
@@ -58,7 +58,7 @@ Vamos provar que~$T(n,m) \leq (m+n)\lg(n + 2)$ para quaisquer dois inteiros~${ n
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Aplicação em programação dinâmica} \label{DivConq:DP}
+\section{Aplicação em programação dinâmica} \label{DivConq:DP}
 
 Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. A prova em questão pode ser encontrada no link \url{http://maratona.ime.usp.br/hist/2016/resultados/contest.pdf}.  
 
@@ -87,7 +87,7 @@ Com este resultado concluímos que~${ t(r'+1,j) - t(r+1,j) \leq t(r'+1,j+1) - t(
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Interpretação em programação dinâmica} \label{DivConq:Inter_DP}
+\section{Interpretação em programação dinâmica} \label{DivConq:Inter_DP}
 
 Muitas das técnicas apresentadas neste trabalho possuem formatos específicos de programas dinâmicos relacionados à técnica. Um bom exemplo é a Otimização de Knuth-Yao da Seção~\ref{KY}, que é definida à partir da sua interpretação em programação dinâmica. 
 

@@ -1,4 +1,4 @@
-\section{Busca em matrizes online}
+\chapter{Busca em matrizes online}
 \label{Online}
 
 Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas a priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Subseção~\ref{Online:convex}. Na Subseção~\ref{Online:concave} mostramos como adaptar o que foi discutido para o caso côncavo. Em certas matrizes, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Subseção~\ref{Online:linear}.
@@ -29,7 +29,7 @@ Lembramos que, já que estamos trabalhando com minimização de linhas, dizemos 
 
 %------------------------------------------------------------------
 
-\subsection{Caso convexo} \label{Online:convex}
+\section{Caso convexo} \label{Online:convex}
 
 Voltamos nosso foco ao problema de encontrar o vetor~$R$ de índices de mínimos das linhas de uma matriz~$A$ triangular superior em 0 online nas linhas totalmente monótona convexa por linhas qualquer. Como já observado, devemos encontrar estes valores um a um da última até a primeira linha, necessariamente nesta ordem. 
 
@@ -184,7 +184,7 @@ Uma implementação da estrutura de envelope em~\texttt{C++} de acordo com o Alg
 
 %------------------------------------------------------------------
 
-\subsection{Caso côncavo} \label{Online:concave}
+\section{Caso côncavo} \label{Online:concave}
 
 \begin{algorithm}[b]
 \caption{Implementação de envelope no caso côncavo}
@@ -254,7 +254,7 @@ Os argumentos para a validade da implementação do envelope convexo são análo
 
 %------------------------------------------------------------------
 
-\subsection{Envelope linear} \label{Online:linear}
+\section{Envelope linear} \label{Online:linear}
 
 Um caso especial interessante do problema resolvido nesta seção é aquele onde a matriz~$A$ é definida em termos de retas com coeficientes angulares ordenados. Formalmente, existem vetores~$\alpha,\beta \in \B{Q}^n$ tais que~$\alpha$ é monótono e~$A[i][j] = \alpha_j i + \beta_j$ para toda entrada definida da matriz~$A$. É fácil provar que se~$\alpha$ é decrescente,~$A$ é totalmente monótona convexa nas linhas e, se~$\alpha$ é crescente,~$A$ é totalmente monótona côncava nas linhas.
 

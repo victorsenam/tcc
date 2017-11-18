@@ -1,4 +1,4 @@
-\section{SMAWK}
+\chapter{SMAWK}
 \label{SMAWK}
 
 %----------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ Apresentaremos o caso onde $A$ é totalmente monótona convexa nas linhas e esta
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Técnica primordial} \label{SMAWK:primordial}
+\section{Técnica primordial} \label{SMAWK:primordial}
 Para facilitar a compreensão do algoritmo SMAWK, iremos apresentar uma técnica parecida com a otimização da divisão e conquista, apresentada na Seção~\ref{DivConq}, e mostrar uma otimização desta técnica que leva ao algoritmo SMAWK.
 
 Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linhas, queremos encontrar o índice de mínimo de cada uma das linhas de~$A$. Se, para uma dada linha~${ i \in [2 \tdots n-1] }$, conhecermos os índices~$\ell$ e~$r$ de mínimos das linhas~${ i-1 }$ e~${ i+1 }$, sabemos, pela monotonicidade de~$A$ que o índice de mínimo da linha~$i$ está em~${ [\ell \tdots r] }$. Além disso, se~${ i = 1 }$ e~${ \ell = 1 }$ ou se~${ i = n }$ e~${ r = m }$, o resultado descrito continua valendo.
@@ -28,7 +28,7 @@ Considerando que remover todas as linhas pares de uma matriz pode ser realizado 
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Reduce} \label{SMAWK:reduce}
+\section{Reduce} \label{SMAWK:reduce}
 Chamamos de ótimas as células de uma matriz que são o mínimo de alguma linha e as colunas que contém pelo menos uma célula ótima. Lembre que a definição de mínimo permite apenas um mínimo por linha, portanto, uma matriz contém no máximo~$n$ colunas ótimas.
 
 Queremos agilizar a técnica apresentada acima. Para isso, vamos adicionar a nova hipótese de que a matriz~$A$ é quadrada, ou seja,~$n = m$. A cada passo, removemos as~$\floor{n/2}$ linhas pares da matriz, gerando uma nova matriz $A'$, resolvemos o problema recursivamente em~$A'$ e usamos a solução de~$A'$ para encontrar os mínimos das linhas restantes de~$A$. Quando removemos linhas da nossa~$A$, ela deixa de ser quadrada e passa a ser uma matriz com mais colunas do que linhas, isto é,~$m \geq n$. Queremos remover colunas não ótimas dessa matriz com mais colunas do que linhas fazendo com que a matriz resultante se torne quadrada.  
@@ -92,7 +92,7 @@ Além disso, o algoritmo, a cada passo, incrementa~$k$ ou remove uma coluna de~$
 
 %----------------------------------------------------------------------------------------
 
-\subsection{SMAWK}
+\section{SMAWK}
 \newcommand{\SMAWK}{\textsc{SMAWK}}
 
 Recebemos uma matriz~$A$ totalmente monótona convexa por linhas. Primeiramente, vamos fazer com que a matriz se torne quadrada mantendo os índices de mínimos das linhas. Se~$A$ tem mais colunas do que linhas, basta aplicar o~$\Reduce$. Se~$A$ tem mais linhas do que colunas, podemos adicionar colunas com entradas~${ +\infty }$ até que ela se torne quadrada.
@@ -126,14 +126,14 @@ Agora estamos prontos para descrever e aplicar o algoritmo~$\SMAWK$. Vamos usar 
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Análise}
+\section{Análise}
 O tempo gasto pelo algoritmo~$\SMAWK$ depende apenas da dimensão~$n$ da matriz recebida. Seja~$T(n)$ o tempo gasto pelo algoritmo para todo~$n \geq 1$. Sabemos que~$T(1) = \Cl{O}(1)$. Assumimos que, dada uma matriz~$A$, sabemos gerar uma matriz~$A'$ que consiste apenas das linhas ímpares de~$A$ em tempo~$\Cl{O}(1)$. Com~$n > 1$, geramos esta matriz, que tem~$\floor{\frac{n}{2}}$ linhas, e aplicamos o~$\Reduce$ nela, gastando tempo~$\Cl{O}(n)$. Após este procedimento, determinamos os mínimos das linhas pares de~$A$ na forma descrita na Subseção~\ref{SMAWK:primordial}, o que custa tempo~$\Cl{O}(n)$. Assim, para todo~${ n > 1 }$, vale que~${ T(n) = \Cl{O}(n) + T(\floor{\frac{n}{2}}) }$, o que nos leva a~${ T(n) = \Cl{O}(n) }$.
 
 Se a matriz recebida tiver menos colunas do que linhas, a transformação inicial custa tempo~$\Cl{O}(n)$, no outro caso, custa tempo~$\Cl{O}(m)$, onde~$m$ é a quantidade de colunas. Assim, podemos escrever a complexidade no caso geral como~$\Cl{O}(n+m)$.
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Implementação}
+\section{Implementação}
 Queremos encontrar uma maneira eficiente de remover as linhas pares da matriz, mas não podemos gerar explicitamente uma nova matriz. Queremos representar, a cada chamada, todas as linhas que podem ser visitadas. Inicialmente, todas as linhas visitáveis da matriz são aquelas da forma~${ 1 + k }$ onde~$k$ é um inteiro não negativo. Após remover as linhas pares, as visitáveis são da forma~${ 1 + 2k }$, depois~${ 1 + 4k }$ e assim por diante. Após~$t$ remoções, todas elas são representadas por~${ 1 + 2^tk }$ para algum~$k$ inteiro não negativo. Assim, passa passar o parâmetro~$t$ na recursão e basta incrementar~$t$ para remover tais linhas.
 
 Precisamos representar as colunas visitáveis em~$A$. Já que não há uma regra fixa para a remoção de colunas, precisamos de alguma estrutura de dados que nos permita iterar pelos seus valores em ordem e remover um valor eficientemente. Guardaremos, em uma lista duplamente ligada, todos os índices de colunas válidos. Já que, durante uma chamada de~$\SMAWK$, iteramos pelas colunas e todas as remoções realizadas são na coluna atual ou alguma coluna adjacente à atual, cada remoção é realizada em $\Cl{O}(1)$. Após resolver o problema recursivamente, precisamos recuperar a lista ligada do início da chamada para podermos descobrir os valores de mínimo nas linhas ímpares daquela matriz. Para isso, basta, ao começo de cada chamada, criar uma cópia da lista ligada original, o que é feito em~$\Cl{O}(n)$ e, portanto, não afeta a análise do tempo do algoritmo. Note que a criação desta estrutura de dados e as cópias dela em cada chamada recursiva custam espaço~$\Cl{O}(m)$.
@@ -144,7 +144,7 @@ A implementação em C++ do algoritmo apresentado, levando em conta as considera
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Aplicações} \label{SMAWK:Appl}
+\section{Aplicações} \label{SMAWK:Appl}
 Como mencionado no início desta seção, a técnica apresentada aqui pode ser usada para resolver o problema de encontrar todos os pares de pontos mais distantes num polígono convexo em tempo~$\Cl{O}(n)$. Além deste, Aggarwal~\cite{Aggarwal:1987} mostrou a aplicação do~$\SMAWK$ em vários problemas de geometria computacional.
 
 Além disso, na Seção~\ref{Monge} foi apresentado o Problema~\ref{ Monge:example }, formulado com programação dinâmica e resolvido com o algoritmo~$\SMAWK$.

@@ -1,4 +1,4 @@
-\section{Otimização de Knuth-Yao}
+\chapter{Otimização de Knuth-Yao}
 \label{KY}
 
 %----------------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ Vamos discutir os resultados observados por Yao, descrever a técnica desenvolvi
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Definições básicas} \label{KY:defs}
+\section{Definições básicas} \label{KY:defs}
 
 Vamos apresentar a otimização de Knuth-Yao para problemas de minimização, o que nos leva a trabalhar com convexidade. É fácil adaptar o conhecimento discutido nesta seção para problemas de maximização, porém, em vez da convexidade, a concavidade deve ser usada para provar os resultados e modelar os problemas de interesse.
 
@@ -45,7 +45,7 @@ Vamos mostrar que se~$A \in \B{Q}^{n \times n}$ é Knuth-Yao otimizável, tanto~
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Técnica}
+\section{Técnica}
 
 \newcommand{\KY}{\textsc{KnuthYao}}
 \begin{algorithm}[h]
@@ -86,7 +86,7 @@ Esta observação induz o Algoritmo~\ref{KY:algo} para calcular as entradas das 
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Análise}
+\section{Análise}
 
 Vamos analisar a complexidade do Algoritmo~\ref{KY:algo}. Podemos escrever a quantidade de iterações do laço da linha~\ref{KY:algo:loop} como
 \begin{equation} \label{KY:comp}
@@ -96,7 +96,7 @@ com um~$d$ fixo, a soma~$\sum\limits_{i=1}^{n-d} ( P[i+1][i+d] - P[i][i+d-1] )$ 
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Quebrando strings}
+\section{Quebrando strings}
 
 Para exemplificar a otimização de Knuth e apresentar a relação das matrizes Monge com as definições da Subseção~\ref{KY:defs}, iremos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
 

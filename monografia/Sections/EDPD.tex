@@ -1,4 +1,4 @@
-\section{Estruturas de dados em programação dinâmica}
+\chapter{Estruturas de dados em programação dinâmica}
 \label{EDPD}
 
 Em certas ocasiões, ao aplicar programação dinâmica no cálculo de alguma recorrência, podemos manter algumas das entradas já calculadas em uma estrutura de dados que pode nos ajudar a calcular com mais eficiência as entradas seguintes. Nesta seção, exemplificaremos esta possibilidade. 
@@ -7,7 +7,7 @@ Na Seção~\ref{Online} apresentaremos um exemplo no qual a convexidade (ou conc
 
 %----------------------------------------------------------------------------------------
 
-\subsection{O problema da subsequência crescente de peso máximo}
+\section{O problema da subsequência crescente de peso máximo}
 
 \begin{prob}[Subsequência crescente de peso máximo] \label{EDPD:HIS}
 Dados um natural~$n$ e dois vetores~${ v,w \in \B{Q}^n }$, descobrir uma subsequência~$s$ de~$[1 \tdots n]$ crescente em~$v$ e de soma máxima em~$w$. Formalmente, a subsequência~$s$ deve respeitar~${ v_{s_i} < v_{s_j} }$ para todo par de índices~${ i,j \in [1 \tdots |s|] }$ tal que~${ i < j }$ e deve maximizar~${ \sum\limits_{i \in s} w_i }$.
@@ -23,7 +23,7 @@ Um caso especial deste problema onde o vetor~$w$ é um vetor unitário é o prob
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Fronteira de Pareto}
+\section{Fronteira de Pareto}
 
 Apresentaremos uma estrutura de dados que vai nos ajudar a resolver o Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(n\lg(n))$, para isso, vamos utilizar algumas definições e resultados.
 
@@ -123,7 +123,7 @@ Uma implementação de fronteira de Pareto como descrita pelo algoritmo acima em
 
 %----------------------------------------------------------------------------------------
 
-\subsection{Otimização para a subsequência crescente de peso máximo}
+\section{Otimização para a subsequência crescente de peso máximo}
 
 Com a possibilidade de manter a fronteira de Pareto de um subconjunto finito de~$\B{Q}^2$, vamos calcular cada~$f(i)$ definido na solução original do Problema~\ref{EDPD:HIS} em tempo~$\Cl{O}(\lg(n))$ onde~$n$ é o tamanho dos vetores~$v$ e~$w$ dados pelo problema. Para isso basta notar que podemos reescrever a recorrência~\eqref{EDPD:HIS:rec} como~$f(i) = M(S_i,-v_i)$ onde~$S_i = \{(-v_j,f(j)) \mid j < i\} \cup \{(0,\infty)\}$. Aproveitando a estrutura da fronteira de Pareto, escrevemos o Algoritmo~\ref{EDPD:HIS:code} que calcula todos os valores de~$f$ em tempo~$\Cl{O}(n\lg(n))$ e retorna o máximo entre 0 e todos estes valores calculados, já que esta é a resposta para o problema proposto.
 
