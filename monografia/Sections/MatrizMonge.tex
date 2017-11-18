@@ -3,7 +3,7 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção serão apresentados e explorados os conceitos de monotonicidade, convexidade e matrizes Monge. Além disso, alguns resultados referentes a estes conceitos serão demonstrados. As definições e os resultados desta seção são fundamentais para o desenvolvimento do restante do trabalho.  Na Subseção~\ref{Monge:Basic} apresentamos vários destes conceitos básicos. Na Subseção~\ref{Monge:Monge} apresenta as matrizes Monge e as relaciona com os conceitos básicos já apresentados. A Subseção~\ref{Monge:Triangular} define e discute brevemente a ideia de matrizes triangulares.
+Nesta seção serão apresentados e explorados os conceitos de monotonicidade, convexidade e matrizes Monge. Além disso, alguns resultados referentes a estes conceitos serão demonstrados. As definições e os resultados desta seção são fundamentais para o desenvolvimento do restante do trabalho.  Na Seção~\ref{Monge:Basic} apresentamos vários destes conceitos básicos. Na Seção~\ref{Monge:Monge} apresenta as matrizes Monge e as relaciona com os conceitos básicos já apresentados. A Seção~\ref{Monge:Triangular} define e discute brevemente a ideia de matrizes triangulares.
 
 %----------------------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ A prova de~\ref{Monge:theo+1:concave} segue analogamente.
 
 As matrizes Monge são usadas para resolver uma série de problemas que serão explorados aqui. A condição de Monge é a mais forte apresentada neste trabalho e alguns dos algoritmos apresentados não dependem dela, mas apenas da monotonicidade ou total monotonicidade. Ainda assim, ela leva a resultados úteis que nos permitem provar a adequação dos algoritmos a problemas, mesmo que o algoritmo usado não se utilize da condição diretamente.  
 
-Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente na Seção~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento. Será utilizado como caixa preta. Desta forma, poderemos introduzir estes resultados que são importantes em vários momentos deste texto e na aplicação prática dos conhecimentos discutidos aqui de forma gradual e motivada.   
+Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente no Capítulo~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento. Será utilizado como caixa preta. Desta forma, poderemos introduzir estes resultados que são importantes em vários momentos deste texto e na aplicação prática dos conhecimentos discutidos aqui de forma gradual e motivada.   
 
 \begin{prob} \label{ Monge:example }
 A função de custo~$c$ de cada vetor~$v$ é definida como~$c(v) = \left( \sum\limits_{i=1}^{|v|} v_i \right)^2$. Dados dois inteiros~$k$ e~$n$ e um vetor~${ v \in \B{Q}^n_+ }$, particionar o vetor~$v$ em~$k$ subvetores de forma a minimizar a soma dos custos das partes. Formalmente, escolher um particionamento~${ p_0 = 1 \leq p_1 \leq p_2 \leq \dots \leq p_k = n+1 }$ de~$v$ em subvetores que minimize~$\sum\limits_{i=1}^k c(v[p_{i-1} \tdots p_i - 1])$.

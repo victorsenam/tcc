@@ -98,7 +98,7 @@ com um~$d$ fixo, a soma~$\sum\limits_{i=1}^{n-d} ( P[i+1][i+d] - P[i][i+d-1] )$ 
 
 \section{Quebrando strings}
 
-Para exemplificar a otimização de Knuth e apresentar a relação das matrizes Monge com as definições da Subseção~\ref{KY:defs}, iremos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
+Para exemplificar a otimização de Knuth e apresentar a relação das matrizes Monge com as definições da Seção~\ref{KY:defs}, iremos resolver um outro problema clássico de programação dinâmica~\cite[Exercício~15-9]{CLRS} disponível no juíz online SPOJ em \url{http://www.spoj.com/problems/BRKSTRNG/}. 
 
 Considere uma linguagem de processamento de strings que consegue quebrar uma string~$s$ de tamanho~$m > 1$ em qualquer posição~$t \in [m-1]$, ou seja, gerar duas strings~$s[1 \tdots t]$ e~$s[t+1 \tdots m]$. Um programador quer usar esta linguagem para separar uma string~$n$ vezes, nas posições~${p_1 < p_2 < \dots < p_{n}}$, porém, para quebrar uma string de tamanho~$m$ em qualquer posição, a linguagem gasta tempo~$m$. Queremos descobrir qual é a melhor ordem para realizar estes cortes. 
 
