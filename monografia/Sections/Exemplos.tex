@@ -1,5 +1,147 @@
 \chapter{Exemplos implementados}
 \label{Exemplos}
 
-Nesta seção começamos a estudar formas de encontrar índices ótimos em matrizes onde certas entradas são desconhecidas a priori. Inicialmente o formato das matrizes abordadas será explicitado juntamente com um exemplo de um caso específico interessante desta técnica apresentado por Galil e Park~\cite{Galil:1992}. Galil e Giancarlo~\cite{Galil:1989} mostraram que este problema pode ser resolvido em tempo~$\Cl{O}(n\lg(n))$ para matrizes~$n \times n$ convexas e côncavas, apresentaremos estas soluções aqui. O caso convexo é resolvido na Seção~\ref{Online:convex}. Na Seção~\ref{Online:concave} mostramos como adaptar o que foi discutido para o caso côncavo. Em certas matrizes, é possível melhorar o tempo destes algoritmos de~$\Cl{O}(n\lg(n))$ para~$\Cl{O}(n)$, esta possibilidade é explicada na Seção~\ref{Online:linear}.
+Neste capítulo descrevemos os exemplos implementados disponíveis em~\texttt{implementacao/exemplos}. O objetivo de implementar exemplos é mostrar possibilidades de aplicações simples dos algoritmos discutidos e mostrar maneiras facilmente adaptáveis de utilizar as implementações desenvolvidas neste trabalho.
 
+Cada exemplo pode ser implementado por mais de um dos algoritmos estudados. Uma implementação ``trivial`` também é fornecida para cada exemplo, demonstrando uma forma simples e pouco eficiente de resolver o problema proposto que não conta com os algoritmos discutidos. Aqui serão descritos os problemas resolvidos em cada exemplo, o formato de entrada e saída e serão listadas as soluções implementadas por cada um deles. Um eventual comentário sobre a modelagem feita pode ser realizado aqui.
+
+Cada implementação de um exemplo leva um nome do formato~\texttt{NomeDoExemplo.Algoritmo.cpp} e é compilado, a partir do utilitário~\texttt{make} com comportamente descrito pelo~\texttt{Makefile} presente em~\texttt{implementacao}, para o arquivo~\texttt{NomeDoExemplo.Algoritmo.out} onde~\texttt{NomeDoExemplo} é especificado nas descrições abaixo.
+
+%-----------------------------------------------
+
+\section{Exemplo Monge} \label{ExemploMonge}
+
+Este é um exemplo simples da aplicação dos algoritmos em matrizes Monge. Ele resolve o Problema~\ref{ Monge:example } dado o vetor~$w \in \B{Q}^{n}_+$ e um inteiro~$k$. A implementação leva o nome~\texttt{ExemploMonge}.
+
+O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}), com o algoritmo SMAWK (\texttt{SMAWK}) e da maneira trivial (\texttt{Trivial}).
+
+\subsection{Descrição da entrada}
+Na primeira linha da entrada são dados dois inteiros~$k$ e~$n$ separados por um espaço. Na segunda linha são dados os valores do vetor~$w$, separados por espaços.
+
+\subsection{Descrição da saída}
+Na única linha da saída, deve ser impresso o valor mínimo da função otimizada pelo problema proposto.
+
+\subsection{Exemplo}
+Entrada:
+\begin{verbatim}
+3 7
+13 7 4 9 14 2 5
+\end{verbatim}
+Saída:
+\begin{verbatim}
+1010
+\end{verbatim}
+
+\section{Monge simples} \label{SimpleMonge}
+
+Este exemplo demonstra a aplicação direta dos algoritmos estudados neste trabalho. Recebe uma matriz~$A \in \B{Q}^{n \times m}$ Monge convexa e retorna os valores dos mínimos de cada uma das linhas desta matriz. A implementação leva o nome~\texttt{SimpleMonge}.
+
+O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}), com o algoritmo SMAWK (\texttt{SMAWK}) e da maneira trivial (\texttt{Trivial}).
+
+\subsection{Descrição da entrada}
+
+Na primeira linha da entrada são dadas as dimensões~$n$ e~$m$ da matriz~$A$. As próximas~$n$ linhas contém~$m$ valores separados por espaços cada. O~$j$-ésimo valor da~$i$-ésima linha é a entrada~$A[i][j]$ da matriz.
+
+\subsection{Descrição da saída}
+
+O programa deve imprimir~$n$ valores, um em cada linha. A~$i$-ésima linha da saída deve conter o valor de mínimo da~$i$-ésima linha de~$A$.
+
+\subsection{Exemplo}
+
+Entrada:
+\begin{verbatim}
+3 4
+3 7 10 5
+2 5 7 2
+9 5 6 0
+\end{verbatim}
+Saída:
+\begin{verbatim}
+3
+2
+0
+\end{verbatim}
+
+\section{Internet Trouble simplificado} \label{InternetTroubleSimples}
+
+Este é um exemplo simples da aplicação dos algoritmos em matrizes Monge. Ele resolve o Problema~\ref{DivConq:InternetTrouble} dado o vetor~$v \in \B{Q}^{n}_+$ e um inteiro~$k$. A implementação leva o nome~\texttt{InternetTroubleSimples}.
+
+O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}), com o algoritmo SMAWK (\texttt{SMAWK}) e da maneira trivial (\texttt{Trivial}).
+
+\subsection{Descrição da entrada}
+
+Na primeira linha da entrada são dados os valores~$k$ e~$n$ separados por um espaço. Na próxima linha são dados~$n$ valores separados por espaços, as entradas do vetor~$v$.
+
+\subsection{Descrição da saída}
+
+O programa deve imprimir um único valor na saída, a resposta do problema proposto.
+
+\subsection{Exemplo}
+
+Entrada:
+\begin{verbatim}
+3 7
+13 7 4 9 14 2 5
+\end{verbatim}
+Saída:
+\begin{verbatim}
+13
+\end{verbatim}
+
+%-----------------------------------------------
+
+\section{Problema online convexo} \label{ProblemaOnlineConvexo}
+
+Resolve o Problema~\ref{Online:prob} no caso convexo dado um vetor~$w \in \B{Q}^n_+$ onde a matriz~$C \in \B{Q}^{n \times n}$ é tal que, para todo~$i,j\in[n]$, vale que~$C[i][j] = (\sum_{k=1}^j w_k - \sum_{k=1}^{i-1} w_i)^2$. A implementação leva o nome~\texttt{ProblemaOnlineConvexo}.
+
+O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}) e da maneira trivial (\texttt{Trivial}).
+
+\subsection{Descrição da entrada}
+Na primeira linha da entrada é dado o inteiro~$n$. Na próxima linha são dados~$n$ valores separados por espaços. O~$i$-ésimo deles (a partir do 1) é a entrada~$w_i$.
+
+\subsection{Descrição da saída}
+A saída consiste de~$n$ valores em uma linha, o~$i$-ésimo valor (à partir do 1) deve ser o valor correto de~$E[i]$.
+
+\subsection{Exemplo}
+Entrada:
+\begin{verbatim}
+7
+13 7 4 9 14 2 5
+\end{verbatim}
+Saída:
+\begin{verbatim}
+1315.000000 1315.000000 915.000000 794.000000 625.000000 256.000000 0.000000
+\end{verbatim}
+
+%-----------------------------------------------
+
+\section{Problema online côncavo} \label{ProblemaOnlineConcavo}
+
+Resolve o Problema~\ref{Online:prob} no caso côncavo dado um vetor~$w \in \B{Q}^n_+$ onde a matriz~$C \in \B{Q}^{n \times n}$ é tal que, para todo~$i,j\in[n]$, vale que~$C[i][j] = -(\sum_{k=1}^j w_k - \sum_{k=1}^{i-1} w_i)^2$. A implementação leva o nome~\texttt{ProblemaOnlineConcavo}.
+
+O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConcavo}) e da maneira trivial (\texttt{Trivial}).
+
+\subsection{Descrição da entrada}
+Na primeira linha da entrada é dado o inteiro~$n$. Na próxima linha são dados~$n$ valores separados por espaços. O~$i$-ésimo deles (a partir do 1) é a entrada~$w_i$.
+
+\subsection{Descrição da saída}
+A saída consiste de~$n$ valores em uma linha, o~$i$-ésimo valor (à partir do 1) deve ser o valor correto de~$E[i]$.
+
+\subsection{Exemplo}
+Entrada:
+\begin{verbatim}
+7
+13 7 4 9 14 2 5
+\end{verbatim}
+Saída:
+\begin{verbatim}
+-2634.000000 -2465.000000 -1412.000000 -985.000000 -785.000000 -256.000000 0.000000
+\end{verbatim}
+
+%-----------------------------------------------
+
+\section{NKLEAVES} \label{NKLEAVES}
+
+Resolve o problema NKLEAVES disponível em http://www.spoj.com/problems/NKLEAVES/.
+
+O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}), o envelope convexo linear (\texttt{EnvelopeConvexoLinear}) e da maneira trivial (\texttt{Trivial}).

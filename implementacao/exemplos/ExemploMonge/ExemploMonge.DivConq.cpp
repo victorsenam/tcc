@@ -1,23 +1,6 @@
 /**
-	Exemplo de aplicação de algoritmos em matrizes Monge
-	Seção 2
-
-	Resolve o problema proposto no final da Seção 2 usando o método da divisão e conquista.
-
-	Entrada:
-	Na primeira linha da entrada são dados os inteiros k e n (nesta ordem). Na segunda linha são dados os reais v_1, v_2, ..., v_n separados por espaço.
-
-	Saída:
-	Na primeira linha da saída deve ser dado o valor mínimo da função otimizada pelo problema.
-
-	Exemplo de entrada:
-	3 7
-	13 7 4 9 14 2 5
-
-	Exemplo de saída:
-	1010
+	Este código é uma parte do Trabalho de Conclusão do Bacharelado em Ciência da Computação de Victor Sena Molero pela Universidade de São Paulo. O Trabalho completo está presente em http://github.com/victorsenam/tcc e esta implementação é documentada no Capítulo "Exemplos Implementados".
 **/
-
 
 #include "../../algoritmos/DivConq.h"
 #include <cstdio>

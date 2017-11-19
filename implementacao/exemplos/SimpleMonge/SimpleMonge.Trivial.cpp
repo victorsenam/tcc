@@ -1,26 +1,6 @@
 /**
-	Encontrar mínimos de uma matriz Monge convexa
-
-	Encontra os mínimos das linhas de uma matriz A n por m Monge convexa.
-
-	Entrada:
-	Na primeira linha da entrada são dados os inteiros n e m (nesta ordem). Nas n linhas seguintes são dadas as entradas da matriz. O j-ésimo número da i-ésima linha é o valor da entrada A[i][j].
-
-	Saída:
-	Em i-ésima linha da saída deve ser impresso o valor de mínimo da i-ésima linha.
-
-	Exemplo de entrada:
-	3 4
-	3 7 10 5
-	2 5 7 2
-	9 5 6 0
-
-	Exemplo de saída:
-	3
-	2
-	0
+	Este código é uma parte do Trabalho de Conclusão do Bacharelado em Ciência da Computação de Victor Sena Molero pela Universidade de São Paulo. O Trabalho completo está presente em http://github.com/victorsenam/tcc e esta implementação é documentada no Capítulo "Exemplos Implementados".
 **/
-
 
 #include <cstdio>
 #include <vector>

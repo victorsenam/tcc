@@ -1,25 +1,6 @@
 /**
-	Aplicação de envelope convexo
-	Seção 7
-
-	Resolve o Problema 7.3 de forma trivial.
-
-	Entrada:
-	Na primeira linha da entrada é dado o inteiro n. Nas n linhas seguintes são dados n inteiros.  O j-ésimo número da i-ésima linha destas é a entrada C[i][j].
-
-	Saída:
-	Na primeira linha da saída devem ser dados os valores do vetor E de resposta. Primeiro o valor E[1], depois E[2] e assim por diante até o E[n].
-
-	Exemplo de entrada:
-	3
-	1 1 2
-	1 1 1
-	1 1 1
-
-	Exemplo de saída:
-	2 1 0
+	Este código é uma parte do Trabalho de Conclusão do Bacharelado em Ciência da Computação de Victor Sena Molero pela Universidade de São Paulo. O Trabalho completo está presente em http://github.com/victorsenam/tcc e esta implementação é documentada no Capítulo "Exemplos Implementados".
 **/
-
 
 #include <cstdio>
 #include <vector>
