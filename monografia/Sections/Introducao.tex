@@ -1,11 +1,6 @@
 \chapter{Introdução}
 \label{Introducao}
 
-\section{Sobre o trabalho}
-As matrizes Monge têm propriedades como a monotonicidade total e a monotonicidade, que são exploradas por uma série de algoritmos para a busca de máximos e mínimos em linhas e colunas destas matrizes. Algumas destas técnicas são populares pois são utilizadas para a agilização de problemas clássicos e aparecem com crescente frequência em competições de programação por sua utilidade na solução eficiente de problemas de programação dinâmica.
-
-Busca-se neste trabalho formalizar, compilar e aprofundar os conhecimentos adquiridos sobre estes algoritmos por meio do estudo da literatura já existente a fim de facilitar o aprendizado destas técnicas. Além disso, procura-se generalizar os algoritmos inspirando-se em desafios propostos em competições, explorando suas limitações e modificando as formalizações encontradas na literatura para ampliar os escopos tradicionais. 
-
 \section{Notação}
 Se~$i$ e~$j$ são dois inteiros, a expressão~$[i \tdots j]$ denota o conjunto~${ \{ k \in \B{Z} \mid i \leq k \leq j \} }$, além disso, se~$n$ é inteiro~$[n]$ denota~$[1 \tdots n]$. Note que se~$i > j$, o conjunto~$[i \tdots j]$ é o conjunto vazio. Se~$v$ é um vetor, podemos escrever~$v[i \tdots j]$ para denotar o vetor~${ (v_i, v_{i+1}, \dots, v_j) }$. O mesmo vale em termos de submatrizes. Se~$r$ e~$\ell$ também são dois inteiros e~$A$ é uma matriz, podemos escrever~$A[i \tdots j][\ell \tdots r]$ para denotar a submatriz de~$A$ que contém apenas as linhas de~$A$ em~$[i \tdots j]$ e as colunas em~$[\ell \tdots r]$. Por padrão, nestes dois últimos casos, os subvetores e as submatrizes geradas são reindexados pelos conjuntos~$[j - i + 1]$ e~${ [j - i + 1] \times [r - \ell + 1] }$, respectivamente.
 
