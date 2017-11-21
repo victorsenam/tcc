@@ -60,7 +60,7 @@ Vamos provar que~$T(n,m) \leq (m+n)\lg(n + 2)$ para quaisquer dois inteiros~${ n
 
 \section{Aplicação em programação dinâmica} \label{DivConq:DP}
 
-Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. A prova em questão pode ser encontrada no link \url{http://maratona.ime.usp.br/hist/2016/resultados/contest.pdf}.  
+Utilizaremos a técnica apresentada aqui para resolver uma adaptação do problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação de 2016. Informações sobre a prova em questão podem ser encontradas no link \url{http://maratona.ime.usp.br/resultados16}.  
 
 \begin{prob} \label{DivConq:InternetTrouble}
 Considere a função de custo~$c$ definida como~${ c(v) = \sum\limits_{i=1}^{|v|} \min\{i-1,m-i\} v_i }$ para cada vetor~${ v \in \B{Q}^m }$ com~${ m \in [n] }$. Sejam~${ v \in \B{Z}_+^n }$ um vetor e~$k \in [n]$ um inteiro. Escolher~$k+1$ posições~${ p_0 = 1 \leq p_1 \leq \dots \leq p_k = n }$ do vetor~$v$ de forma a minimizar~${ \sum\limits_{ i = 1 }^k c(v[p_{i-1} \tdots p_i]) }$.
