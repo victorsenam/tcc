@@ -1,14 +1,12 @@
-#include "EnvelopeConvexoLinearLinear.h"
+#include "EnvelopeConvexoLinear.h"
 
-EnvelopeConvexoLinear::EnvelopeConvexoLinear (std::vector<double> alpha, std::vector<double> beta, int n) {
-	::alpha = alpha;
-	::beta = beta;
-	::n = n;
-	A = [&::alpha, &::beta] (int i, int j) {
-		return alpha[j]*i + beta[j];
-	};
-}
+EnvelopeConvexoLinear::EnvelopeConvexoLinear (std::vector<long long> & alpha, std::vector<long long> & beta, int n) : alpha(alpha), beta(beta), EnvelopeConvexo([this] (int i, int j) {
+	return this->alpha[j]*i + this->beta[j];
+}, n) {}
 
-EnvelopeConvexoLinear::Intersecta (int a, int b) {
-	return floor((beta[a] - beta[b])/(alpha[b] - alpha[a]));
+int EnvelopeConvexoLinear::Intersecta (int a, int b) {
+	int l = (beta[a] - beta[b] + alpha[b] - alpha[a] - 1)/(alpha[b] - alpha[a]);
+	if (l < 0) l = 0;
+	else if (l > n - 1) l = n - 1;
+	return l;
 }

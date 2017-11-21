@@ -35,7 +35,7 @@ public:
 	// Insere uma coluna disponível no envelope
 	void Insere(int j);
 
-private:
+protected:
 	int n;
 	std::function< double(int,int) > A;
 	std::deque<int> E;

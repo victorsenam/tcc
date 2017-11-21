@@ -15,6 +15,7 @@
 #include "EnvelopeConvexo.h"
 #include <functional>
 #include <vector>
+#include <cmath>
 
 /**
 	Envelope linear sobre uma matriz totalmente monótona convexa triangular superior em 0 online nas linhas.
@@ -23,14 +24,16 @@
 **/
 
 class EnvelopeConvexoLinear : public EnvelopeConvexo {
-private:
+public:
 	// Contrói um envelope sobrea a matriz de tamanho n x n dada pelos vetores alpha e beta como descrito em 7.3
-	EnvelopeConvexoLinear(std::vector<double> alpha, std::vector<double> beta, int n);
+	EnvelopeConvexoLinear(std::vector<long long> & alpha, std::vector<long long> & beta, int n);
+
+private:
+	std::vector<long long> & alpha;
+	std::vector<long long> & beta;
 
 	// Devolve a intersecção entre as colunas a e b onde a <= b
-	override int Intersecta(int a, int b);
-
-	// Vetores alpha e beta descritas no texto
-	std::vector<double> alpha;
-	std::vector<double> beta;
+	int Intersecta(int a, int b) override;
 };
+
+#endif
