@@ -1,0 +1,13 @@
+% === Based On ===
+% Geometric representation of the sum 1/4 + 1/16 + 1/64 + 1/256 + ...
+% Author: Jimi Oke
+% ================
+
+\begin{tikzpicture}[scale=.35]\footnotesize
+ \pgfmathsetmacro{\n}{7}
+
+\begin{scope}[color=gray]
+  \fill (0,0) rectangle (40,10);
+\end{scope}
+
+\end{tikzpicture}

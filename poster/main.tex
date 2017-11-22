@@ -1,0 +1,239 @@
+\documentclass[final]{beamer}
+\usepackage[size=custom,width=70.7,height=100,scale=1.0]{beamerposter}
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{tikz}
+\usetikzlibrary{matrix,shapes,positioning,shadows,trees,patterns}
+
+\usepackage[shortlabels]{enumitem}
+\usepackage[numbers]{natbib}
+\bibliographystyle{plainnat}
+
+\sloppy
+
+%----------------------------------------------------------------------------------------
+%	SHORTCUTS
+%----------------------------------------------------------------------------------------
+\newcommand{\B}[1]{\mathbb{#1}}
+\newcommand{\Cl}[1]{\ensuremath{\mathcal{#1}}}
+
+\newcommand{\sse}{\Leftrightarrow}
+\newcommand{\so}{\Rightarrow}
+\newcommand{\se}{\Leftarrow}
+\newcommand{\rec}{\leftarrow}
+
+\newcommand{\tdots}{\,.\,.\,}
+
+%----------------------------------------------------------------------------------------
+%	POSTER STYLE
+%----------------------------------------------------------------------------------------
+
+\usetheme{poster-exemplo}
+\setbeamercolor{block title}{fg=dblue,bg=white}
+\setbeamercolor{block body}{fg=black,bg=white}
+\setbeamercolor{block alerted title}{fg=dblue,bg=gray!50}
+\setbeamercolor{block alerted body}{fg=black,bg=gray!20}
+
+%----------------------------------------------------------------------------------------
+%	POSTER
+%----------------------------------------------------------------------------------------
+
+\title{Algoritmos em matrizes monótonas e Monge convexas}
+\author{Victor Sena Molero \hspace{100pt} Orientadora: Cristina Gomes Fernandes}
+\institute{\vspace{10pt}Departamento de Ciência da Computação,
+Instituto de Matemática e Estatística, Universidade de São Paulo}
+
+
+\begin{document}
+\begin{frame}[t]
+%\vspace{-3ex}
+\begin{columns}[t]
+
+
+\begin{column}{0.35\paperwidth}% the right size for a 3-column layout
+
+	\begin{block}{Matrizes Monge}
+
+As matrizes Monge têm propriedades interessantes que são exploradas por uma série de algoritmos, apresentados por este trabalho.  
+\vskip2ex
+Uma matriz~$A$ com~$n$ linhas e~$m$ colunas é dita Monge convexa quando, para cada~$i,i' \in [n]$ e~$j,j' \in [m]$ onde~$i < i'$ e~$j < j'$, vale que
+$$ A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j] \text{.} $$
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Matriz Monge convexa. Para todo quadrado escolhido (em preto) a soma dos valores marcados em verde não pode superar a dos marcados em vermelho.}
+\end{figure}
+
+Similarmente, se a matriz é Monge côncava, vale que
+$$ A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j] \text{.} $$
+\vskip2ex
+Estamos interessados em encontrar os mínimos das linhas destas matrizes ou de matrizes com propriedades similares, como a monotonicidade e a total monotonicidade. É possível encontrar máximos ou trabalhar em termos de colunas realizando adaptações aos algoritmos.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Matriz monótona crescente nos mínimos das linhas. Os mínimos das linhas estão marcados em verde.}
+\end{figure}
+
+Uma matriz monótona crescente nos mínimos das linhas é uma que tem os índices de mínimos das linhas crescentes. Esta definição existe analogamente no caso decrescente, do máximo e das colunas. 
+\vskip2ex
+Uma matriz totalmente monótona convexa nas linhas é uma que tem toda submatriz monótona crescente nos mínimos das linhas. A definição existe analogamente em termos de colunas. No caso côncavo, ela é decrescente em vez de crescente.
+\vskip2ex
+Finalmente, uma matriz Monge convexa é tanto totalmente monótona convexa nas linhas quanto nas colunas. Similarmente, as Monge côncavas são totalmente monótonas côncavas nas linhas e nas colunas.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Relação entre matrizes Monge, totalmente monótonas e monótonas.}
+\end{figure}
+
+As matrizes Monge possuem ainda várias outras propriedades e equivalências~\cite{Burkard}, o que é útil para provar que certos problemas são relacionados a matrizes Monge.
+
+	\end{block}
+
+    \vskip2ex
+
+    \begin{block}{Divisão e conquista}
+O primeiro método não trivial para encontrar os mínimos das linhas de matrizes Monge é chamado de método da divisão e conquista. A ideia é simples e utiliza apenas a monotonicidade da matriz Monge, não é necessária a total monotonicidade.
+\vskip2ex
+Tome uma matriz~$A$ com~$n$ linhas e~$m$ colunas. Tome como~$\ell$ uma linha do meio da matriz (teto ou chão de~$\frac{1 + n}{2}$). Se~$r$ é o índice de mínimo desta linha, sabemos que todos os outros mínimos da matriz estão nas submatrizes~$A[1 \tdots \ell-1][1 \tdots r]$ e~$A[\ell + 1 \tdots n][r \tdots m]$, para as quais resolvemos o problema recursivamente.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Progressão da divisão e conquista. A cada passo, a linha~$\ell$ está marcada em verde e a célula de mínimo desta linha está circulada em vermelho.}
+\end{figure}
+
+Escolhendo~$\ell$ da forma como escolhemos, este algoritmo completa seu trabalho em tempo~$\Cl{O}((n+m)\lg(n))$.
+    \end{block}
+    
+% ---------------------------------------------------------------------------- %
+
+	\begin{block}{Mais informações}
+        Para mais informações, acesse a página do trabalho:
+
+		\textcolor{jblue}{{\url{http://www.linux.ime.usp.br/~victorsenam/mac0499}}}
+        \vskip2ex
+        Endereço para contato: \textcolor{jblue}
+        {{\url{victorsenam@gmail.com}}}
+
+	\end{block}
+
+\end{column}
+
+
+% ---------------------------------------------------------------------------- %
+\begin{column}{0.60\paperwidth} 
+
+    \begin{columns}[c,totalwidth=0.60\paperwidth]
+
+    \begin{column}{0.47\columnwidth}
+        \begin{block}{SMAWK}
+
+O algoritmo SMAWK~\cite{Aggarwal} é um método para encontrar os mínimos de linhas de matrizes totalmente monótonas. Ele não usa a propriedade de Monge diretamente. 
+\vskip2ex
+A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e conquista, mas em vez de encontrar o mínimo de uma linha central, ele remove todas as linhas pares da matriz, resolve o problema para esta nova matriz e utiliza esta resposta para calcular rapidamente os valores das linhas restantes.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Progressão do SMAWK. Primeiro, as linhas pares são removidas. Depois os mínimos das linhas restantes (em vermelho) são encontrados recursivamente. Finalmente, para encontrar os índices das linhas originais é necessário visitar apenas algumas posições (em verde).}
+\end{figure}
+
+Desta forma o algoritmo tomaria tempo~$\Cl{O}((n+m)\lg(n))$, assim como o método da divisão e conquista. Para melhorar esta complexidade, antes de resolver o problema recursivamente, o algoritmo SMAWK remove algumas colunas da matriz formada, tornando-a quadrada. 
+\vskip2ex
+Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, linhas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os mínimos nas mesmas posições da original. O algoritmo todo toma tempo~$\Cl{O}(n+m)$.
+
+        \end{block}
+        
+        \begin{block}{Aplicação: Geometria}
+O algoritmo SMAWK é conhecido por sua aplicação em geometria computacional. Ele é um algoritmo linear para o problema dos pares de pontos mais distantes num polígono convexo. Dado um polígono convexo, para cada ponto de tal polígono, desejamos encontrar um outro ponto do polígono que seja o mais distante possível deste.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{O polígono ilustrado é convexo. O ponto em verde é o mais distante do ponto em vermelho.}
+\end{figure}
+
+Dado o polígono convexo~$p$ com~$n$ pontos, indexamos seus pontos em sentido horário de 1 até~$n$ e construímos uma matriz~$A$ com~$n$ linhas e~$2n - 1$ colunas. A matriz é tal que~$A[i][j] = d(p_i,p_j)$ para todo~$i < j < i + n$ onde~$d(p_i,p_j)$ é a distância euclideana entre os pontos de índice~$i$ e~$j$. Além disso, vale que~$A[i][j] = j - i$ sempre que~$j \leq i$ e que~$A[i][j] = -1$ sempre que~$j \geq i + n$.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Matriz relativa ao polígono ilustrado.}
+\end{figure}
+
+A matriz~$A$ é Monge convexa e encontrar os máximos dessas linhas é equivalente a resolver o problema dos pontos mais distantes no polígono~$p$, portanto, este método resolve o problema em tempo~$\Cl{O}(n)$.
+        \end{block}
+    \end{column}
+
+
+    \begin{column}{0.5\columnwidth}
+        \begin{block}{Otimização de Knuth-Yao}
+A otimização de Knuth-Yao é baseada na solução de Knuth para o problema da árvore de busca binária ótima~\cite{Knuth}. Yao percebeu~\cite{Yao} que tal solução poderia ser usada para qualquer recorrência tal que~$A[i][j] = C[i][j]$ quando~$i = j$ e, quando,~$i < j$
+\begin{equation*}
+A[i][j] = C[i][j] + \min\{A[i][k-1] + A[k][j] \mid k \in [i+1 \tdots j]\} 
+\end{equation*}
+onde~$C$ é uma matriz Monge convexa e monótona nos intervalos e~$i,j \in [n]$. A matriz~$C$ é monótona nos intervalos se, sempre que~$i,i',j,j'$ são tais que~$[i' \tdots j'] \subseteq [i \tdots j] \subseteq [1 \tdots n]$, vale que~$C[i'][j'] \leq C[i][j]$.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Interpretação da recorrência~$A$. Desejamos dividir um vetor~$v$ em um dado ponto sucessivamente até que todas as partes tenham tamanho unitário. O objetivo é encontrar uma ordem de divisões que minimize o custo sabendo que dividir um vetor~$v[i\tdots j]$ em qualquer ponto custa~$C[i][j]$.}
+\end{figure}
+
+Tome um subvetor~$v[i \tdots j]$ de~$v$. Se o ponto ótimo para dividir~$v[i \tdots j-1]$ é~$\ell$ e o ponto ótimo para dividir~$v[i+1 \tdots j]$ é~$r$, segundo Yao, vale que o ponto ótimo~$p$ para dividir o vetor~$v[i \tdots j]$ deve respeitar~$\ell \leq p \leq r$.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Relação entre os pontos de corte ótimos. Os dois primeiros vetores são subvetores do último. Neles está marcado, em verde, o ponto ótimo de divisão. No último, estão marcados, em vermelho, os candidatos a pontos ótimos de divisão.}
+\end{figure}
+
+Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a otimização de Knuth-Yao resolve a mesma em tempo~$\Cl{O}(n^2)$.
+
+        \end{block}
+
+        \begin{block}{Aplicação: Programação Dinâmica}
+As matrizes Monge são muito úteis para resolver problemas de programação dinâmica~\cite{Galil}. Além da otimização de Knuth-Yao que é definida em termos de uma recorrência que é natural para soluções baseadas em programação dinâmica, outros formatos de recorrência são relacionados a estas matrizes.
+\vskip2ex
+O problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação 2016 pode ser reduzido para uma recorrência~$E$ tal que~${ E[1][j] = A[1][j]}$ e~${ E[\ell][j] = \min\{E[\ell-1][i]] + A[i][j] \mid i \in [j]\} }$ para todo par de índices~${ \ell \in [2 \tdots k] }$ e~$j \in [n]$ onde~$A$ é uma matriz e~$k$ e~$n$ são inteiros. Esta recorrência pode ser resolvida de maneira fácil com programação dinâmica em tempo~$\Cl{O}(kn^2)$. Porém, no caso deste problema, é possível traduzir esta recorrência para uma matriz monótona de forma que encontrar os mínimos desta matriz é equivalente a encontrar as entradas da recorrência~$E$. Esta redução resolve o problema em tempo~$\Cl{O}(kn\lg(n))$.
+\vskip2ex
+Um outro formato comum para programação dinâmica que é relacionado a matrizes Monge é o dado por uma recorrência~$E$ tal que~${ E[i] = \min\{ E[j] + C[i][j] \mid j \in [i+1 \tdots n] \} }$ para todo~$i \in [n-1]$ e~$E[n] = 0$ onde~$n$ é um natural e~$C$ é uma matriz Monge convexa. O trabalho apresenta uma estrutura de dados chamada de envelope que faz com que seja possível resolver esta recorrência em tempo~$\Cl{O}(n\lg(n))$ em vez de~$\Cl{O}(n^2)$, que é o tempo da solução trivial em programação dinâmica.
+
+        \end{block}
+    \end{column}
+
+    \end{columns}
+
+
+    \begin{block}{Referências}
+        \scriptsize{\begin{thebibliography}{50}
+        \bibitem{Yao}
+        Yao F. Frances, ``\textbf{Efficient dynamic programming using quadrangle inequalities},`` in \textit{Proceedings of the Twelfth Annual ACM Symposium on Theory of Computing. ACM}, 1980, 3 (4), pp. 532--540.
+
+        \bibitem{Burkard}
+        Burkard, Rainer E. and Klinz, Bettina and Rudolf, R{\"u}diger, ``\textbf{Perspectives of Monge properties in optimization},`` in \textit{Discrete Applied Mathematics. Elsevier}, 1996, 70 (2), pp. 95--161.
+
+        \bibitem{Aggarwal}
+        Aggarwal, Alok and Klawe, Maria M and Moran, Shlomo and Shor, Peter and Wilber, Robert, ``\textbf{Geometric applications of a matrix-searching algorithm},`` in \textit{Algorithmica. Springer}, 1987, 2 (1-4), pp. 195--208.
+
+        \bibitem{Knuth}
+        Knuth, Donald E., ``\textbf{Optimum binary search trees},`` in \textit{Acta Informatica. Springer,} 1971, 1 (1), pp. 14--25.
+
+        \bibitem{Galil}
+        Galil, Zvi and Park, Kunsoo, ``\textbf{Dynamic programming with convexity, concavity and sparsity},`` in \textit{Theoretical Computer Science. Elsevier}, 1992, 92 (1), pp. 49--76.
+
+        \end{thebibliography}}
+    \end{block}
+
+\end{column}
+
+\end{columns}
+% ---------------------------------------------------------------------------- %
+\end{frame}
+\end{document}
