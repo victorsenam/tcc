@@ -6,11 +6,15 @@ branches:
 before_install:
 - sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends texlive-full
 script:
+- mkdir built
 - make -C monografia main.pdf
+- mv monografia/main.pdf built/main.pdf
+- make -C poster main.pdf
+- mv poster/main.pdf built/poster.pdf
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: monografia/
+  local_dir: built/
   on:
     branch: master
