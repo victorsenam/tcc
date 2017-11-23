@@ -15,3 +15,4 @@ clear:
 main.pdf: main.tex ${TIKZ_FILES} beamerthemeposter-exemplo.sty
 	pdflatex main.tex
 	pdflatex main.tex
+	pdflatex main.tex

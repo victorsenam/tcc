@@ -36,6 +36,7 @@
 \setbeamercolor{block body}{fg=black,bg=white}
 \setbeamercolor{block alerted title}{fg=dblue,bg=gray!50}
 \setbeamercolor{block alerted body}{fg=black,bg=gray!20}
+\setbeamertemplate{caption}[numbered]
 
 %----------------------------------------------------------------------------------------
 %	POSTER
@@ -57,124 +58,100 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
 	\begin{block}{Matrizes Monge}
 
-As matrizes Monge têm propriedades interessantes que são exploradas por uma série de algoritmos, apresentados por este trabalho.  
+As matrizes Monge são objetos interessantes utilizadas em diversos contextos~\cite{Burkard}. O trabalho discute alguns algoritmos que aproveitam propriedades de matrizes Monge. Para introduzir tais matrizes e estes conceitos, olharemos para um problema interessante em geometria computacional.
 \vskip2ex
-Uma matriz~$A$ com~$n$ linhas e~$m$ colunas é dita Monge convexa quando, para cada~$i,i' \in [n]$ e~$j,j' \in [m]$ onde~$i < i'$ e~$j < j'$, vale que
+Dado um polígono convexo~$p$ com os vértices indexados de 1 até~$n$ em sentido horário, encontrar, para cada vértice~$p_i$ com~$i \in [n]$, o vértice~$p_j$ com~$j \in [n]$ que maximiza a distância euclidiana~$d(p_i,p_j)$ entre os dois pontos.
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{O polígono ilustrado é convexo. O ponto em verde é o mais distante do ponto em vermelho.} \label{Polygon}
+\end{figure}
+É fácil resolver o problema proposto de maneira em tempo~$\Cl{O}(n^2)$. Basta, para cada um dos~$n$ pontos, descobrir, em tempo~$\Cl{O}(n)$ qual é o outro ponto que maximiza a distância entre os dois. Existe alguma maneira mais rápida de resolver este problema? 
+\vskip2ex
+Uma primeira intuição falsa~\cite{Avis} que pode gerar soluções erradas para este problema é a ideia de que todo polígono convexo é unimodal. Um polígono unimodal é tal que para cada ponto a distância entre um ponto fixo~$p_i$ e os outros pontos percorridos em sentido horário possui apenas um máximo local. Uma solução melhor pode ser encontrada modelando este problema em termos de matrizes Monge.
+\vskip2ex
+Uma matriz~$A$ com~$n$ linhas e~$m$ colunas é \underline{Monge convexa} quando, para cada~$i,i' \in [n]$ e~$j,j' \in [m]$ onde~$i < i'$ e~$j < j'$, vale que
 $$ A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j] \text{.} $$
+\vskip2ex
+Vamos construir uma matriz Monge convexa~$A$ com~$n$ linhas e~$2n - 1$ colunas a partir de um polígono convexo~$p$ qualquer de~$n$ vértices de forma que, para cada linha~$i$, a coluna~$j$ que atinge o máximo nessa linha é tal que~$p_j$ é o ponto mais distante de~$p_i$. Se~$i < j < i+n$ vale que~$A[i][j] = d(p_i,p_j)$. Para~$j \leq i$ temos que~$A[i][j] = -1$ e, finalmente, para~$i + n \leq j$ vale que~$A[i][j] = j-i$.
+\vskip2ex
 
 \begin{figure}[h]
     \centering
     \input{Figures/Holder.tikz}
-    \caption{Matriz Monge convexa. Para todo quadrado escolhido (em preto) a soma dos valores marcados em verde não pode superar a dos marcados em vermelho.}
+    \caption{Matriz Monge convexa relativa ao polígono da Figura~\ref{Polygon}. Para todo quadrado escolhido (em preto) a soma dos valores marcados em verde não pode superar a dos marcados em vermelho.}
 \end{figure}
 
-Similarmente, se a matriz é Monge côncava, vale que
-$$ A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j] \text{.} $$
-\vskip2ex
-Estamos interessados em encontrar os mínimos das linhas destas matrizes ou de matrizes com propriedades similares, como a monotonicidade e a total monotonicidade. É possível encontrar máximos ou trabalhar em termos de colunas realizando adaptações aos algoritmos.
+Como encontrar o valor de máximo em cada linha de uma matriz Monge convexa sem analisar todas as suas entradas, isto é, mais rápido do que~$\Cl{O}(n^2)$? Para fazer isso precisamos explorar as propriedades das matrizes Monge. Toda matriz Monge convexa é \underline{monótona decrescente nos máximos das linhas}. Uma matriz leva este nome quando os índices de máximos das suas linhas é decrescente.
 
 \begin{figure}[h]
     \centering
     \input{Figures/Holder.tikz}
-    \caption{Matriz monótona crescente nos mínimos das linhas. Os mínimos das linhas estão marcados em verde.}
+    \caption{Matriz monótona decrescente nos máximos das linhas. Os máximos das linhas estão marcados em verde.}
 \end{figure}
 
-Uma matriz monótona crescente nos mínimos das linhas é uma que tem os índices de mínimos das linhas crescentes. Esta definição existe analogamente no caso decrescente, do máximo e das colunas. 
+Mais do que monótona, uma matriz Monge convexa é \underline{totalmente monótona convexa nas linhas}, isto é, toda submatriz dela é monótona decrescente nos máximos das linhas. Estas propriedades são úteis para os algoritmos discutidos no trabalho.
 \vskip2ex
-Uma matriz totalmente monótona convexa nas linhas é uma que tem toda submatriz monótona crescente nos mínimos das linhas. A definição existe analogamente em termos de colunas. No caso côncavo, ela é decrescente em vez de crescente.
-\vskip2ex
-Finalmente, uma matriz Monge convexa é tanto totalmente monótona convexa nas linhas quanto nas colunas. Similarmente, as Monge côncavas são totalmente monótonas côncavas nas linhas e nas colunas.
+As matrizes Monge possuem também outros tipos de monotonicidade e total monotonicidade. Uma matriz Monge convexa é, por exemplo, monótona crescente nos mínimos das linhas e totalmente monótona convexa nas colunas. Existem também as matrizes Monge côncavas. Esta diversidade faz com que os algoritmos discutidos aqui resolvam vários problemas distintos. 
 
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{Relação entre matrizes Monge, totalmente monótonas e monótonas.}
-\end{figure}
-
-As matrizes Monge possuem ainda várias outras propriedades e equivalências~\cite{Burkard}, o que é útil para provar que certos problemas são relacionados a matrizes Monge.
-
-	\end{block}
-
-    \vskip2ex
-
-    \begin{block}{Divisão e conquista}
-O primeiro método não trivial para encontrar os mínimos das linhas de matrizes Monge é chamado de método da divisão e conquista. A ideia é simples e utiliza apenas a monotonicidade da matriz Monge, não é necessária a total monotonicidade.
-\vskip2ex
-Tome uma matriz~$A$ com~$n$ linhas e~$m$ colunas. Tome como~$\ell$ uma linha do meio da matriz (teto ou chão de~$\frac{1 + n}{2}$). Se~$r$ é o índice de mínimo desta linha, sabemos que todos os outros mínimos da matriz estão nas submatrizes~$A[1 \tdots \ell-1][1 \tdots r]$ e~$A[\ell + 1 \tdots n][r \tdots m]$, para as quais resolvemos o problema recursivamente.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{Progressão da divisão e conquista. A cada passo, a linha~$\ell$ está marcada em verde e a célula de mínimo desta linha está circulada em vermelho.}
-\end{figure}
-
-Escolhendo~$\ell$ da forma como escolhemos, este algoritmo completa seu trabalho em tempo~$\Cl{O}((n+m)\lg(n))$.
-    \end{block}
-    
-% ---------------------------------------------------------------------------- %
-
-	\begin{block}{Mais informações}
-        Para mais informações, acesse a página do trabalho:
-
-		\textcolor{jblue}{{\url{http://www.linux.ime.usp.br/~victorsenam/mac0499}}}
-        \vskip2ex
-        Endereço para contato: \textcolor{jblue}
-        {{\url{victorsenam@gmail.com}}}
 
 	\end{block}
 
 \end{column}
 
 
-% ---------------------------------------------------------------------------- %
 \begin{column}{0.60\paperwidth} 
 
     \begin{columns}[c,totalwidth=0.60\paperwidth]
 
     \begin{column}{0.47\columnwidth}
-        \begin{block}{SMAWK}
 
-O algoritmo SMAWK~\cite{Aggarwal} é um método para encontrar os mínimos de linhas de matrizes totalmente monótonas. Ele não usa a propriedade de Monge diretamente. 
+        \begin{block}{Divisão e conquista}
+O primeiro método não trivial para encontrar os máximos das linhas de matrizes Monge é chamado de método da divisão e conquista. A ideia é simples e utiliza apenas a monotonicidade da matriz Monge.
 \vskip2ex
-A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e conquista, mas em vez de encontrar o mínimo de uma linha central, ele remove todas as linhas pares da matriz, resolve o problema para esta nova matriz e utiliza esta resposta para calcular rapidamente os valores das linhas restantes.
+Tome uma matriz~$A$ com~$n$ linhas e~$m$ colunas. Tome como~$\ell$ uma linha do meio da matriz (teto ou chão de~$\frac{1 + n}{2}$). Se~$r$ é o índice de máximo desta linha, sabemos que todos os outros máximos da matriz estão nas submatrizes~$A[1 \tdots \ell-1][r \tdots n]$ e~$A[\ell + 1 \tdots n][1 \tdots r]$, para as quais resolvemos o problema recursivamente.
 
 \begin{figure}[h]
     \centering
     \input{Figures/Holder.tikz}
-    \caption{Progressão do SMAWK. Primeiro, as linhas pares são removidas. Depois os mínimos das linhas restantes (em vermelho) são encontrados recursivamente. Finalmente, para encontrar os índices das linhas originais é necessário visitar apenas algumas posições (em verde).}
+    \caption{Progressão da divisão e conquista. A cada passo, a linha~$\ell$ está marcada em verde e a célula de máximo desta linha está circulada em vermelho.}
+\end{figure}
+
+Escolhendo~$\ell$ da forma como escolhemos, este algoritmo completa seu trabalho em tempo~$\Cl{O}((n+m)\lg(n))$.
+        \end{block}
+
+        \begin{block}{SMAWK}
+
+O algoritmo SMAWK~\cite{Aggarwal} é um método para encontrar os máximos de linhas de matrizes totalmente monótonas.
+\vskip2ex
+A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e conquista, mas em vez de encontrar o máximo de uma linha central, ele remove todas as linhas pares da matriz, resolve o problema para esta nova matriz e utiliza esta resposta para calcular rapidamente os valores das linhas restantes.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Holder.tikz}
+    \caption{Progressão do SMAWK. Primeiro, as linhas pares são removidas. Depois os máximos das linhas restantes (em vermelho) são encontrados recursivamente. Finalmente, para encontrar os índices das linhas originais é necessário visitar apenas algumas posições (em verde).}
 \end{figure}
 
 Desta forma o algoritmo tomaria tempo~$\Cl{O}((n+m)\lg(n))$, assim como o método da divisão e conquista. Para melhorar esta complexidade, antes de resolver o problema recursivamente, o algoritmo SMAWK remove algumas colunas da matriz formada, tornando-a quadrada. 
 \vskip2ex
-Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, linhas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os mínimos nas mesmas posições da original. O algoritmo todo toma tempo~$\Cl{O}(n+m)$.
+Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, linhas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os máximos nas mesmas posições da original. O algoritmo todo toma tempo~$\Cl{O}(n+m)$.
 
         \end{block}
         
-        \begin{block}{Aplicação: Geometria}
-O algoritmo SMAWK é conhecido por sua aplicação em geometria computacional. Ele é um algoritmo linear para o problema dos pares de pontos mais distantes num polígono convexo. Dado um polígono convexo, para cada ponto de tal polígono, desejamos encontrar um outro ponto do polígono que seja o mais distante possível deste.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{O polígono ilustrado é convexo. O ponto em verde é o mais distante do ponto em vermelho.}
-\end{figure}
-
-Dado o polígono convexo~$p$ com~$n$ pontos, indexamos seus pontos em sentido horário de 1 até~$n$ e construímos uma matriz~$A$ com~$n$ linhas e~$2n - 1$ colunas. A matriz é tal que~$A[i][j] = d(p_i,p_j)$ para todo~$i < j < i + n$ onde~$d(p_i,p_j)$ é a distância euclideana entre os pontos de índice~$i$ e~$j$. Além disso, vale que~$A[i][j] = j - i$ sempre que~$j \leq i$ e que~$A[i][j] = -1$ sempre que~$j \geq i + n$.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{Matriz relativa ao polígono ilustrado.}
-\end{figure}
-
-A matriz~$A$ é Monge convexa e encontrar os máximos dessas linhas é equivalente a resolver o problema dos pontos mais distantes no polígono~$p$, portanto, este método resolve o problema em tempo~$\Cl{O}(n)$.
-        \end{block}
     \end{column}
 
 
     \begin{column}{0.5\columnwidth}
+        \begin{block}{Programação Dinâmica}
+As matrizes Monge são muito úteis para resolver problemas de programação dinâmica~\cite{Galil}. 
+\vskip2ex
+O problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação 2016 pode ser reduzido para uma recorrência~$E$ tal que~${ E[1][j] = A[1][j]}$ e~${ E[\ell][j] = \min\{E[\ell-1][i]] + A[i][j] \mid i \in [j]\} }$ para todo par de índices~${ \ell \in [2 \tdots k] }$ e~$j \in [n]$ onde~$A$ é uma matriz e~$k$ e~$n$ são inteiros. Esta recorrência pode ser resolvida de maneira fácil com programação dinâmica em tempo~$\Cl{O}(kn^2)$. Porém, no caso deste problema, é possível traduzir esta recorrência para uma matriz monótona crescente nos mínimos das linhas de forma que encontrar os mínimos desta matriz é equivalente a encontrar as entradas da recorrência~$E$. Esta redução resolve o problema em tempo~$\Cl{O}(kn\lg(n))$.
+\vskip2ex
+Um outro formato comum para programação dinâmica que é relacionado a matrizes Monge é o dado por uma recorrência~$E$ tal que~${ E[i] = \min\{ E[j] + C[i][j] \mid j \in [i+1 \tdots n] \} }$ para todo~$i \in [n-1]$ e~$E[n] = 0$ onde~$n$ é um natural e~$C$ é uma matriz Monge convexa. O trabalho apresenta uma estrutura de dados chamada de envelope que faz com que seja possível resolver esta recorrência em tempo~$\Cl{O}(n\lg(n))$ em vez de~$\Cl{O}(n^2)$, que é o tempo da solução trivial em programação dinâmica.
+        \end{block}
+
         \begin{block}{Otimização de Knuth-Yao}
-A otimização de Knuth-Yao é baseada na solução de Knuth para o problema da árvore de busca binária ótima~\cite{Knuth}. Yao percebeu~\cite{Yao} que tal solução poderia ser usada para qualquer recorrência tal que~$A[i][j] = C[i][j]$ quando~$i = j$ e, quando,~$i < j$
+A otimização de Knuth-Yao é uma aplicação das propriedades das matrizes Monge fortemente relacionada a programação dinâmica. Ela se baseia na solução de Knuth para o problema da árvore de busca binária ótima~\cite{Knuth}. Yao percebeu~\cite{Yao} que tal solução poderia ser usada para qualquer recorrência tal que~$A[i][j] = C[i][j]$ quando~$i = j$ e, quando,~$i < j$
 \begin{equation*}
 A[i][j] = C[i][j] + \min\{A[i][k-1] + A[k][j] \mid k \in [i+1 \tdots j]\} 
 \end{equation*}
@@ -198,18 +175,14 @@ Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a o
 
         \end{block}
 
-        \begin{block}{Aplicação: Programação Dinâmica}
-As matrizes Monge são muito úteis para resolver problemas de programação dinâmica~\cite{Galil}. Além da otimização de Knuth-Yao que é definida em termos de uma recorrência que é natural para soluções baseadas em programação dinâmica, outros formatos de recorrência são relacionados a estas matrizes.
-\vskip2ex
-O problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação 2016 pode ser reduzido para uma recorrência~$E$ tal que~${ E[1][j] = A[1][j]}$ e~${ E[\ell][j] = \min\{E[\ell-1][i]] + A[i][j] \mid i \in [j]\} }$ para todo par de índices~${ \ell \in [2 \tdots k] }$ e~$j \in [n]$ onde~$A$ é uma matriz e~$k$ e~$n$ são inteiros. Esta recorrência pode ser resolvida de maneira fácil com programação dinâmica em tempo~$\Cl{O}(kn^2)$. Porém, no caso deste problema, é possível traduzir esta recorrência para uma matriz monótona de forma que encontrar os mínimos desta matriz é equivalente a encontrar as entradas da recorrência~$E$. Esta redução resolve o problema em tempo~$\Cl{O}(kn\lg(n))$.
-\vskip2ex
-Um outro formato comum para programação dinâmica que é relacionado a matrizes Monge é o dado por uma recorrência~$E$ tal que~${ E[i] = \min\{ E[j] + C[i][j] \mid j \in [i+1 \tdots n] \} }$ para todo~$i \in [n-1]$ e~$E[n] = 0$ onde~$n$ é um natural e~$C$ é uma matriz Monge convexa. O trabalho apresenta uma estrutura de dados chamada de envelope que faz com que seja possível resolver esta recorrência em tempo~$\Cl{O}(n\lg(n))$ em vez de~$\Cl{O}(n^2)$, que é o tempo da solução trivial em programação dinâmica.
-
-        \end{block}
     \end{column}
 
     \end{columns}
 
+
+	\begin{block}{Mais informações}
+		\textcolor{jblue}{{\url{http://www.linux.ime.usp.br/~victorsenam/mac0499}}}
+	\end{block}
 
     \begin{block}{Referências}
         \scriptsize{\begin{thebibliography}{50}
@@ -220,7 +193,7 @@ Um outro formato comum para programação dinâmica que é relacionado a matrize
         Burkard, Rainer E. and Klinz, Bettina and Rudolf, R{\"u}diger, ``\textbf{Perspectives of Monge properties in optimization},`` in \textit{Discrete Applied Mathematics. Elsevier}, 1996, 70 (2), pp. 95--161.
 
         \bibitem{Aggarwal}
-        Aggarwal, Alok and Klawe, Maria M and Moran, Shlomo and Shor, Peter and Wilber, Robert, ``\textbf{Geometric applications of a matrix-searching algorithm},`` in \textit{Algorithmica. Springer}, 1987, 2 (1-4), pp. 195--208.
+        Aggarwal, Alok and Klawe, Maria M. and Moran, Shlomo and Shor, Peter and Wilber, Robert, ``\textbf{Geometric applications of a matrix-searching algorithm},`` in \textit{Algorithmica. Springer}, 1987, 2 (1-4), pp. 195--208.
 
         \bibitem{Knuth}
         Knuth, Donald E., ``\textbf{Optimum binary search trees},`` in \textit{Acta Informatica. Springer,} 1971, 1 (1), pp. 14--25.
@@ -228,8 +201,11 @@ Um outro formato comum para programação dinâmica que é relacionado a matrize
         \bibitem{Galil}
         Galil, Zvi and Park, Kunsoo, ``\textbf{Dynamic programming with convexity, concavity and sparsity},`` in \textit{Theoretical Computer Science. Elsevier}, 1992, 92 (1), pp. 49--76.
 
+        \bibitem{Avis}
+        D. Avis, G. T. Toussaint, and B. K. Bhattacharya, ``\textbf{On the multimodality of distance in convex polygons}``, in \textit{Computers \& Mathematics with Applications. Elsevier}, 8 (1982), pp. 153--156.
         \end{thebibliography}}
     \end{block}
+
 
 \end{column}
 
