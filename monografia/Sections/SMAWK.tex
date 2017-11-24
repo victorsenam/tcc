@@ -22,6 +22,12 @@ Dada uma matriz~$A \in \B{Q}^{n \times m}$ totalmente monótona convexa por linh
 
 Já que~$A$ é totalmente monótona, remover qualquer linha de~$A$ mantém a total monotonicidade e não altera o índice de mínimo de outra linha. Graças a este fato, podemos remover todas as linhas pares da matriz, encontrar os mínimos recursivamente para todas as linhas restantes e depois utilizar as respostas conhecidas para calcular os índices de mínimos das linhas pares. Vamos mostrar que esta última parte, encontrar os mínimos das linhas pares dados os mínimos das outras, custa tempo~$\Cl{O}(n+m)$.
 
+\begin{figure}[h]
+    \centering
+    \input{Figures/SMAWK_Progress.tikz}
+    \caption{Progresso da técnica primordial. Primeiro, as linhas pares são removidas da matriz original. Depois os mínimos das linhas restantes, hachurados em vermelho, são definidos recursivamente. Finalmente, as linhas pares são restauradas e as posições circuladas em verde são percorridas em busca dos seus mínimos, em vermelho.} 
+\end{figure}
+
 Definimos, para cada~$i$ ímpar, o valor~$t_i$ que representa o índice de mínimo da~$i$-ésima linha, além dos valores~${ t_0 = 1 }$ e, caso~$n$ seja par, o valor~${ t_{n+1} = m }$. Para cada linha~$i$ par, o parágrafo anterior sugere buscar o mínimo desta linha entre as posições~$t_{i-1}$ e~$t_{i+1}$. Podemos escrever o tempo gasto para encontrar o mínimo de cada uma das linhas pares como~${ \sum\limits_{ i \in [n] \text{ par} }( t_{i+1} - t_{i-1} ) }$ e concluir, desta expressão, que o tempo gasto ao todo é~$\Cl{O}(n+m)$. 
 
 Considerando que remover todas as linhas pares de uma matriz pode ser realizado em tempo~$\Cl{O}(1)$, é fácil ver que o tempo de execução total deste algoritmo é~$\Cl{O}((n+m)\lg(n)$, já que só é possível remover todas as linhas pares~$\Cl{O}(\lg(n))$ vezes.
