@@ -28,9 +28,17 @@ C[i][j] + \min\{A[i][k-1] + A[k][j] \mid i < k \leq j \}          & \text{, se }
 A matriz~$C$ é chamada de matriz de custos de~$A$.
 \end{defi}
 
-É fácil resolver uma recorrência desta forma em tempo~$\Cl{O}(n^3)$. 
+É fácil resolver uma recorrência desta forma em tempo~$\Cl{O}(n^3)$. Existe uma interpretação interessante deste tipo de recorrência que corresponde a vários problemas cuja a solução é baseada em programação dinâmica. Inicialmente, existe um vetor~$v \in \B{Q}^n$. É possível dividir este vetor em duas partes, isto é, escolher uma posição~$k \in [n-1]$ e substituir o vetor original pelos seus dois subvetores~$v[1 \tdots k]$ e~$v[k+1 \tdots n]$. Cada subvetor gerado pode ser dividido novamente. O custo de dividir um subvetor~$v[i \tdots j]$ qualquer de~$v$ é dado pela matriz~$C[i][j]$. O problema consiste em dividir um vetor original sucessivamente até transformá-lo em~$n$ vetores de tamanho unitário minimizando o custo de realizar todas as divisões.
 
-\begin{defi}[Matriz de cortes ótimos]
+\begin{figure}[h]
+    \centering
+    \input{Figures/KY_Inter.tikz}
+    \caption{Interpretação da recorrência de intervalos como o problema de dividir um vetor. O vetor inicial aparece no primeiro nível e suas sucessivas divisões são mostradas nos níveis seguintes. Os cortes escolhidos em cada nível aparecem marcados em vermelho.} \label{ KY:Interp }
+\end{figure}
+
+Esta interpretação da recorrência de intervalos nos leva naturalmente a considerar as posições onde o vetor deve ser quebrado a fim de obter uma resposta ótima. Será útil estudar as propriedades destes pontos de corte para agilizar a solução da recorrência. A Definição~\ref{ KY:cuts } formaliza a noção de posições ótimas de corte.
+
+\begin{defi}[Matriz de cortes ótimos] \label{ KY:cuts }
 Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos com matriz de custos~$C$, definimos a matriz de cortes ótimos~$P$ de~$A$. Para todo~$i \in [n]$,~$P[i][i] = i$ e, para todo~$j \in [n]$ com~$i < j$, 
 $$P[i][j] = \min\{k \mid i < k \leq j \text{ e } A[i][j] = C[i][j] + A[i][k-1] + A[k][j]\} \text{.}$$
 \end{defi}
@@ -40,6 +48,12 @@ Assim, a matriz~$P$ guarda, para cada~$i < j$, o menor argumento para o qual a f
 \begin{defi}[Knuth-Yao otimizável]
 Se~$A \in \B{Q}^{n \times n}$ é uma recorrência de intervalos e~$P$ é sua matriz de cortes ótimos. Dizemos que~$A$ é Knuth-Yao otimizável se, para todo~$i,j \in [n]$ com~$i < j$, vale que~${P[i][j-1] \leq P[i][j] \leq P[i+1][j]}$.
 \end{defi}
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/KY_Cuts.tikz}
+    \caption{Uma recorrência Knuth-Yao otimizável de acordo com a interpretação da Figura~\ref{ KY:Interp }. A primeira linha mostra um subvetor~$v[1 \tdots n-1]$ com seu ponto de corte ótimo~$P[1][n-1]$ marcado em vermelho. A segunda, mostra o subvetor~$v[2 \tdots n]$ também com seu ponto de corte ótimo~$P[2][n]$ em vermelho. A terceira linha mostra o vetor~$v$ completo com as possíveis posições para o ponto de corte ótimo~$P[1][n]$ circuladas em verde.}
+\end{figure}
 
 Vamos mostrar que se~$A \in \B{Q}^{n \times n}$ é Knuth-Yao otimizável, tanto~$A$ quanto sua matriz de cortes ótimos~$P$ podem ser calculadas em~$\Cl{O}(n^2)$.
 

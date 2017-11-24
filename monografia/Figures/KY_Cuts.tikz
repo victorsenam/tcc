@@ -1,0 +1,17 @@
+\begin{tikzpicture}[scale=.35]\footnotesize
+
+\begin{scope}[yscale=-1] % I'm flipping the y-axis because I'm working on grids
+  \pgfmathsetmacro{\p}{0}
+  \draw[step=1cm,gray,very thin] (0,\p) grid (13,\p+1);
+  \fill[pattern=north west lines,pattern color=red] (3,\p) rectangle (4,\p+1); 
+
+  \pgfmathsetmacro{\p}{2}
+  \draw[step=1cm,gray,very thin] (1,\p) grid (14,\p+1);
+  \fill[pattern=north west lines,pattern color=red] (7,\p) rectangle (8,\p+1); 
+
+  \pgfmathsetmacro{\p}{4}
+  \draw[step=1cm,gray,very thin] (0,\p) grid (14,\p+1);
+  \draw[green,thick] (3,\p) rectangle (8,\p+1);
+\end{scope}
+
+\end{tikzpicture}
