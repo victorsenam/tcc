@@ -3,9 +3,9 @@
 
 %----------------------------------------------------------------------------------------
 
-Nesta seção será apresentada uma técnica que chamamos de Otimização por divisão e conquista. A ideia é citada por Aggarwal~\cite{Aggarwal:1987} e é um tópico recorrente em competições de programação, sendo conhecida como ``Divide and Conquer Optimization''~\cite{Quora:DivConq,CF:Optm} e geralmente aplicada a problemas de programação dinâmica. 
+Neste capítulo será apresentada uma técnica que chamamos de Otimização por divisão e conquista. A ideia é citada por Aggarwal~\cite{Aggarwal:1987} e é um tópico recorrente em competições de programação, sendo conhecida como ``Divide and Conquer Optimization''~\cite{Quora:DivConq,CF:Optm} e geralmente aplicada a problemas de programação dinâmica. 
 
-Além disso, as hipóteses dos algoritmos decorrentes desta técnica são mais fracas do que as do algoritmo SMAWK, apresentado no Capítulo~\ref{SMAWK}, portanto, todo problema para o qual o SMAWK pode ser aplicado, esta técnica também pode. Ao final desta seção, apresentamos exemplos de aplicações em programação dinâmica.  
+Além disso, as hipóteses dos algoritmos decorrentes desta técnica são mais fracas do que as do algoritmo SMAWK, apresentado no Capítulo~\ref{SMAWK}, portanto, todo problema para o qual o SMAWK pode ser aplicado, também pode ser resolvido com esta técnica. Ao final deste capítulo, apresentamos exemplos de aplicações em programação dinâmica e discutimos a interpretação desta técnica sob o olhar da programação competitiva.
 
 Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso desta técnica:
 \begin{itemize}
@@ -23,7 +23,7 @@ Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. É fácil
 Dada uma matriz $A \in \B{Q}^{n \times m}$ monótona crescente nos mínimos das linhas, queremos encontrar o vetor de índices de mínimos das linhas de $A$. Isto é, para todo $i \in [n]$, queremos encontrar
 $$ R[i] = \min\{j \mid A[i][j] \leq A[i][j'] \text{ para todo } j' \in [m]\} \text{.}$$  
 
-Se, para alguma linha~$i$, encontrarmos o valor~$R[i]$, sabemos, pela monotonicidade de~$A$, que~${ R[i'] \leq R[i] }$ para todo~${ i' < i }$ eque~${ R[i'] \geq R[i] }$ para todo~${ i' > i }$, isto é, sabemos que os mínimos de menor índice das outras linhas se encontram nas submatrizes~${ A[1 \tdots i-1][1 \tdots R[i]] }$ e~${ A[i+1 \tdots n][R[i] \tdots m] }$. Seguindo o paradigma de divisão e conquista, vamos resolver o mesmo problema para estas submatrizes e, consequentemente, resolver o problema original. O Algoritmo~\ref{ DivConq:algo } implementa esta ideia.
+Se, para alguma linha~$i$, encontrarmos o valor~$R[i]$, sabemos, pela monotonicidade de~$A$, que~${ R[i'] \leq R[i] }$ para todo~${ i' < i }$ e que~${ R[i'] \geq R[i] }$ para todo~${ i' > i }$, isto é, sabemos que os mínimos das outras linhas se encontram nas submatrizes~${ A[1 \tdots i-1][1 \tdots R[i]] }$ e~${ A[i+1 \tdots n][R[i] \tdots m] }$. Seguindo o paradigma de divisão e conquista, vamos resolver o mesmo problema para estas submatrizes e, consequentemente, resolver o problema original. O Algoritmo~\ref{ DivConq:algo } implementa esta ideia.
 
 \newcommand{\DivConq}{\textsc{DivConq}}
 \begin{algorithm}[h]
@@ -34,14 +34,20 @@ Se, para alguma linha~$i$, encontrarmos o valor~$R[i]$, sabemos, pela monotonici
     \If{ $r_s \leq r_t$ }
         \State $\ell \rec \ceil{ (r_s + r_t)/2 }$
         \State Guarda em $R[\ell]$ o índice de mínimo da linha~$\ell$ de~$A$. \label{ DivConq:algo:findmin }
-        \State $\DivConq(A,r_s,\ell-1,c_s,R[l],R)$
-        \State $\DivConq(A,\ell+1,r_t,R[l],c_t,R)$
+        \State $\DivConq(A,r_s,\ell-1,c_s,R[\ell],R)$
+        \State $\DivConq(A,\ell+1,r_t,R[\ell],c_t,R)$
     \EndIf
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
 Note que, na linha~\ref{ DivConq:algo:findmin }, o mínimo só precisa ser buscado entre os índices~$c_s$ e~$c_t$, inclusive, pois estamos resolvendo o problema para a submatriz~$A[r_s \tdots r_t][c_s \tdots c_t]$. A implementação desta função em~\texttt{C++} pode ser encontrada no arquivo~\texttt{DivConq.cpp}.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/DivConq.tikz}
+    \caption{Progressão do algoritmo da divisão e conquista em uma matriz monótona. A cada chamada da função, as células circuladas em verde são percorridas linearmente. Os mínimos encontrados estão hachuradas em vermelho.} \label{ DivConq:Figure }
+\end{figure}
 
 Vamos realizar uma análise do tempo gasto pelo Algoritmo~\ref{ DivConq:algo } no pior caso. Se~$A$ é uma matriz e~${ r_s,r_t,c_s }$ e~$c_t$ são índices tais que~${ r_t - r_s + 1 = n \geq 0 }$ e~${ c_t - c_s + 1 = m > 0 }$, o tempo gasto por~$\DivConq(A,r_s,r_t,c_s,c_t,R)$ no pior caso pode ser expresso pela seguinte recorrência:
 \begin{equation*}
@@ -89,9 +95,9 @@ Com este resultado concluímos que~${ t(r'+1,j) - t(r+1,j) \leq t(r'+1,j+1) - t(
 
 \section{Interpretação em programação dinâmica} \label{DivConq:Inter_DP}
 
-Muitas das técnicas apresentadas neste trabalho possuem formatos específicos de programas dinâmicos relacionados à técnica. Um bom exemplo é a Otimização de Knuth-Yao do Capítulo~\ref{KY}, que é definida à partir da sua interpretação em programação dinâmica. 
+Muitas das técnicas apresentadas neste trabalho possuem formatos específicos de programas dinâmicos relacionados à técnica. Um bom exemplo é a Otimização de Knuth-Yao do Capítulo~\ref{KY}, que é desenvolvida à partir da sua interpretação em programação dinâmica. 
 
-Em competições de programação, é comum pensar e apresentar estas técnicas com uma visão fortemente voltada para programação dinâmica. Este tipo de pensamento é bom e especialmente interessante para competições de programação por ser mais fácil de identificar e visível à partir da recorrência. Por este motivo, é interessante discutir esta interpretação também aqui.
+Em contextos voltados para competições de programação, é comum pensar e apresentar estas técnicas com uma visão fortemente voltada para programação dinâmica. Este olhar é bom e especialmente interessante para competições de programação por facilitar a identificação rápida da pertinência de problemas a esta técnica à partir da recorrência. Por este motivo, é interessante discutir esta interpretação também aqui.
 
 \begin{prob} \label{DivConq:DP}
 Dados inteiros~$n$ e~$k$ com~$1 \leq k \leq n$ e uma função~$f(i,j)$ definida para todo~${ i,j \in [n] }$ onde~$i \leq j$. Calcular~$E[k][n]$ onde, para todo~${ j \in [0 \tdots n] }$ e~${ \ell \in k }$ vale que
@@ -109,4 +115,4 @@ Definimos a matriz de cortes ótimos~$P$ da recorrência~$E$. Para toda entrada~
 
 Se as linhas da matriz~$P$ forem todas monótonas, isto é, se vale~${ P[\ell][i] \leq P[\ell][i'] }$ sempre que~${ i,i' \in [n] }$ e~$i < i'$, é possível utilizar a divisão e conquista para resolver o problema. É fácil ver isso construindo matrizes~$B_\ell$ iguais às construídas na solução do Problema~\ref{DivConq:InternetTrouble} e verificando que~$P[\ell][i]$ é o índice de mínimo da linha~$i$ matriz~$B_\ell$.
 
-Geralmente é intuitivo, quando se está pensando em programação dinâmica, imaginar a matriz~$P$ e pensar sobre suas propriedades. A observação de que as linhas desta matriz, quando monótonas, permitem a aplicação do método da divisão e conquista é uma boa maneira de perceber a pertinência desta otimização em problemas e configura uma habilidade especialmente útil em competições de programação.
+Geralmente é uma boa prática, quando se está pensando em programação dinâmica, considerar a matriz~$P$ e pensar sobre suas propriedades. A observação de que as linhas desta matriz, quando monótonas, permitem a aplicação do método da divisão e conquista é uma boa maneira de perceber a pertinência desta otimização em problemas e configura uma habilidade especialmente útil em competições de programação.
