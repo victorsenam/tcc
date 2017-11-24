@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\definecolor{c}{rgb}{1,0.3,0.3}
+\matrix[matrix of nodes, column sep=5pt, row sep=1pt] (m) {
+  \textcolor{c}{0} & 2 & 17 & 26 & 13 & \textcolor{c}{0} & \textcolor{c}{-104} & \textcolor{c}{-208} & \textcolor{c}{-312} \\
+  \textcolor{c}{-104} & \textcolor{c}{0} & 9 & 20 & 13 & 2 & \textcolor{c}{0} & \textcolor{c}{-104} & \textcolor{c}{-208} \\
+  \textcolor{c}{-208} & \textcolor{c}{-104} & \textcolor{c}{0} & 5 & 10 & 17 & 9 & \textcolor{c}{0} & \textcolor{c}{-104} \\
+  \textcolor{c}{-312} & \textcolor{c}{-208} & \textcolor{c}{-104} & \textcolor{c}{0} & 5 & 26 & 20 & 5 & \textcolor{c}{0} \\
+  \textcolor{c}{-416} & \textcolor{c}{-312} & \textcolor{c}{-208} & \textcolor{c}{-104} & \textcolor{c}{0} & 13 & 13 & 10 & 5 \\
+};
+\end{tikzpicture}

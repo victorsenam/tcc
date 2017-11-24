@@ -149,10 +149,16 @@ A implementação em C++ do algoritmo apresentado, levando em conta as considera
 Aggarwal~\cite{Aggarwal:1987} mostrou a aplicação do~$\SMAWK$ na solução de vários problemas de geometria computacional. Um destes problemas, como mencionado no início do capítulo, é o Problema~\ref{SMAWK:TPMD}.
 
 \begin{prob}[Todos os pares mais distantes em um polígono convexo] \label{SMAWK:TPMD}
-Dado um polígono convexo~$p$ com~$n$ vértices ordenados em sentido horário, encontrar, para cada vértice~$p_i$, um outro vértice~$p_j$ que maximize~$d(p_i,p_j)$, onde~$d(p_i,p_j)$ é a distância euclideana entre os pontos~$p_i$ e~$p_j$.
+Dado um polígono convexo~$p$ com~$n$ vértices indexados em sentido horário, encontrar, para cada vértice~$p_i$, um outro vértice~$p_j$ que maximize~$d(p_i,p_j)$, onde~$d(p_i,p_j)$ é a distância euclideana entre os pontos~$p_i$ e~$p_j$.
 \end{prob}
 
 Consideramos convexo um polígono simples tal que nenhum vértice pode ser escrito como combinação convexa de um par de outros dois vértices do mesmo. Formalmente, não existe um real~$\lambda$ e três vértices~$a,b$ e~$c$ tais que~$\lambda a + (1 - \lambda)b = c$. A distância euclideana entre dois pontos~${ a = (x_a,y_a) }$ e~${ b = (x_b,y_b) }$ é dada por~${ d(a,b) = \sqrt{ (x_a - x_b)^2 + (y_a - y_b)^2 } }$. Por conveniência, se~$j \in [n+1 \tdots 2n]$, definimos~$p_j = p_{j-n}$.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/Polygon.tikz}
+    \caption{Exemplo de polígono convexo com os vértices indexados em sentido horário. O vértice vermelho sem preenchimento é o mais distante do vértice verde.} \label{SMAWK:Polygon}
+\end{figure}
 
 Vamos construir uma matriz~$A$ Monge com~$n$ linhas e~$2n - 1$ colunas tal que, para cada~$i \in [n]$, se~$j$ é uma coluna que atinge o máximo na linha~$i$, então o vértice~$p_{j}$ é maximiza~$d(p_i,p_j)$. Para todo índice~$i \in [n]$ de linha de~$A$ e~$j \in [2n - 1]$ de coluna de~$A$ vale que
 
@@ -166,6 +172,12 @@ d(p_i,p_j) & \text{, se } i < j < i+n \text{,} \\
 onde~$C$ é uma constante maior do que qualquer distância entre um par de vértices do polígono. É suficiente tomar~$C = \max\limits_{i \in [n]}\{d(p_i,-p_i)\}$, por exemplo, o que pode ser calculado em tempo~$\Cl{O}(n)$.
 
 Primeiro, já que em cada linha~$i$ existe uma entrada~$d(p_i,p_j)$ para cada~$j \in [n]$ onde~$i \neq j$ e estas são as únicas entradas positivas da linha, é verdade que, se uma coluna~$j$ alcança um máximo nesta linha, ele maximiza a distância~$d(p_i,p_j)$. Se provarmos que a matriz~$A$ descrita é totalmente monótona por linhas, mostramos que o Problema~\ref{SMAWK:TPMD} pode ser resolvido em tempo~$\Cl{O}(n)$ com o algoritmo~\textsc{SMAWK}.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/PolygonMatrix.tikz}
+    \caption{Matriz~$A$ referente ao polígono da Figura~\ref{SMAWK:Polygon} com o quadrado da distância euclideana. Os valores em vermelho são os da forma~$-C|x|$ para algum inteiro~$x$.}
+\end{figure}
 
 \begin{prop}
 A matriz~$A$ descrita é totalmente monótona côncava por linhas.
