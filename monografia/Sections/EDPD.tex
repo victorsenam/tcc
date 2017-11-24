@@ -1,15 +1,15 @@
 \chapter{Estruturas de dados em programação dinâmica}
 \label{EDPD}
 
-Em certas ocasiões, ao aplicar programação dinâmica no cálculo de alguma recorrência, podemos manter algumas das entradas já calculadas em uma estrutura de dados que pode nos ajudar a calcular com mais eficiência as entradas seguintes. Nesta seção, exemplificaremos esta possibilidade. 
+Em certas ocasiões, ao aplicar programação dinâmica no cálculo de alguma recorrência, podemos manter algumas das entradas já calculadas em uma estrutura de dados que pode nos ajudar a calcular com mais eficiência as entradas seguintes. Neste capítulo, exemplificaremos esta possibilidade. 
 
-No Capítulo~\ref{Online} apresentaremos um exemplo no qual a convexidade (ou concavidade) da recorrência calculada nos permite usar uma estrutura de dados de forma parecida com a apresentada aqui. Esta seção, portanto, é uma introdução à utilização de estruturas de dados em programação dinâmica que deve facilitar a compreensão do Capítulo~\ref{Online}.
+No Capítulo~\ref{Online} apresentaremos um exemplo no qual a convexidade (ou concavidade) da recorrência calculada nos permite usar uma estrutura de dados de forma parecida com a apresentada aqui. Este capítulo, portanto, é uma introdução à utilização de estruturas de dados em programação dinâmica que deve facilitar a compreensão do Capítulo~\ref{Online}.
 
 %----------------------------------------------------------------------------------------
 
 \section{O problema da subsequência crescente de peso máximo}
 
-O problema discutido nesta seção é equivalente ao problema ``Fundraising`` da Final Brasileira da Maratona de Programação de 2017. Informações sobre esta prova podem ser encontradas em~\href{http://maratona.ime.usp.br/resultados17/}{http://maratona.ime.usp.br/resultados17/}.
+O problema discutido nesta seção é equivalente ao problema ``Fundraising'' da Final Brasileira da Maratona de Programação de 2017. Informações sobre esta prova podem ser encontradas em~\href{http://maratona.ime.usp.br/resultados17/}{http://maratona.ime.usp.br/resultados17/}.
 
 \begin{prob}[Subsequência crescente de peso máximo] \label{EDPD:HIS}
 Dados um natural~$n$ e dois vetores~${ v,w \in \B{Q}^n }$, descobrir uma subsequência~$s$ de~$[1 \tdots n]$ crescente em~$v$ e de soma máxima em~$w$. Formalmente, a subsequência~$s$ deve respeitar~${ v_{s_i} < v_{s_j} }$ para todo par de índices~${ i,j \in [1 \tdots |s|] }$ tal que~${ i < j }$ e deve maximizar~${ \sum\limits_{i \in s} w_i }$.
@@ -17,7 +17,7 @@ Dados um natural~$n$ e dois vetores~${ v,w \in \B{Q}^n }$, descobrir uma subsequ
 
 Podemos resolver este problema com tempo~$\Cl{O}(n^2)$ utilizando programação dinâmica na recorrência
 \begin{equation} \label{EDPD:HIS:rec}
-f(i) = \max(\{f(j) \mid j < i \text{ e } v_j < v_i\} \cup \{0\}) + w_j \text{,}
+E(i) = \max(\{E(j) \mid j \in [i-1] \text{ e } v_j < v_i\} \cup \{0\}) + w_j \text{,}
 \end{equation}
 onde, para todo~$i \in [1 \tdots n]$, o valor~$f(i)$ é o peso da melhor sequência válida que contém~$i$ como último elemento.
 
