@@ -20,11 +20,11 @@
 
 % The second level, relatively positioned nodes
 \begin{scope}[every node/.style={level 3}]
-\node [below of = c1, xshift=15pt, yshift=-20pt] (c11) {Decrescente nos máximos das linhas};
-\node [below of = c11, yshift=-20pt] (c12) {Crescente nos mínimos das linhas};
+\node [below of = c1, xshift=15pt, yshift=-26pt] (c11) {Monótona decrescente nos máximos das linhas};
+\node [below of = c11, yshift=-32pt] (c12) {Monótona crescente nos mínimos das linhas};
 
-\node [below of = c2, xshift=15pt, yshift=-20pt] (c21) {Decrescente nos máximos das colunas};
-\node [below of = c21, yshift=-20pt] (c22) {Crescente nos mínimos das colunas};
+\node [below of = c2, xshift=15pt, yshift=-26pt] (c21) {Monótona decrescente nos máximos das colunas};
+\node [below of = c21, yshift=-32pt] (c22) {Monótona crescente nos mínimos das colunas};
 \end{scope}
 
 % lines from each level 1 node to every one of its "children"

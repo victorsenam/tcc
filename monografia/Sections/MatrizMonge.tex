@@ -61,7 +61,7 @@ Seja $A \in \B{Q}^{n \times m}$. Definimos quatro vetores a seguir.
 \end{itemize}
 \end{defi}
 
-Note que o máximo de uma linha (ou coluna) foi definido como o maior índice que atinge o máximo e o de mínimo foi definido como o menor índice que atinge o mínimo. Esta escolha foi feita para simplificar o Lema~\ref{lema:MonotoneTotallyMonotone} a frente, porém os algoritmos e resultados discutidos neste trabalho funcionam (com pequenas adaptações) para diversas definições distintas destes vetores.  
+Note que o máximo de uma linha (ou coluna) foi definido como o maior índice que atinge o máximo e o mínimo foi definido como o menor índice que atinge o mínimo. Esta escolha foi feita para simplificar o Lema~\ref{lema:MonotoneTotallyMonotone} a frente, porém os algoritmos e resultados discutidos neste trabalho funcionam (com pequenas adaptações) para diversas definições distintas destes vetores.  
 
 Dada uma matriz, encontrar estes vetores é um problema central para este trabalho. Neste momento é interessante classificar algumas matrizes de acordo com propriedades que vão nos ajudar a calcular os vetores de mínimos e máximos de maneira especialmente eficiente.   
 
@@ -150,9 +150,7 @@ Agora tomamos novamente dois índices~${ i \in [n-1] }$ e~${ j \in [m-1] }$. Vam
 A prova de~\ref{Monge:theo+1:concave} segue analogamente.
 \end{proof}
 
-As matrizes Monge são usadas para resolver uma série de problemas que serão explorados aqui. A condição de Monge é a mais forte apresentada neste trabalho e alguns dos algoritmos apresentados não dependem dela, mas apenas da monotonicidade ou total monotonicidade. Ainda assim, ela leva a resultados úteis que nos permitem provar a adequação dos algoritmos a problemas, mesmo que o algoritmo usado não se utilize da condição diretamente.  
-
-Como consequência desta utilidade, iremos discutir um problema que será resolvido com um algoritmo apresentado somente no Capítulo~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento. Será utilizado como caixa preta. Desta forma, poderemos introduzir estes resultados que são importantes em vários momentos deste texto e na aplicação prática dos conhecimentos discutidos aqui de forma gradual e motivada.   
+Iremos discutir agora um problema que será resolvido com um algoritmo apresentado somente no Capítulo~\ref{SMAWK}, o algoritmo SMAWK. Ele não será explicado neste momento. Será utilizado como caixa preta. Desta forma, poderemos introduzir de forma gradual e motivada estes resultados que são importantes na aplicação prática dos conhecimentos discutidos aqui e demonstram a utilidade de pensar em matrizes Monge e não só na monotonicidade ou total monotonicidade.  
 
 \begin{prob} \label{ Monge:example }
 A função de custo~$c$ de cada vetor~$v$ é definida como~$c(v) = \left( \sum\limits_{i=1}^{|v|} v_i \right)^2$. Dados dois inteiros~$k$ e~$n$ e um vetor~${ v \in \B{Q}^n_+ }$, particionar o vetor~$v$ em~$k$ subvetores de forma a minimizar a soma dos custos das partes. Formalmente, escolher um particionamento~${ p_0 = 1 \leq p_1 \leq p_2 \leq \dots \leq p_k = n+1 }$ de~$v$ em subvetores que minimize~$\sum\limits_{i=1}^k c(v[p_{i-1} \tdots p_i - 1])$.
