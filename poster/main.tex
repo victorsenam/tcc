@@ -68,7 +68,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
 	\begin{block}{Matrizes Monge}
 
-Este trabalho discute algoritmos que aproveitam propriedades de matrizes Monge. Para introduzir tais matrizes, olharemos para um problema interessante em geometria computacional.
+Este trabalho discute algoritmos que aproveitam propriedades de matrizes Monge~\cite{Burkard}. Para introduzir tais matrizes, olharemos para um problema interessante em geometria computacional.
 
 \begin{prob} Dado um polígono convexo~$p$ com os vértices indexados de 1 até~$n$ em sentido horário, encontrar, para cada vértice~$p_i$ com~$i \in [n]$, um vértice~$p_j$ com~$j \in [n]$ que maximiza a distância euclidiana~$d(p_i,p_j)$ entre os dois pontos.
 \end{prob}
@@ -84,7 +84,7 @@ Este trabalho discute algoritmos que aproveitam propriedades de matrizes Monge. 
 Uma matriz~$A$ com~$n$ linhas e~$m$ colunas é \textbf{Monge convexa} se, para cada~$i,i' \in [n]$ e~$j,j' \in [m]$ onde~$i < i'$ e~$j < j'$, vale que
 $$ A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j] \text{.} $$
 \vskip2ex
-Vamos construir uma matriz Monge convexa~$A$ com~$n$ linhas e~$2n - 1$ colunas a partir de o polígono~$p$ de forma que, para cada linha~$i$ de~$A$, uma coluna~$j$ que atinge o máximo nessa linha é tal que~$p_j$ é um ponto mais distante de~$p_i$. Se~$i < j < i+n$, vale que~$A[i][j] = d(p_i,p_j)$. Para~$j \leq i$, temos que~$A[i][j] = -1$ e, finalmente, para~$i + n \leq j$, vale que~$A[i][j] = j-i$.
+Vamos construir uma matriz Monge convexa~$A$ com~$n$ linhas e~$2n - 1$ colunas a partir do polígono~$p$ de forma que, para cada linha~$i$ de~$A$, uma coluna~$j$ que atinge o máximo nessa linha é tal que~$p_j$ é um ponto mais distante de~$p_i$. Se~$i < j < i+n$, vale que~$A[i][j] = d(p_i,p_j)$. Para~$j \leq i$, temos que~$A[i][j] = j - i$ e, finalmente, para~$i + n \leq j$, vale que~$A[i][j] = -1$.
 
 \begin{figure}[h]
     \centering
@@ -92,7 +92,7 @@ Vamos construir uma matriz Monge convexa~$A$ com~$n$ linhas e~$2n - 1$ colunas a
     \caption{Matriz Monge convexa relativa ao polígono da Figura~\ref{Polygon}. Para todo quadrado escolhido (em preto), a soma dos valores marcados em verde não pode superar a dos marcados em vermelho.}
 \end{figure}
 
-Como encontrar um valor máximo em cada linha de uma matriz Monge convexa sem analisar todas as suas entradas? Mais especificamente, sem gastar tempo quadrático? Para isso, vamos explorar as propriedades das matrizes Monge. Toda matriz Monge convexa é \textbf{monótona decrescente nos máximos das linhas}: os índices de máximos das suas linhas estão em ordem decrescente.
+Como encontrar um valor máximo em cada linha de uma matriz Monge convexa sem analisar todas as suas entradas? Mais especificamente, sem gastar tempo quadrático. Para isso, vamos explorar as propriedades das matrizes Monge. Toda matriz Monge convexa é \textbf{monótona decrescente nos máximos das linhas}: os maiores índices de máximos das suas linhas estão em ordem decrescente.
 
 \begin{figure}[h]
     \centering
@@ -119,7 +119,7 @@ As matrizes Monge possuem também outros tipos de monotonicidade e total monoton
         \begin{block}{Divisão e conquista}
 O primeiro método não trivial para encontrar os máximos das linhas de matrizes Monge é chamado de método da divisão e conquista. A ideia é simples e utiliza apenas a monotonicidade da matriz Monge.
 \vskip2ex
-Tome uma matriz~$A$ com~$n$ linhas e~$m$ colunas. Tome como~$\ell$ uma linha do meio da matriz (teto ou chão de~$\frac{1 + n}{2}$). Se~$r$ é o índice de máximo desta linha, sabemos que todos os outros máximos da matriz estão nas submatrizes~$A[1 \tdots \ell-1][r \tdots n]$ e~$A[\ell + 1 \tdots n][1 \tdots r]$, para as quais resolvemos o problema recursivamente.
+Tome uma matriz~$A$ com~$n$ linhas e~$m$ colunas. Tome como~$\ell$ uma linha do meio da matriz (teto ou chão de~$\frac{1 + n}{2}$). Se~$r$ é o maior índice de máximo desta linha, sabemos que os índices de máximos das outras linhas nas submatrizes~$A[1 \tdots \ell-1][r \tdots n]$ e~$A[\ell + 1 \tdots n][1 \tdots r]$, para as quais resolvemos o problema recursivamente.
 
 \begin{figure}[h]
     \centering
@@ -139,12 +139,12 @@ A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e co
 \begin{figure}[h]
     \centering
     \input{Figures/Holder.tikz}
-    \caption{Progressão do SMAWK. Primeiro, as linhas pares são removidas. Depois os máximos das linhas restantes (em vermelho) são encontrados recursivamente. Finalmente, para encontrar os índices das linhas originais é necessário visitar apenas algumas posições (em verde).}
+    \caption{Progressão do SMAWK. Primeiro, as linhas pares são removidas. Depois os máximos das linhas restantes (em vermelho) são encontrados recursivamente. Finalmente, para encontrar os índices das linhas originais, é necessário visitar apenas algumas posições (em verde).}
 \end{figure}
 
 Desta forma o algoritmo tomaria tempo~$\Cl{O}((n+m)\lg(n))$, assim como o método da divisão e conquista. Para melhorar esta complexidade, antes de resolver o problema recursivamente, o algoritmo SMAWK remove algumas colunas da matriz formada, tornando-a quadrada. 
 \vskip2ex
-Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, linhas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os máximos nas mesmas posições da original. Com isso, o algoritmo todo toma tempo~$\Cl{O}(n+m)$.
+Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, colunas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os máximos nas mesmas posições da original. Com isso, o algoritmo todo toma tempo~$\Cl{O}(n+m)$.
 
         \end{block}
         
@@ -161,7 +161,7 @@ Um outro formato comum para programação dinâmica que é relacionado a matrize
         \end{block}
 
         \begin{block}{Otimização de Knuth-Yao}
-A otimização de Knuth-Yao é uma aplicação das propriedades das matrizes Monge fortemente relacionada a programação dinâmica. Ela se baseia na solução de Knuth para o problema da árvore de busca binária ótima~\cite{Knuth}. Yao percebeu~\cite{Yao} que tal solução poderia ser usada para qualquer recorrência tal que~$A[i][j] = C[i][j]$ quando~$i = j$ e, quando,~$1 \leq i < j \leq n$
+A otimização de Knuth-Yao é uma aplicação das propriedades das matrizes Monge fortemente relacionada a programação dinâmica. Ela se baseia na solução de Knuth~\cite{Knuth} para o problema da árvore de busca binária ótima. Yao~\cite{Yao} percebeu que tal solução poderia ser usada para qualquer recorrência tal que~$A[i][j] = C[i][j]$ quando~$i = j$ e, quando~$1 \leq i < j \leq n$,
 \begin{equation*}
 A[i][j] = C[i][j] + \min\{A[i][k-1] + A[k][j] \mid k \in [i+1 \tdots j]\} 
 \end{equation*}
@@ -173,7 +173,7 @@ onde~$C$ é uma matriz Monge convexa e \textbf{monótona nos intervalos}: sempre
     \caption{Interpretação da recorrência~$A$. Desejamos dividir um vetor~$v$ em um dado ponto sucessivamente até que todas as partes tenham tamanho unitário. O objetivo é encontrar uma ordem de divisões que minimize o custo sabendo que dividir um vetor~$v[i\tdots j]$ em qualquer ponto custa~$C[i][j]$.}
 \end{figure}
 
-Tome um subvetor~$v[i \tdots j]$ de~$v$. Se o ponto ótimo para dividir~$v[i \tdots j-1]$ é~$\ell$ e o ponto ótimo para dividir~$v[i+1 \tdots j]$ é~$r$, segundo Yao, o ponto ótimo~$p$ para dividir o vetor~$v[i \tdots j]$ deve respeitar~$\ell \leq p \leq r$.
+Tome um subvetor~$v[i \tdots j]$ de~$v$. Se um ponto ótimo para dividir~$v[i \tdots j-1]$ é~$\ell$ e um ponto ótimo para dividir~$v[i+1 \tdots j]$ é~$r$, segundo Yao, um ponto ótimo~$p$ para dividir o vetor~$v[i \tdots j]$ deve respeitar~$\ell \leq p \leq r$.
 
 \begin{figure}[h]
     \centering
@@ -196,20 +196,21 @@ Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a o
 
     \begin{block}{Referências}
         \scriptsize{\begin{thebibliography}{50}
-        \bibitem{Yao}
-        Yao F. Frances, ``\textbf{Efficient dynamic programming using quadrangle inequalities},`` in \textit{Proceedings of the Twelfth Annual ACM Symposium on Theory of Computing. ACM}, 1980, 3 (4), pp. 532--540.
+        \bibitem{Aggarwal}
+        Aggarwal, Alok and Klawe, Maria M. and Moran, Shlomo and Shor, Peter and Wilber, Robert, ``\textbf{Geometric applications of a matrix-searching algorithm},`` in \textit{Algorithmica. Springer}, 1987, 2 (1-4), pp. 195--208.
 
         \bibitem{Burkard}
         Burkard, Rainer E. and Klinz, Bettina and Rudolf, R{\"u}diger, ``\textbf{Perspectives of Monge properties in optimization},`` in \textit{Discrete Applied Mathematics. Elsevier}, 1996, 70 (2), pp. 95--161.
 
-        \bibitem{Aggarwal}
-        Aggarwal, Alok and Klawe, Maria M. and Moran, Shlomo and Shor, Peter and Wilber, Robert, ``\textbf{Geometric applications of a matrix-searching algorithm},`` in \textit{Algorithmica. Springer}, 1987, 2 (1-4), pp. 195--208.
+        \bibitem{Galil}
+        Galil, Zvi and Park, Kunsoo, ``\textbf{Dynamic programming with convexity, concavity and sparsity},`` in \textit{Theoretical Computer Science. Elsevier}, 1992, 92 (1), pp. 49--76.
 
         \bibitem{Knuth}
         Knuth, Donald E., ``\textbf{Optimum binary search trees},`` in \textit{Acta Informatica. Springer,} 1971, 1 (1), pp. 14--25.
 
-        \bibitem{Galil}
-        Galil, Zvi and Park, Kunsoo, ``\textbf{Dynamic programming with convexity, concavity and sparsity},`` in \textit{Theoretical Computer Science. Elsevier}, 1992, 92 (1), pp. 49--76.
+        \bibitem{Yao}
+        Yao, F. Frances, ``\textbf{Efficient dynamic programming using quadrangle inequalities},`` in \textit{Proceedings of the Twelfth Annual ACM Symposium on Theory of Computing. ACM}, 1980, 3 (4), pp. 532--540.
+
         \end{thebibliography}}
     \end{block}
 
