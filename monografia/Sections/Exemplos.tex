@@ -142,6 +142,22 @@ Saída:
 
 \section{NKLEAVES} \label{NKLEAVES}
 
-Resolve o problema NKLEAVES disponível em http://www.spoj.com/problems/NKLEAVES/.
+Resolve o problema NKLEAVES disponível em \href{http://www.spoj.com/problems/NKLEAVES/}{http://www.spoj.com/problems/NKLEAVES/}.
 
-O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}), o envelope convexo linear (\texttt{EnvelopeConvexoLinear}) e da maneira trivial (\texttt{Trivial}).
+O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}), o envelope convexo linear (\texttt{EnvelopeConvexoLinear}) e da maneira trivial (\texttt{Trivial}). É importante observar que as implementações de envelope utilizam o formato~\texttt{double} que não tem precisão suficiente para este problema. Para testar as implementações do exemplo nos casos disponíveis online é necessário adaptar as estruturas para usar um formato mais apropriado, como o~\texttt{long long int}.
+
+%-----------------------------------------------
+
+\section{BRKSTRNG} \label{BRKSTRNG}
+
+Resolve o problema BRKSTRNG disponível em \href{http://www.spoj.com/problems/BRKSTRNG/}{http://www.spoj.com/problems/BRKSTRNG/} e discutido na Seção~\ref{ KY:brk }.
+
+O exemplo foi implementado com a Otimização de Knuth-Yao (\texttt{KnuthYao}) e da maneira trivial (\texttt{Trivial}).
+
+%-----------------------------------------------
+
+\section{Fundraising} \label{Fundraising}
+
+Resolve o problema ``Fundraising'' da Final Brasileira da Maratona de Programação de 2017. Informações sobre a prova podem ser encontradas em \href{http://maratona.ime.usp.br/resultados17}{http://maratona.ime.usp.br/resultados17}.
+
+O exemplo foi implementado com a Fronteira de Pareto (\texttt{Pareto}) e da maneira trivial (\texttt{Trivial}). É importante observar que a implementação da Fronteira de Pareto usa o formato~\texttt{double} que não tem precisão suficiente para este problema. Para testar a implementação do exemplo nos casos utilizados oficialmente é necessário adaptar a estrutura para usar um formato mais apropriado, como o~\texttt{long long int}.
