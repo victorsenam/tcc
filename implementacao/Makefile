@@ -62,3 +62,9 @@ exemplos/BRKSTRNG/BRKSTRNG.KnuthYao.out : %.out : %.cpp algoritmos/KnuthYao.cpp
 
 exemplos/BRKSTRNG/BRKSTRNG.Trivial.out : %.out : %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/Fundraising/Fundraising.Pareto.out : %.out : %.cpp algoritmos/Pareto.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/Fundraising/Fundraising.Trivial.out : %.out : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
