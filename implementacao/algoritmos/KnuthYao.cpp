@@ -1,11 +1,11 @@
 #include "KnuthYao.h"
 
 KnuthYao::KnuthYao (std::function< double(int,int) > C, int n) {
-	::C = C;
-	::n = n;
+	this->C = C;
+	this->n = n;
 }
 
-std::vector<std::vector<double> > Solve () {
+std::vector<std::vector<double> > KnuthYao::Solve () {
 	std::vector<std::vector<double> > A(n, std::vector<double>(n));
 	std::vector<std::vector<int> > P(n, std::vector<int>(n));
 

@@ -56,3 +56,9 @@ exemplos/NKLEAVES/NKLEAVES.EnvelopeConvexo.out : %.out : %.cpp algoritmos/Envelo
 
 exemplos/NKLEAVES/NKLEAVES.Trivial.out : %.out : %.cpp 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/BRKSTRNG/BRKSTRNG.KnuthYao.out : %.out : %.cpp algoritmos/KnuthYao.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/BRKSTRNG/BRKSTRNG.Trivial.out : %.out : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
