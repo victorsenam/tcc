@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+  \tikzset{dot/.style 2 args={circle,fill=#1,inner sep=0,minimum size=5pt,label={above:#2}}}
+  \node[dot={black}{A}] (A) at (0,2) {};
+  \node[dot={black}{B}] (B) at (0,0) {};
+  \node[dot={black}{a}] (a) at (4,2) {};
+  \node[dot={black}{b}] (b) at (4,0) {};
+
+  \draw[thick,black] (A) -- (b);
+  \draw[thick,black] (B) -- (a);
+  \draw[thick,dashed,red] (A) -- (a);
+  \draw[thick,dashed,red] (B) -- (b);
+\end{tikzpicture}
