@@ -3,16 +3,16 @@
 
 %----------------------------------------------------------------------------------------
 
-Neste capítulo será apresentada uma técnica que chamamos de otimização por divisão e conquista. A ideia é citada por Aggarwal~\cite{Aggarwal:1987} e é um tópico recorrente em competições de programação, sendo conhecida como ``Divide and Conquer Optimization''~\cite{Quora:DivConq,CF:Optm} e geralmente aplicada a problemas de programação dinâmica. 
+Neste capítulo será apresentada uma técnica que chamamos de otimização por divisão e conquista. A ideia é citada por Aggarwal~\cite{Aggarwal:1987} e é um tópico recorrente em competições de programação, sendo conhecida como ``Divide and Conquer Optimization''~\cite{CF:Optm,Quora:DivConq} e geralmente aplicada a problemas de programação dinâmica. 
 
 Além disso, as hipóteses dos algoritmos decorrentes desta técnica são mais fracas do que as do algoritmo SMAWK, apresentado no Capítulo~\ref{SMAWK}, portanto, todo problema para o qual o SMAWK pode ser aplicado, também pode ser resolvido com esta técnica. Ao final deste capítulo, apresentamos exemplos de aplicações em programação dinâmica e discutimos a interpretação desta técnica sob o olhar da programação competitiva.
 
 Dada uma matriz $A \in \B{Q}^{n \times m}$, listamos os casos de uso desta técnica:
 \begin{itemize}
-    \item Se $A$ é monótona nos mínimos das linhas podemos encontrar os índices de mínimos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
-    \item se $A$ é monótona nos máximos das linhas podemos encontrar os índices de máximos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
-    \item se $A$ é monótona nos mínimos das colunas podemos encontrar os índices de mínimos das colunas em tempo $\Cl{O}((n+m)\lg(m))$ e 
-    \item se $A$ é monótona nos máximos das colunas podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$.
+    \item Se $A$ é monótona nos mínimos das linhas, podemos encontrar os índices de mínimos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona nos máximos das linhas, podemos encontrar os índices de máximos das linhas em tempo $\Cl{O}((n+m)\lg(n))$, 
+    \item se $A$ é monótona nos mínimos das colunas, podemos encontrar os índices de mínimos das colunas em tempo $\Cl{O}((n+m)\lg(m))$ e 
+    \item se $A$ é monótona nos máximos das colunas, podemos encontrar os índices de máximos das colunas em tempo $\Cl{O}((n+m)\lg(m))$.
 \end{itemize}
 
 Apresentaremos o caso em que $A$ é crescente nos mínimos das linhas. É fácil manipular o algoritmo resultante para trabalhar com os outros casos.
@@ -54,13 +54,13 @@ Vamos realizar uma análise do tempo gasto pelo Algoritmo~\ref{ DivConq:algo } n
 \arraycolsep=2pt
 T(n,m) = \left\{
 \begin{array}{ll}
-    1 &  \text{, se } n = 0 \text{ e } \\
-    m + \max\limits_{j \in [m]}\{ T(\floor{ \frac{n}{2} },j) + T(\ceil{ \frac{n}{2} } - 1, m - j + 1) \} & \text{, caso contrário.} \\
+    1 &  \text{ se } n = 0 \text{ e } \\
+    m + \max\limits_{j \in [m]}\{ T(\floor{ \frac{n}{2} },j) + T(\ceil{ \frac{n}{2} } - 1, m - j + 1) \} & \text{ caso contrário.} \\
 \end{array}
 \right.
 \end{equation*}
 
-Vamos provar que~$T(n,m) \leq (m+n)\lg(n + 2)$ para quaisquer dois inteiros~${ n \geq 0 }$ e~$m > 0$ usando indução em~$n$. Se~${ n = 0 }$, então~${ T(n,m) = T(0,m) = 1 \leq m = m\lg(2) =  (m + n)\lg(n+2) }$. Com~${ n > 1 }$ assumimos que a tese vale para todo~${ n' \in [n-1] }$ e, para todo~$m > 0$, sabemos que existe um~${ j \in [m] }$ tal que~${ T(n,m) = T(\floor{ \frac{n}{2} },j) + T(\ceil{ \frac{n}{2} } - 1, m - j + 1) }$. Já que tanto~$\floor{ \frac{n}{2} }$ quanto~$\ceil{ \frac{n}{2} } - 1$ estão em~$[n-1]$, aplicamos a hipótese de indução e obtemos que~${ T(n,m) \leq (\floor{ \frac{n}{2} } + j)\lg(\floor{ \frac{n}{2} } + 2) + (\ceil{ \frac{n}{2} } + m - j)\lg(\ceil{ \frac{n}{2} } + 1) }$. Com esta desigualdade, obtemos que~${ T(n,m) \leq (\floor{ \frac{n}{2} } + j)\lg(n + 2) + (\ceil{ \frac{n}{2} } + m - j)\lg(n + 2) = (n + m)\lg(n+2) }$, o que conclui esta prova.
+Vamos provar que~$T(n,m) \leq (m+n)\lg(n + 2)$ para quaisquer dois inteiros~${ n \geq 0 }$ e~$m > 0$ usando indução em~$n$. Se~${ n = 0 }$, então~${ T(n,m) = T(0,m) = 1 \leq m = m\lg(2) =  (m + n)\lg(n+2) }$. Com~${ n > 1 }$, assumimos que a tese vale para todo~${ n' \in [n-1] }$ e, para todo~$m > 0$, sabemos que existe um~${ j \in [m] }$ tal que~${ T(n,m) = m + T(\floor{ \frac{n}{2} },j) + T(\ceil{ \frac{n}{2} } - 1, m - j + 1) }$. Já que tanto~$\floor{ \frac{n}{2} }$ quanto~$\ceil{ \frac{n}{2} } - 1$ estão em~$[n-1]$, aplicamos a hipótese de indução e obtemos que~${ T(n,m) \leq m + (\floor{ \frac{n}{2} } + j)\lg(\floor{ \frac{n}{2} } + 2) + (\ceil{ \frac{n}{2} } + m - j)\lg(\ceil{ \frac{n}{2} } + 1) }$. Com esta desigualdade, obtemos que~${ T(n,m) \leq (\floor{ \frac{n}{2} } + j)\lg(n + 2) + (\ceil{ \frac{n}{2} } + m - j)\lg(n + 2) = (n + m)\lg(n+2) }$, o que conclui esta prova.
 
 %----------------------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ Podemos dar ao problema acima a interpretação do problema ``Internet Trouble''
 
 Queremos resolver o problema com programação dinâmica. Definimos, para todo~${ \ell \in [k] }$ e~${ j \in [n] }$, o subproblema de escolher~${ \ell + 1 }$ posições~${ p_0 = 1 \leq p_1 \leq \dots \leq p_\ell = j }$ do vetor~$v[1 \tdots j]$ de forma a minimizar~${ \sum\limits_{i = 1}^\ell c(v[p_{i-1} \tdots p_i]) }$. Definimos a matriz~$E$ que guarda em cada entrada~$E[\ell][j]$ a resposta ótima do subproblema de parâmetros~$\ell$ e~$j$. É fácil ver que~$E[k][n]$ guarda a resposta ótima do problema original. O valor de qualquer entrada~$E[1][j]$ do vetor é~$c(v[1 \tdots j])$ já que o único~$p$ possível a ser escolhido é tal que~${ p_0 = 1 }$ e~${ p_1 = j }$. O valor de qualquer entrada~$E[\ell][j]$ do vetor tal que~${ \ell \in [2 \tdots k] }$ é igual a~${ \min\{E[\ell-1][i] + c(v[i \tdots j]) \mid i \in [j] \} }$. Esta definição de~$E$ indica uma solução com programação dinâmica que pode ser realizada em tempo~${ \Cl{O}(kn^2)}$ desde que a função~$c$ possa ser calculada para todo subvetor de~$v$ em tempo~$\Cl{O}(1)$.
 
-Definimos as funções~${ s(i,j) = \sum\limits_{ x = i }^j (x - i)v_x }$ e~${ t(i,j) = \sum\limits_{ x = i }^j (j - x)v_x }$ para todo~${ i,j \in [n] }$ onde~${ i \leq j }$. Assim, é fácil ver que se~${ r = \floor{\frac{i+j}{2}} }$ ou~${ r = \ceil{\frac{i+j}{2}} - 1 }$ vale que~${ c(v[i \tdots j]) = s(i,r) + t(r+1,j) }$. Além disso, se pré calcularmos, em tempo~$\Cl{O}(n)$ os vetores~$a,b \in \B{Z}^{[0 \tdots n]}$ tais que, para todo~${ j \in [n] }$, vale que~${ a_j = \sum\limits_{ i \in [j] } v_i }$ e~${ b_j = \sum\limits_{ i \in [j] } iv_i }$ podemos escrever~${ s(i,j) = b_j - b_{i-1} - (a_j - a_{i-1})i }$ e~${ t(i,j) = (a_j - a_{i-1})j - b_j + b_{i-1} }$ para todo~${ i,j \in [n] }$ o que nos dá uma forma de calcular estas funções em~$\Cl{O}(1)$ e, portanto, calcular~$c$ em~$\Cl{O}(1)$ para todo subvetor de~$v$.
+Definimos as funções~${ s(i,j) = \sum\limits_{ x = i }^j (x - i)v_x }$ e~${ t(i,j) = \sum\limits_{ x = i }^j (j - x)v_x }$ para todo~${ i,j \in [n] }$ onde~${ i \leq j }$. Assim, é fácil ver que se~${ r = \floor{\frac{i+j}{2}} }$ ou~${ r = \ceil{\frac{i+j}{2}} - 1 }$ vale que~${ c(v[i \tdots j]) = s(i,r) + t(r+1,j) }$. Além disso, se pré-calcularmos, em tempo~$\Cl{O}(n)$ os vetores~$a$,~$b \in \B{Z}^{[0 \tdots n]}$ tais que, para todo~${ j \in [n] }$, vale que~${ a_j = \sum\limits_{ i \in [j] } v_i }$ e~${ b_j = \sum\limits_{ i \in [j] } iv_i }$, podemos escrever~${ s(i,j) = b_j - b_{i-1} - (a_j - a_{i-1})i }$ e~${ t(i,j) = (a_j - a_{i-1})j - b_j + b_{i-1} }$ para todo~${ i,j \in [n] }$, o que nos dá uma forma de calcular estas funções em~$\Cl{O}(1)$ e, portanto, calcular~$c$ em~$\Cl{O}(1)$ para todo subvetor de~$v$.
 
 Vamos definir uma matriz~$A \in \B{Z}^{n \times n}$ tal que, para todo~${ \ell \in [2 \tdots k] }$ e~${ j \in [n] }$, valha que~${ E[\ell][j] = \min\{ E[\ell-1][i] + A[i][j] \mid i \in [n] \} }$. Basta escolher~${ A[i][j] = c(v[i \tdots j]) }$ para todo~${ i \leq j }$ e~${ A[i][j] = +\infty }$ para todo~${ i > j }$. Agora, podemos definir uma matriz~$B_\ell$ para cada um destes~$\ell$ de forma que~${ B_\ell[i][j] = E[\ell-1][i] + A[i][j] }$ para todo~${ i,j \in [n] }$. Desta forma, calcular um valor~${ E[\ell][j] }$ com~${ \ell \in [2 \tdots k] }$ é encontrar o mínimo da~$j$-ésima coluna da matriz~${ B_\ell }$. Vamos mostrar que cada uma destas matrizes é monótona nos mínimos das colunas e, com isso, resolver este problema em tempo~$\Cl{O}(kn\lg(n))$ com a otimização da divisão e conquista.
 
@@ -89,18 +89,18 @@ t(r+1,j+1) - t(r+1,j) & = (j-r)v_{j+1} \\
 \end{array}
 \end{equation*}
  
-Com este resultado concluímos que~${ t(r'+1,j) - t(r+1,j) \leq t(r'+1,j+1) - t(r+1,j+1) }$ e, desta, temos que~${ E[\ell-1][i] + s(i,r) + t(r+1,j+1) < E[\ell-1][i'] + s(i',r') + t(r'+1,j+1) }$, portanto, vale que~${ B_\ell[i][j+1] < B_\ell[i][j+1] }$. Isso nos diz que se algum~${ i \leq j }$ é o índice de mínimo da coluna~$j$, o índice de mínimo da coluna~${j+1}$ não pode ser menor do que~$i$, já que, pelo fato de~${ B_\ell[i][j] = +\infty }$ para todo~${ i > j }$, o índice de mínimo da coluna~$j$ sempre ser menor do que~$j$, este fato nos diz que as matrizes~$B_\ell$ são crescentes nos mínimos das colunas.
+Com este resultado concluímos que~${ t(r'+1,j) - t(r+1,j) \leq t(r'+1,j+1) - t(r+1,j+1) }$ e, desta, temos que~${ E[\ell-1][i] + s(i,r) + t(r+1,j+1) < E[\ell-1][i'] + s(i',r') + t(r'+1,j+1) }$, portanto, vale que~${ B_\ell[i][j+1] < B_\ell[i][j+1] }$. Isso nos diz que se algum~${ i \leq j }$ é o índice de mínimo da coluna~$j$, então o índice de mínimo da coluna~${j+1}$ não pode ser menor do que~$i$. Sabemos que se~${ i > j }$ a entrada~${ B_\ell[i][j] }$ não pode ser o mínimo da linha~$i$ pois tem valor~$+\infty$. Com isso, concluímos que os índices de mínimos das colunas são crescentes e as matrizes~$B_\ell$ são crescentes nos mínimos das colunas.
 
 %----------------------------------------------------------------------------------------
 
 \section{Interpretação em programação dinâmica} \label{DivConq:Inter_DP}
 
-Muitas das técnicas apresentadas neste trabalho possuem formatos específicos de programas dinâmicos relacionados à técnica. Um bom exemplo é a otimização de Knuth-Yao do Capítulo~\ref{KY}, que é desenvolvida à partir da sua interpretação em programação dinâmica. 
+Muitas das técnicas apresentadas neste trabalho possuem formatos específicos de programas dinâmicos relacionados à técnica. Um bom exemplo é a otimização de Knuth-Yao do Capítulo~\ref{KY}, que é desenvolvida a partir da sua interpretação em programação dinâmica. 
 
-Em contextos voltados para competições de programação, é comum pensar e apresentar estas técnicas com uma visão fortemente voltada para programação dinâmica. Este olhar é bom e especialmente interessante para competições de programação por facilitar a identificação rápida da pertinência de problemas a esta técnica à partir da recorrência. Por este motivo, é interessante discutir esta interpretação também aqui.
+Em contextos voltados para competições de programação, é comum pensar e apresentar estas técnicas com uma visão fortemente voltada para programação dinâmica. Este olhar é bom e especialmente interessante para competições de programação por facilitar a identificação rápida da pertinência de problemas a esta técnica a partir da recorrência. Por este motivo, é interessante discutir esta interpretação também aqui.
 
 \begin{prob} \label{DivConq:DP}
-Dados inteiros~$n$ e~$k$ com~$1 \leq k \leq n$ e uma função~$f(i,j)$ definida para todo~${ i,j \in [n] }$ onde~$i \leq j$. Calcular~$E[k][n]$ onde, para todo~${ j \in [0 \tdots n] }$ e~${ \ell \in k }$ vale que
+Dados inteiros~$n$ e~$k$ com~$1 \leq k \leq n$ e uma função~$f(i,j)$ definida para todo~${ i,j \in [n] }$ onde~$i \leq j$, calcular~$E[k][n]$ onde, para todo~${ j \in [0 \tdots n] }$ e~${ \ell \in k }$ vale que
 \begin{equation*}
 E[\ell][j] = \begin{cases}
 A[1][j] & \text{,  se } \ell = 1 \text{ e } \\
@@ -113,6 +113,6 @@ O Problema~\ref{DivConq:DP} segue um formato clássico de programação dinâmic
 
 Definimos a matriz de cortes ótimos~$P$ da recorrência~$E$. Para toda entrada~$\ell,j$ de~$E$ onde~$\ell > 1$ vale que~$P[\ell][j]$ é o menor valor em~$[j]$ que respeita~${ E[\ell][j] = A[1][P[\ell][j]] + A[P[\ell][j]][j] }$. É claro da definição de~$E$ que esta matriz existe. É fácil calcular, junto com~$E$, as entradas da matriz~$P$. Esta matriz representa as escolhas que devem ser feitas em cada busca de mínimo da definição~$E$ para encontrar os valores verdadeiros das entradas da matriz.
 
-Se as linhas da matriz~$P$ forem todas monótonas, isto é, se vale~${ P[\ell][i] \leq P[\ell][i'] }$ sempre que~${ i,i' \in [n] }$ e~$i < i'$, é possível utilizar a divisão e conquista para resolver o problema. É fácil ver isso construindo matrizes~$B_\ell$ iguais às construídas na solução do Problema~\ref{DivConq:InternetTrouble} e verificando que~$P[\ell][i]$ é o índice de mínimo da linha~$i$ matriz~$B_\ell$.
+Se as linhas da matriz~$P$ forem todas monótonas, isto é, se vale~${ P[\ell][i] \leq P[\ell][i'] }$ sempre que~${ i,i' \in [n] }$ e~$i < i'$, é possível utilizar divisão e conquista para resolver o problema. É fácil ver isso construindo matrizes~$B_\ell$ iguais às construídas na solução do Problema~\ref{DivConq:InternetTrouble} e verificando que~$P[\ell][i]$ é o índice de mínimo da linha~$i$ da matriz~$B_\ell$.
 
 Geralmente é uma boa prática, quando se está pensando em programação dinâmica, considerar a matriz~$P$ e pensar sobre suas propriedades. A observação de que as linhas desta matriz, quando monótonas, permitem a aplicação do método da divisão e conquista é uma boa maneira de perceber a pertinência desta otimização em problemas e configura uma habilidade especialmente útil em competições de programação.
