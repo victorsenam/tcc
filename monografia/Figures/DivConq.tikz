@@ -3,7 +3,7 @@
 % Author: Jimi Oke
 % ================
 
-\begin{tikzpicture}[scale=.35]\footnotesize
+\begin{tikzpicture}[scale=.5]\footnotesize
 
 \begin{scope}[yscale=-1] % I'm flipping the y-axis because I'm working on grids
   % Step 1
