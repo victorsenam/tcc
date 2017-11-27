@@ -21,8 +21,8 @@ Vamos apresentar a otimização de Knuth-Yao para problemas de minimização, o 
 Uma matriz~$A \in \B{Q}^{n \times n}$ triangular inferior em 0 é considerada uma recorrência de intervalos se existe uma matriz~$C \in \B{Q}^{n \times n}$ tal que, para todo~$i,j \in [n]$,
 \begin{equation*}
 A[i][j] = \begin{cases}
-C[i][j]                                                           & \text{, se } i = j \text{, }  \\
-C[i][j] + \min\{A[i][k-1] + A[k][j] \mid i < k \leq j \}          & \text{, se } i < j \text{.}
+C[i][j]                                                           & \text{se } i = j \text{, }  \\
+C[i][j] + \min\{A[i][k-1] + A[k][j] \mid i < k \leq j \}          & \text{se } i < j \text{.}
 \end{cases}
 \end{equation*}
 A matriz~$C$ é chamada de matriz de custos de~$A$.
@@ -158,7 +158,7 @@ A[i][j] + A[i'][j'] - A[i'][j] &= A[i][j] + A[j][j'] - A[j][j] \nonumber \\
                                &\leq C[i][j'] + A[i][x-1] + A[x][j'] \label{KY:CtoA:3} \\
                                &= A[i][j'] \text{,} \nonumber
 \end{align}
-A desigualdade~\eqref{KY:CtoA:1} vale pois~${i < x \leq j}$ e~${A[i][j] = C[i][j] + \min\limits \{ A[i][k-1] + A[k][j]) \mid k \in [i+1 \tdots j]\} }$. A~\eqref{KY:CtoA:2} vale pois~${x \leq j \leq j'}$ e~$j' - x < l$, portanto, pela hipótese de indução, vale que~${A[x][j] + A[j][j'] \leq A[x][j'] + A[j][j]}$. Finalmente, vale~\eqref{KY:CtoA:3} pois~$C$ é monótona nos intervalos. Com isso, provamos que~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$. No caso em que~${x > j}$, basta utilizar~${A[j][j'] \leq C[j][j'] + A[j][x-1] + A[x][j']}$ em vez do que foi utilizado em~\eqref{KY:CtoA:1} e adaptar o passo~\eqref{KY:CtoA:2} para aplicar a hipótese de indução em~${i \leq j \leq x-1}$.
+A desigualdade~\eqref{KY:CtoA:1} vale pois~${A[i][j] = C[i][j] + \min\limits \{ A[i][k-1] + A[k][j]) \mid k \in [i+1 \tdots j]\} }$ e~${i < x \leq j}$. A~\eqref{KY:CtoA:2} vale pois~${x \leq j \leq j'}$ e~$j' - x < l$, portanto, pela hipótese de indução, vale que~${A[x][j] + A[j][j'] \leq A[x][j'] + A[j][j]}$. Finalmente, vale~\eqref{KY:CtoA:3} pois~$C$ é monótona nos intervalos. Com isso, provamos que~${A[i][j] + A[i'][j'] \leq A[i'][j] + A[i][j']}$. No caso em que~${x > j}$, basta utilizar~${A[j][j'] \leq C[j][j'] + A[j][x-1] + A[x][j']}$ em vez do que foi utilizado em~\eqref{KY:CtoA:1} e adaptar o passo~\eqref{KY:CtoA:2} para aplicar a hipótese de indução em~${i \leq j \leq x-1}$.
 
 Se~${i' < j}$, definimos os pontos ótimos de corte~${x = P[i][j']}$ e~${y = P[i'][j]}$ e seguimos um raciocínio parecido com o caso anterior. Assumindo que~${x \leq y}$, temos 
 \begin{align}
@@ -179,7 +179,14 @@ Uma recorrência de intervalos~$A$ Monge convexa é Knuth-Yao otimizável.
 \begin{proof}
 Seja~$A \in \B{Q}^{n \times n}$ uma matriz Monge convexa que é uma recorrência de intervalos com matriz de cortes ótimos~$P$. Queremos mostrar que, para todo~$i,j \in [n]$ com~$i < j$, vale que~${P[i][j-1] \leq P[i][j] \leq P[i+1][j]}$. Observe que o caso em que~${i + 1 = j}$ é trivial e assuma que~${i + 1 < j}$.
 
-Sejam~${x,y \in[n]}$ índices de linhas e colunas de~$A$ tais que~$x < y$. Vamos mostrar que se vale a desigualdade~${A[i][x-1] + A[x][j] \leq A[i][y-1] + A[y][j]}$, então também vale que~${A[i][x-1] + A[x][j-1] \leq A[i][y-1] + A[y][j-1]}$. Assumindo a primeira desigualdade, vale que~${A[i][x-1] - A[i][y-1] \leq A[y][j] - A[x][j]}$ e, já que~${x < y}$ e~${j-1 < j}$, usando a Monge convexidade de~$A$, temos que~${A[x][j-1] - A[y][j-1] \leq A[x][j] - A[y][j]}$. Com isso, obtemos que~${A[i][x-1] + A[x][j-1] \leq A[i][y-1] + A[y][j-1]}$, o que conclui a prova da implicação proposta. A existência de algum par~$i,j \in [n]$ com~$i < j$ e tal que~${y = P[i][j-1] > P[i][j] = x}$ implica que~${A[i][x-1] + A[x][j] \leq A[i][y-1] + A[y][j]}$ e~${A[i][x-1] + A[x][j-1] > A[i][y-1] + A[y][j-1]}$, contrariando o que foi provado neste parágrafo. Concluímos que~${P[i][j-1] \leq P[i][j]}$. 
+Da definição de recorrência de intervalos, temos
+$$ A[i][j] = \min\{ A[i][k-1] + A[k][j] + C[i][j] \mid k \in [i \tdots j - 1] \} \text{ e } $$
+$$ A[i][j-1] = \min\{ A[i][k-1] + A[k][j-1] \mid k \in [i \tdots j-2] \} $$
+para alguma matriz~$C$. Tome candidatos~$x$ e~$y$ a valor~$k$ destes mínimos, índices~${x,y \in [i \tdots j-2] }$. Assuma, sem perda de generalidade, que~$x < y$. Vamos mostrar que a escolha de~$k$ como~$x$ atinge um valor menor do que a escolha de~$k$ como~$y$ em~$A[i][j]$, isso também ocorre em~${ A[i][j-1] }$. Formalmente, vamos mostrar que a desigualdade~${ A[i][x-1] + A[x][j] \leq A[i][y-1] + A[y][j] }$ implica que~${ A[i][x-1] + A[x][j-1] \leq A[i][y-1] + A[y][j-1] }$.
+
+Assumimos, portanto, que~$A[i][x-1] + A[x][j] \leq A[i][y-1] + A[y][j]$. Da condição de Monge aplicada às linhas~${ x < y }$ e colunas~${ j - 1 < j }$ de~$A$, temos que~${ A[x][j-1] + A[y][j] \leq A[x][j] + A[y][j-1] }$. Manipulando e combinando estas duas desigualdades é possível obter
+$$ A[i][x-1] - A[i][y-1] \leq A[y][j] - A[x][j] \leq A[y][j-1] - A[x][j-1] $$
+que equivale a~${ A[i][x-1] + A[x][j-1] \leq A[i][y-1] + A[y][j-1] }$ e demonstra a implicação proposta. Desta implicação concluímos que se~$x = P[i][j]$ então~$P[i][j-1] \neq y$ para todo~$y > x$. Em outras palavras, para todo~$i,j \in [n]$ tal que~$i < j$ vale que~$P[i][j-1] \leq P[i][j]$.
 
 De forma simétrica, para mostrar que~${P[i][j] \leq P[i+1][j]}$, basta perceber que se~${x,y \in [n]}$ e~${x > y}$, então será verdade que a desigualdade~${A[i][x-1] + A[x][j] < A[i][y-1] + A[y][j]}$ implica que~${A[i+1][x-1] + A[x][j] < A[i+1][y-1] + A[y][j]}$, o que contradiz~${P[i][j] > P[i+1][j]}$, provando que~${P[i][j] \leq P[i+1][j]}$.
 \end{proof}
