@@ -68,3 +68,12 @@ exemplos/Fundraising/Fundraising.Pareto.out : %.out : %.cpp algoritmos/Pareto.cp
 
 exemplos/Fundraising/Fundraising.Trivial.out : %.out : %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/VerticesMaisDistantes/VerticesMaisDistantes.SMAWK.out : %.out : %.cpp algoritmos/SMAWK.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/VerticesMaisDistantes/VerticesMaisDistantes.DivConq.out : %.out : %.cpp algoritmos/DivConq.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
+
+exemplos/VerticesMaisDistantes/VerticesMaisDistantes.Trivial.out : %.out : %.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $+ -o $@
