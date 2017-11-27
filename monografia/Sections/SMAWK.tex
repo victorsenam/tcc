@@ -152,13 +152,13 @@ A implementação em C++ do algoritmo apresentado, levando em conta as considera
 %----------------------------------------------------------------------------------------
 
 \section{Aplicações} \label{SMAWK:Appl}
-Aggarwal~\cite{Aggarwal:1987} mostrou a aplicação do~$\SMAWK$ na solução de vários problemas de geometria computacional. Um destes problemas, como mencionado no início do capítulo, é o Problema~\ref{SMAWK:TPMD}.
+Aggarwal, Klawe, Moran, Shor e Wilber~\cite{Aggarwal:1987} mostraram a aplicação do~$\SMAWK$ na solução de vários problemas de geometria computacional. Um destes problemas, como mencionado no início do capítulo, é o Problema~\ref{SMAWK:TPMD}.
 
 \begin{prob}[Todos os pares mais distantes em um polígono convexo] \label{SMAWK:TPMD}
-Dado um polígono convexo~$p$ com~$n$ vértices indexados em sentido horário, encontrar, para cada vértice~$p_i$, um outro vértice~$p_j$ que maximize~$d(p_i,p_j)$, onde~$d(p_i,p_j)$ é a distância euclideana entre os pontos~$p_i$ e~$p_j$.
+Dado um polígono convexo~$p$ com~$n$ vértices indexados em sentido horário, encontrar, para cada vértice~$p_i$, um outro vértice~$p_j$ que maximize~$d(p_i,p_j)$, onde~$d(p_i,p_j)$ é o quadrado da distância euclideana entre os pontos~$p_i$ e~$p_j$.
 \end{prob}
 
-Consideramos convexo um polígono simples tal que nenhum vértice pode ser escrito como combinação convexa de um par de outros dois vértices do mesmo. Formalmente, não existe um real~$\lambda$ e três vértices~$a,b$ e~$c$ tais que~$\lambda a + (1 - \lambda)b = c$. A distância euclideana entre dois pontos~${ a = (x_a,y_a) }$ e~${ b = (x_b,y_b) }$ é dada por~${ d(a,b) = \sqrt{ (x_a - x_b)^2 + (y_a - y_b)^2 } }$. Por conveniência, se~$j \in [n+1 \tdots 2n]$, definimos~$p_j = p_{j-n}$.
+Consideramos convexo um polígono simples tal que nenhum vértice pode ser escrito como combinação convexa dos demais vértices do mesmo polígono. Formalmente, não existe um real~$\lambda$ e três vértices~$a,b$ e~$c$ tais que~$\lambda a + (1 - \lambda)b = c$. O quadrado distância euclideana entre dois pontos~${ a = (x_a,y_a) }$ e~${ b = (x_b,y_b) }$ é dado por~${ d(a,b) = (x_a - x_b)^2 + (y_a - y_b)^2 }$. Note que maximizar o quadrado da distância euclideana é equivalente a maximizar a distância euclideana. Por conveniência, se~$j \in [n+1 \tdots 2n]$, definimos~$p_j = p_{j-n}$.
 
 \begin{figure}[h]
     \centering
@@ -166,7 +166,7 @@ Consideramos convexo um polígono simples tal que nenhum vértice pode ser escri
     \caption{Exemplo de polígono convexo com os vértices indexados em sentido horário. O vértice vermelho sem preenchimento é o mais distante do vértice verde.} \label{SMAWK:Polygon}
 \end{figure}
 
-Vamos construir uma matriz~$A$ Monge com~$n$ linhas e~$2n - 1$ colunas tal que, para cada~$i \in [n]$, se~$j$ é uma coluna que atinge o máximo na linha~$i$, então o vértice~$p_{j}$ é maximiza~$d(p_i,p_j)$. Para todo índice~$i \in [n]$ de linha de~$A$ e~$j \in [2n - 1]$ de coluna de~$A$ vale que
+Vamos construir uma matriz~$A$ Monge com~$n$ linhas e~$2n - 1$ colunas tal que, para cada~$i \in [n]$, se~$j$ é uma coluna que atinge o máximo na linha~$i$, então o vértice~$p_{j}$ maximiza~$d(p_i,p_j)$. Para todo índice~$i \in [n]$ de linha de~$A$ e~$j \in [2n - 1]$ de coluna de~$A$ vale que
 
 \begin{equation*}
 A[i][j] = \begin{cases}
@@ -190,15 +190,15 @@ A matriz~$A$ descrita é totalmente monótona côncava por linhas.
 \end{prop}
 
 \begin{proof}
-Assuma que~$n > 2$. Os dois casos restantes são triviais. Vamos mostrar que para qualquer escolha de índices~${ i \in [n-1] }$ e~${ j \in [2n-2] }$ vale a desigualdade~${ A[i][j] + A[i+1][j+1] \geq A[i][j+1] + A[i+1][j] }$. Se~$i > j$ a desigualdade equivale a~${ -C(i - j) - C(i + 1 - j - 1) \geq -C(i - j - 1) - C(i + 1 - j) }$. O caso onde~${ j > i + n} $ se desenvolve de maneira similar.
+Assuma que~$n > 2$. Os dois casos restantes são triviais. Vamos mostrar que para qualquer escolha de índices~${ i \in [n-1] }$ e~${ j \in [2n-2] }$ vale a desigualdade~${ A[i][j] + A[i+1][j+1] \geq A[i][j+1] + A[i+1][j] }$. Se~$i > j$, então a desigualdade equivale a~${ -C(i - j) - C(i + 1 - j - 1) \geq -C(i - j - 1) - C(i + 1 - j) }$. O caso onde~${ j > i + n} $ se desenvolve de maneira similar.
 
-Considere agora o caso onde~$i = j$ ou~$i = j + n$. Vale que~$A[i][j] = A[i+1][j+1] = 0$, portanto, o lado esquerdo da desigualdade soma 0. Devemos provar que~$0 \geq A[i+1][j] + A[i][j-1]$. Nas duas situações, o lado direito desta inequação é a soma da distância entre dois vértices do polígono e~$-C$. Pela escolha de~$C$, a desigualdade vale. No casos onde~$i + 1 = j$ ou~$i + n - 1 = j$ é possível escolher vértices~$a,b$ e~$c$ do polígono de forma que a desigualdade proposta seja equivalente a~$d(a,b) + d(b,c) \geq d(a,c)$, que é a desigualdade triangular. Se~$i+1 = j$ escolhemos~$a = p_i$,~$b = p_{i+1}$ e~$c = p_{i+2}$. Se~$i+n-1 = j$ escolhemos~$a = p_{i+1}$,~$b = p_{i+n-1}$ e~$c = p_{i}$.
+Considere agora o caso onde~$i = j$ ou~$i = j + n$. Vale que~$A[i][j] = A[i+1][j+1] = 0$, portanto, o lado esquerdo da desigualdade soma 0. Devemos provar que~$0 \geq A[i+1][j] + A[i][j-1]$. Nas duas situações, o lado direito desta desigualdade é a soma da distância entre dois vértices do polígono e~$-C$. Pela escolha de~$C$, a desigualdade vale. Nos casos onde~$i + 1 = j$ ou~$i + n - 1 = j$, é possível escolher vértices~$a,b$ e~$c$ do polígono de forma que a desigualdade proposta seja equivalente a~$d(a,b) + d(b,c) \geq d(a,c)$, que é a desigualdade triangular. Se~$i+1 = j$, escolhemos~$a = p_i$,~$b = p_{i+1}$ e~$c = p_{i+2}$. Se~$i+n-1 = j$, escolhemos~$a = p_{i+1}$,~$b = p_{i+n-1}$ e~$c = p_{i}$.
 
 Resta provar o caso onde~$i + 1 < j < i + n - 1$. Neste caso os vértices~$p_i,p_{i+1},p_j$ e $p_{j+1}$ são todos distintos e estão listados, nesta sequência, em sentido horário. Isso faz com que os segmentos~$p_ip_j$ e~$p_{i+1}p_{j+1}$ se intersectem. Tome o ponto~$t$ de intersecção. É fácil perceber que o lado esquerdo da desigualdade equivale a~$d(p_i,t) + d(t,p_j) + d(p_{i+1},t) + d(t,p_{j+1})$. Pela desigualdade triangular, isto é maior ou igual a~$d(p_i,p_{j+1}) + d(p_{i+1},p_j)$, o lado direito da desigualdade.
 
 Pelo Teorema~\ref{Monge:theo+1}, provamos que~$A$ é Monge côncava. Pelo Teorema~\ref{Monge:MCtoTM}, provamos que~$A$ é totalmente monótona nas linhas.
 \end{proof}
 
-É interessante observar que, na construção realizada acima, a matriz~$A$ é Monge côncava e possui valores potencialmente grandes em módulo, já que precisamos realizar a escolha do valor~$C$ de forma que ele supere todos os outros valores da matriz. Aggarwal~\cite{Aggarwal:1987} mostra uma forma de construir uma matriz parecida com a~$A$ que é apenas totalmente monótona (não Monge) e também pode ser utilizada para resolver o problema proposto na mesma complexidade. A ausência de valores desnecessariamente grandes como os que ocorrem na matriz modelada aqui pode ajudar a evitar complicações numéricas na aplicação do algoritmo.
+É interessante observar que, na construção realizada acima, a matriz~$A$ é Monge côncava e possui valores potencialmente grandes em módulo, já que precisamos realizar a escolha do valor~$C$ de forma que ele supere todos os outros valores da matriz. Aggarwal, Klawe, Moran, Shor e Wilber~\cite{Aggarwal:1987} mostram uma forma de construir uma matriz parecida com a~$A$ que é apenas totalmente monótona (não Monge) e também pode ser utilizada para resolver o problema proposto na mesma complexidade. A ausência de valores desnecessariamente grandes como os que ocorrem na matriz modelada aqui pode ajudar a evitar complicações numéricas na aplicação do algoritmo.
 
 Além de aplicações em geometria, o algoritmo SMAWK, bem como a otimização da divisão e conquista, é útil na agilização de problemas de programação dinâmica~\cite{Galil:1989,Galil:1992}. No Capítulo~\ref{Monge} foi apresentado o Problema~\ref{ Monge:example }, formulado com programação dinâmica e resolvido com o algoritmo~$\SMAWK$, por exemplo.
