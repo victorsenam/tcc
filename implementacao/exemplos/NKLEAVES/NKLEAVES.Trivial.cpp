@@ -3,40 +3,42 @@
 **/
 
 #include <cstdio>
+#include <climits>
 #include <vector>
 #include <functional>
 
-double g (double x) {
-	return x*x;
-}
-
 int main () {
-	int n;
-	scanf("%d", &n);
+	int n, k;
+	scanf("%d %d", &n, &k);
 
-	std::vector<double> w(n);
-	std::vector<double> a(n+1,0);
-	for (int i = 1; i <= n; i++) {
-		scanf("%lf", &w[i-1]);
-		a[i] = a[i-1] + w[i-1];
+	std::vector<int> a(n);
+	std::vector<long long> sum_a(n+1,0);
+	std::vector<long long> sum_ai(n+1,0);
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &a[i]);
+		sum_a[i+1] = sum_a[i] + a[i];
+		sum_ai[i+1] = sum_ai[i] + i*a[i];
 	}
 
-	std::vector<double> E(n);
-	std::function< double(int,int) > B = [&E,&a] (int i, int j) {
-		return g(a[j] - a[i-1]) + E[j];
-	};
+	std::vector<long long> E(n+1);
+	std::vector<long long> alpha(n+1);
+	std::vector<long long> beta(n+1);
 
-	E[n-1] = 0;
-	for (int i = n-2; i >= 0; i--) {
-		int j = i+1;
-		for (int _j = i+2; _j < n; _j++) {
-			if (B(i,_j) < B(i,j))
-				j = _j;
+	for (int i = n; i >= 0; i--) {
+		E[i] = sum_ai[n] - sum_ai[i] - i*(sum_a[n] - sum_a[i]);
+	}
+
+	for (int l = 2; l <= k; l++) {
+		std::vector<long long> novoE(n+1);
+		novoE[n] = 0;
+		for (int i = n-1; i >= 0; i--) {
+			novoE[i] = LLONG_MAX;
+			for (int j = i; j < n; j++)
+				novoE[i] = std::min(novoE[i], E[j] + sum_ai[j] - sum_ai[i] - (sum_a[j] - sum_a[i])*i);
 		}
-		E[i] = B(i,j);
+
+		E = novoE;
 	}
 
-	for (int i = 0; i < n; i++)
-		printf("%.6f ", E[i]);
-	printf("\n");
+	printf("%lld\n", E[0]);
 }
