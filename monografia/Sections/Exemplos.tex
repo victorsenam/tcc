@@ -3,9 +3,9 @@
 
 Neste capítulo descrevemos os exemplos implementados disponíveis em~\texttt{implementacao/exemplos}. O objetivo de implementar exemplos é mostrar possibilidades de aplicações simples dos algoritmos discutidos e mostrar maneiras facilmente adaptáveis de utilizar as implementações desenvolvidas neste trabalho.
 
-Cada exemplo pode ser implementado por mais de um dos algoritmos estudados. Uma implementação ``trivial`` também é fornecida para cada exemplo, demonstrando uma forma simples e pouco eficiente de resolver o problema proposto que não conta com os algoritmos discutidos. Aqui serão descritos os problemas resolvidos em cada exemplo, o formato de entrada e saída e serão listadas as soluções implementadas por cada um deles. Um eventual comentário sobre a modelagem feita pode ser realizado aqui.
+Cada exemplo pode ser implementado por mais de um dos algoritmos estudados. Uma implementação ``trivial'' também é fornecida para cada exemplo, demonstrando uma forma simples e pouco eficiente de resolver o problema proposto que não conta com os algoritmos discutidos. Aqui serão descritos os problemas resolvidos em cada exemplo, o formato de entrada e saída e serão listadas as soluções implementadas por cada um deles. Um eventual comentário sobre a modelagem feita pode ser realizado aqui.
 
-Cada implementação de um exemplo leva um nome do formato~\texttt{NomeDoExemplo.Algoritmo.cpp} e é compilado, a partir do utilitário~\texttt{make} com comportamente descrito pelo~\texttt{Makefile} presente em~\texttt{implementacao}, para o arquivo~\texttt{NomeDoExemplo.Algoritmo.out} onde~\texttt{NomeDoExemplo} é especificado nas descrições abaixo.
+Cada implementação de um exemplo leva um nome no formato~\texttt{NomeDoExemplo.Algoritmo.cpp} e é compilado, a partir do utilitário~\texttt{make} com comportamente descrito pelo~\texttt{Makefile} presente em~\texttt{implementacao}, para o arquivo~\texttt{NomeDoExemplo.Algoritmo.out} onde~\texttt{NomeDoExemplo} é especificado nas descrições abaixo.
 
 %-----------------------------------------------
 
@@ -13,7 +13,7 @@ Cada implementação de um exemplo leva um nome do formato~\texttt{NomeDoExemplo
 
 Este é um exemplo simples da aplicação dos algoritmos em matrizes Monge. Ele resolve o Problema~\ref{ Monge:example } dado o vetor~$w \in \B{Q}^{n}_+$ e um inteiro~$k$. A implementação leva o nome~\texttt{ExemploMonge}.
 
-O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}), com o algoritmo SMAWK (\texttt{SMAWK}) e da maneira trivial (\texttt{Trivial}).
+O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}) consumindo tempo~$\Cl{O}(kn\lg(n))$, com o algoritmo SMAWK (\texttt{SMAWK}) consumindo tempo~$\Cl{O}(kn)$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(kn^2)$.
 
 \subsection*{Descrição da entrada}
 Na primeira linha da entrada são dados dois inteiros~$k$ e~$n$ separados por um espaço. Na segunda linha são dados os valores do vetor~$w$, separados por espaços.
@@ -36,11 +36,11 @@ Saída:
 
 Este exemplo demonstra a aplicação direta dos algoritmos estudados neste trabalho. Recebe uma matriz~$A \in \B{Q}^{n \times m}$ Monge convexa e retorna os valores dos mínimos de cada uma das linhas desta matriz. A implementação leva o nome~\texttt{SimpleMonge}.
 
-O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}), com o algoritmo SMAWK (\texttt{SMAWK}) e da maneira trivial (\texttt{Trivial}).
+O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}) consumindo tempo~$\Cl{O}((n+m)\lg(n))$, com o algoritmo SMAWK (\texttt{SMAWK}) consumindo tempo~$\Cl{O}(n+m)$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}((n+m)^2)$.
 
 \subsection*{Descrição da entrada}
 
-Na primeira linha da entrada são dadas as dimensões~$n$ e~$m$ da matriz~$A$. As próximas~$n$ linhas contém~$m$ valores separados por espaços cada. O~$j$-ésimo valor da~$i$-ésima linha é a entrada~$A[i][j]$ da matriz.
+Na primeira linha da entrada são dadas as dimensões~$n$ e~$m$ da matriz~$A$. Cada uma das próximas~$n$ linhas contém~$m$ valores separados por espaços. O~$j$-ésimo valor da~$i$-ésima linha é a entrada~$A[i][j]$ da matriz.
 
 \subsection*{Descrição da saída}
 
@@ -64,13 +64,13 @@ Saída:
 
 \section{Internet Trouble simplificado} \label{InternetTroubleSimples}
 
-Este é um exemplo simples da aplicação dos algoritmos em matrizes Monge. Ele resolve o Problema~\ref{DivConq:InternetTrouble} dado o vetor~$v \in \B{Q}^{n}_+$ e um inteiro~$k$. A implementação leva o nome~\texttt{InternetTroubleSimples}.
+Este é um exemplo simples da aplicação dos algoritmos em matrizes Monge. Ele resolve o Problema~\ref{DivConq:InternetTrouble}, dado o vetor~$v \in \B{Q}^{n}_+$ e um inteiro~$k$. A implementação leva o nome~\texttt{InternetTroubleSimples}.
 
-O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}), com o algoritmo SMAWK (\texttt{SMAWK}) e da maneira trivial (\texttt{Trivial}).
+O exemplo foi implementado com a otimização da Divisão e Conquista (\texttt{DivConq}) consumindo tempo~$\Cl{O}(kn\lg(n))$, com o algoritmo SMAWK (\texttt{SMAWK}) consumindo tempo~$\Cl{O}(kn)$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(kn^2)$.
 
 \subsection*{Descrição da entrada}
 
-Na primeira linha da entrada são dados os valores~$k$ e~$n$ separados por um espaço. Na próxima linha são dados~$n$ valores separados por espaços, as entradas do vetor~$v$.
+Na primeira linha da entrada são dados os valores~$k$ e~$n$ separados por um espaço. Na próxima linha são dados~$n$ valores separados por espaços, que são as entradas do vetor~$v$.
 
 \subsection*{Descrição da saída}
 
@@ -92,15 +92,15 @@ Saída:
 
 \section{Problema online convexo} \label{ProblemaOnlineConvexo}
 
-Resolve o Problema~\ref{Online:prob} no caso convexo dado um vetor~$w \in \B{Q}^n_+$ onde a matriz~$C \in \B{Q}^{n \times n}$ é tal que, para todo~$i,j\in[n]$, vale que~$C[i][j] = (\sum_{k=1}^j w_k - \sum_{k=1}^{i-1} w_i)^2$. A implementação leva o nome~\texttt{ProblemaOnlineConvexo}.
+Resolve o Problema~\ref{Online:prob} no caso convexo, dado um vetor~$w \in \B{Q}^n_+$ onde a matriz~$C \in \B{Q}^{n \times n}$ é tal que, para todo~$i,j\in[n]$, vale que~$C[i][j] = (\sum_{k=1}^j w_k - \sum_{k=1}^{i-1} w_i)^2$. A implementação leva o nome~\texttt{ProblemaOnlineConvexo}.
 
-O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}) e da maneira trivial (\texttt{Trivial}).
+O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}) consumindo tempo~$\Cl{O}(n\lg(n))$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(n^2)$.
 
 \subsection*{Descrição da entrada}
 Na primeira linha da entrada é dado o inteiro~$n$. Na próxima linha são dados~$n$ valores separados por espaços. O~$i$-ésimo deles (a partir do 1) é a entrada~$w_i$.
 
 \subsection*{Descrição da saída}
-A saída consiste de~$n$ valores em uma linha, o~$i$-ésimo valor (à partir do 1) deve ser o valor correto de~$E[i]$.
+A saída consiste de~$n$ valores em uma linha, o~$i$-ésimo valor (à partir do 1) deve ser o valor correto de~$E[i]$, conforme a descrição do problema.
 
 \subsection*{Exemplo}
 Entrada:
@@ -117,15 +117,15 @@ Saída:
 
 \section{Problema online côncavo} \label{ProblemaOnlineConcavo}
 
-Resolve o Problema~\ref{Online:prob} no caso côncavo dado um vetor~$w \in \B{Q}^n_+$ onde a matriz~$C \in \B{Q}^{n \times n}$ é tal que, para todo~$i,j\in[n]$, vale que~$C[i][j] = -(\sum_{k=1}^j w_k - \sum_{k=1}^{i-1} w_i)^2$. A implementação leva o nome~\texttt{ProblemaOnlineConcavo}.
+Resolve o Problema~\ref{Online:prob} no caso côncavo, dado um vetor~$w \in \B{Q}^n_+$ onde a matriz~$C \in \B{Q}^{n \times n}$ é tal que, para todo~$i,j\in[n]$, vale que~$C[i][j] = -(\sum_{k=1}^j w_k - \sum_{k=1}^{i-1} w_i)^2$. A implementação leva o nome~\texttt{ProblemaOnlineConcavo}.
 
-O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConcavo}) e da maneira trivial (\texttt{Trivial}).
+O exemplo foi implementado com o envelope côncavo (\texttt{EnvelopeConcavo}) consumindo tempo~$\Cl{O}(n\lg(n))$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(n^2)$.
 
 \subsection*{Descrição da entrada}
 Na primeira linha da entrada é dado o inteiro~$n$. Na próxima linha são dados~$n$ valores separados por espaços. O~$i$-ésimo deles (a partir do 1) é a entrada~$w_i$.
 
 \subsection*{Descrição da saída}
-A saída consiste de~$n$ valores em uma linha, o~$i$-ésimo valor (à partir do 1) deve ser o valor correto de~$E[i]$.
+A saída consiste de~$n$ valores em uma linha, o~$i$-ésimo valor (à partir do 1) deve ser o valor correto de~$E[i]$, conforme a descrição do problema.
 
 \subsection*{Exemplo}
 Entrada:
@@ -140,11 +140,44 @@ Saída:
 
 %-----------------------------------------------
 
+\section{Vértices mais distantes num polígono convexo} \label{PMDPC}
+
+Resolve o Problema~\ref{SMAWK:TPMD}, dado um inteiro~$n$ e um polígono convexo~$p$ em sentido horário. A implementação leva o nome~\texttt{VerticesMaisDistantes}. 
+
+O exemplo foi implementado com o algoritmo SMAWK (\texttt{SMAWK}) consumindo tempo~$\Cl{O}(n)$, com a otimização da divisão e conquista (\texttt{DivConq}) consumindo tempo~$\Cl{O}(n\lg(n))$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(n^2)$.
+
+\subsection*{Descrição da entrada}
+Na primeira linha da entrada é dado o inteiro~$n$. Nas~$n$ linhas seguintes é dado o polígono~$p$. Na~$i$-ésima destas linhas são dadas as coordenadas~$x$ e~$y$, separadas por um espaço, do vértices~$p_i$. Os vértices são dados em sentido horário.
+
+\subsection*{Descrição da saída}
+A saída consiste de~$n$ valores em uma linha, o~$i$-ésimo valor (à partir do 1) deve o quadrado da distância euclideana entre o vértice~$p_i$ e o vértice de~$p$ mais distante deste.
+
+\subsection*{Exemplo}
+Entrada:
+\begin{verbatim}
+5
+0 0
+1 1
+4 1
+5 -1
+3 -2
+\end{verbatim}
+Saída:
+\begin{verbatim}
+26
+20
+17
+26
+13
+\end{verbatim}
+
+%-----------------------------------------------
+
 \section{NKLEAVES} \label{NKLEAVES}
 
 Resolve o problema NKLEAVES disponível em \href{http://www.spoj.com/problems/NKLEAVES/}{http://www.spoj.com/problems/NKLEAVES/}.
 
-O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}), o envelope convexo linear (\texttt{EnvelopeConvexoLinear}) e da maneira trivial (\texttt{Trivial}). É importante observar que as implementações de envelope utilizam o formato~\texttt{double} que não tem precisão suficiente para este problema. Para testar as implementações do exemplo nos casos disponíveis online é necessário adaptar as estruturas para usar um formato mais apropriado, como o~\texttt{long long int}.
+O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}) consumindo tempo~$\Cl{O}(kn\lg(n))$, com o envelope convexo linear (\texttt{EnvelopeConvexoLinear}) consumindo tempo~$\Cl{O}(kn)$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(kn^2)$. É importante observar que as implementações de envelope utilizam o formato~\texttt{double} que não tem precisão suficiente para este problema. Para testar as implementações do exemplo nos casos disponíveis online é necessário adaptar as estruturas para usar um formato mais apropriado, como o~\texttt{long long int}.
 
 %-----------------------------------------------
 
@@ -152,7 +185,7 @@ O exemplo foi implementado com o envelope convexo (\texttt{EnvelopeConvexo}), o 
 
 Resolve o problema BRKSTRNG disponível em \href{http://www.spoj.com/problems/BRKSTRNG/}{http://www.spoj.com/problems/BRKSTRNG/} e discutido na Seção~\ref{ KY:brk }.
 
-O exemplo foi implementado com a otimização de Knuth-Yao (\texttt{KnuthYao}) e da maneira trivial (\texttt{Trivial}).
+O exemplo foi implementado com a otimização de Knuth-Yao (\texttt{KnuthYao}) consumindo tempo~$\Cl{O}(n^2)$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(n^3)$.
 
 %-----------------------------------------------
 
@@ -160,4 +193,4 @@ O exemplo foi implementado com a otimização de Knuth-Yao (\texttt{KnuthYao}) e
 
 Resolve o problema ``Fundraising'' da Final Brasileira da Maratona de Programação de 2017. Informações sobre a prova podem ser encontradas em \href{http://maratona.ime.usp.br/resultados17}{http://maratona.ime.usp.br/resultados17}.
 
-O exemplo foi implementado com a Fronteira de Pareto (\texttt{Pareto}) e da maneira trivial (\texttt{Trivial}). É importante observar que a implementação da Fronteira de Pareto usa o formato~\texttt{double} que não tem precisão suficiente para este problema. Para testar a implementação do exemplo nos casos utilizados oficialmente é necessário adaptar a estrutura para usar um formato mais apropriado, como o~\texttt{long long int}.
+O exemplo foi implementado com a Fronteira de Pareto (\texttt{Pareto}) consumindo tempo~$\Cl{O}(n\lg(n))$ e da maneira trivial (\texttt{Trivial}) consumindo tempo~$\Cl{O}(n^2)$. É importante observar que a implementação da Fronteira de Pareto usa o formato~\texttt{double} que não tem precisão suficiente para este problema. Para testar a implementação do exemplo nos casos utilizados oficialmente é necessário adaptar a estrutura para usar um formato mais apropriado, como o~\texttt{long long int}.

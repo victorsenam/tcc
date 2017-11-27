@@ -3,7 +3,7 @@
 % Author: Jimi Oke
 % ================
 
-\begin{tikzpicture}[scale=.35]\footnotesize
+\begin{tikzpicture}[scale=.8]\footnotesize
  \pgfmathsetmacro{\n}{5}
 
 \begin{scope}<+->;
