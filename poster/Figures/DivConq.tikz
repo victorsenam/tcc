@@ -1,0 +1,52 @@
+\begin{tikzpicture}[scale=.7]\footnotesize
+
+\begin{scope}[yscale=-1] % I'm flipping the y-axis because I'm working on grids
+  % Step 1
+  \pgfmathsetmacro{\p}{0} % initial x
+
+  \draw[step=1cm,gray,very thin] (\p,0) grid (\p+7,7); % grid
+  \draw[green,thick] (\p,3) rectangle (\p+7,4); % selected row
+  \fill[pattern=north west lines,pattern color=red] (\p+2,3) rectangle (\p+3,4); % row minima
+\end{scope}
+
+\begin{scope}[yscale=-1,yshift=220] % I'm flipping the y-axis because I'm working on grids
+  % Step 2
+  \pgfmathsetmacro{\p}{5}
+  \fill[pattern=north west lines,pattern color=red] (\p+2,3) rectangle (\p+3,4);
+  \draw[step=1cm,gray,very thin] (\p,0) rectangle (\p+7,7);
+
+  \draw[step=1cm,gray,very thin] (\p,0) grid (\p+3,3);
+  \draw[green,thick] (\p,1) rectangle (\p+3,2);
+  \fill[pattern=north west lines,pattern color=red] (\p,1) rectangle (\p+1,2);
+
+  \draw[step=1cm,gray,very thin] (\p+2,4) grid (\p+7,7);
+  \draw[green,thick] (\p+2,5) rectangle (\p+7,6);
+  \fill[pattern=north west lines,pattern color=red] (\p+5,5) rectangle (\p+6,6);
+\end{scope}
+
+\begin{scope}[yscale=-1,yshift=440] % I'm flipping the y-axis because I'm working on grids
+  % Step 3
+  \pgfmathsetmacro{\p}{10}
+  \fill[pattern=north west lines,pattern color=red] (\p+2,3) rectangle (\p+3,4);
+  \fill[pattern=north west lines,pattern color=red] (\p,1) rectangle (\p+1,2);
+  \fill[pattern=north west lines,pattern color=red] (\p+5,5) rectangle (\p+6,6);
+  \draw[step=1cm,gray,very thin] (\p,0) rectangle (\p+7,7);
+
+  \draw[step=1cm,gray,very thin] (\p,0) grid (\p+1,1);
+  \draw[green,thick] (\p,0) rectangle (\p+1,1);
+  \fill[pattern=north west lines,pattern color=red] (\p,0) rectangle (\p+1,1);
+
+  \draw[step=1cm,gray,very thin] (\p,2) grid (\p+3,3);
+  \draw[green,thick] (\p,2) rectangle (\p+3,3);
+  \fill[pattern=north west lines,pattern color=red] (\p+1,2) rectangle (\p+2,3);
+
+  \draw[step=1cm,gray,very thin] (\p+2,4) grid (\p+6,5);
+  \draw[green,thick] (\p+2,4) rectangle (\p+6,5);
+  \fill[pattern=north west lines,pattern color=red] (\p+4,4) rectangle (\p+5,5);
+
+  \draw[step=1cm,gray,very thin] (\p+5,6) grid (\p+7,7);
+  \draw[green,thick] (\p+5,6) rectangle (\p+7,7);
+  \fill[pattern=north west lines,pattern color=red] (\p+5,6) rectangle (\p+6,7);
+\end{scope}
+
+\end{tikzpicture}

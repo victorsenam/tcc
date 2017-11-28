@@ -1,0 +1,44 @@
+\begin{tikzpicture}[scale=.8]\footnotesize
+
+\begin{scope}[yscale=-1] % I'm flipping the y-axis because I'm working on grids
+  \pgfmathsetmacro{\p}{0} % initial y
+  \draw[step=1cm,gray,very thin] (0,\p) grid (8,\p+1); % vector
+  \draw[red,thick] (3,\p) -- (3,\p+1);
+
+  \pgfmathsetmacro{\p}{2}
+  \draw[xshift=-.25cm,step=1cm,gray,very thin] (0,\p) grid (3,\p+1);
+  \draw[xshift=-.25cm,red,thick] (2,\p) -- (2,\p+1);
+  \draw[xshift=.25cm,step=1cm,gray,very thin] (3,\p) grid (8,\p+1);
+  \draw[xshift=.25cm,red,thick] (6,\p) -- (6,\p+1);
+
+  \pgfmathsetmacro{\p}{4}
+  \draw[xshift=-.75cm,step=1cm,gray,very thin] (0,\p) grid (2,\p+1);
+  \draw[xshift=-.75cm,red,thick] (1,\p) -- (1,\p+1);
+  \draw[xshift=-.25cm,step=1cm,gray,very thin] (2,\p) grid (3,\p+1);
+  \draw[xshift=.25cm,step=1cm,gray,very thin] (3,\p) grid (6,\p+1);
+  \draw[xshift=.25cm,red,thick] (4,\p) -- (4,\p+1);
+  \draw[xshift=.75cm,step=1cm,gray,very thin] (6,\p) grid (8,\p+1);
+  \draw[xshift=.75cm,red,thick] (7,\p) -- (7,\p+1);
+
+  \pgfmathsetmacro{\p}{6}
+  \draw[xshift=-1.5cm,step=1cm,gray,very thin] (0,\p) grid (1,\p+1);
+  \draw[xshift=-1cm,step=1cm,gray,very thin] (1,\p) grid (2,\p+1);
+  \draw[xshift=-.5cm,step=1cm,gray,very thin] (2,\p) grid (3,\p+1);
+  \draw[xshift=0cm,step=1cm,gray,very thin] (3,\p) grid (4,\p+1);
+  \draw[xshift=.5cm,step=1cm,gray,very thin] (4,\p) grid (6,\p+1);
+  \draw[xshift=.5cm,red,thick] (5,\p) -- (5,\p+1);
+  \draw[xshift=1cm,step=1cm,gray,very thin] (6,\p) grid (7,\p+1);
+  \draw[xshift=1.5cm,step=1cm,gray,very thin] (7,\p) grid (8,\p+1);
+
+  \pgfmathsetmacro{\p}{8}
+  \draw[xshift=-1.75cm,step=1cm,gray,very thin] (0,\p) grid (1,\p+1);
+  \draw[xshift=-1.25cm,step=1cm,gray,very thin] (1,\p) grid (2,\p+1);
+  \draw[xshift=-.75cm,step=1cm,gray,very thin] (2,\p) grid (3,\p+1);
+  \draw[xshift=-.25cm,step=1cm,gray,very thin] (3,\p) grid (4,\p+1);
+  \draw[xshift=.25cm,step=1cm,gray,very thin] (4,\p) grid (5,\p+1);
+  \draw[xshift=.75cm,step=1cm,gray,very thin] (5,\p) grid (6,\p+1);
+  \draw[xshift=1.25cm,step=1cm,gray,very thin] (6,\p) grid (7,\p+1);
+  \draw[xshift=1.75cm,step=1cm,gray,very thin] (7,\p) grid (8,\p+1);
+\end{scope}
+
+\end{tikzpicture}

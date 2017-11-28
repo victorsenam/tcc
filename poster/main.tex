@@ -70,128 +70,41 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
 Este trabalho discute algoritmos que aproveitam propriedades de matrizes Monge~\cite{Burkard}. Para introduzir tais matrizes, olharemos para um problema interessante em geometria computacional.
 
-\begin{prob} Dado um polígono convexo~$p$ com os vértices indexados de 1 até~$n$ em sentido horário, encontrar, para cada vértice~$p_i$ com~$i \in [n]$, um vértice~$p_j$ com~$j \in [n]$ que maximiza a distância euclidiana~$d(p_i,p_j)$ entre os dois pontos.
+\begin{prob} Dado um polígono convexo~$p$ com os vértices indexados de 1 até~$n$ em sentido horário, encontrar, para cada vértice~$p_i$ com~$i \in [n]$, um vértice~$p_j$ com~$j \in [n]$ que maximiza o quadrado da distância euclidiana~$d(p_i,p_j)$ entre os dois pontos.
 \end{prob}
 
 \begin{figure}[h]
     \centering
-    \input{Figures/Holder.tikz}
+    \input{Figures/Polygon.tikz}
     \caption{O polígono ilustrado é convexo. O ponto em verde é o mais distante do ponto em vermelho.} \label{Polygon}
 \end{figure}
 
 É fácil resolver o problema proposto em tempo~$\Cl{O}(n^2)$ calculando a distância de cada vértice do polígono para cada um dos demais. Existe alguma maneira mais rápida de resolver este problema?
 \vskip2ex
-Uma matriz~$A$ com~$n$ linhas e~$m$ colunas é \textbf{Monge convexa} se, para cada~$i,i' \in [n]$ e~$j,j' \in [m]$ onde~$i < i'$ e~$j < j'$, vale que
-$$ A[i][j] + A[i'][j'] \leq A[i][j'] + A[i'][j] \text{.} $$
+Uma matriz~$A$ com~$n$ linhas e~$m$ colunas é \textbf{Monge côncava} se, para cada~$i,i' \in [n]$ e~$j,j' \in [m]$ onde~$i < i'$ e~$j < j'$, vale que
+$$ A[i][j] + A[i'][j'] \geq A[i][j'] + A[i'][j] \text{.} $$
 \vskip2ex
-Vamos construir uma matriz Monge convexa~$A$ com~$n$ linhas e~$2n - 1$ colunas a partir do polígono~$p$ de forma que, para cada linha~$i$ de~$A$, uma coluna~$j$ que atinge o máximo nessa linha é tal que~$p_j$ é um ponto mais distante de~$p_i$. Se~$i < j < i+n$, vale que~$A[i][j] = d(p_i,p_j)$. Para~$j \leq i$, temos que~$A[i][j] = j - i$ e, finalmente, para~$i + n \leq j$, vale que~$A[i][j] = -1$.
+Vamos construir uma matriz Monge côncava~$A$ com~$n$ linhas e~$2n - 1$ colunas a partir do polígono~$p$ e um valor~$C$ suficientemente grande de forma que, para cada linha~$i$ de~$A$, uma coluna~$j$ que atinge o máximo nessa linha é tal que~$p_j$ é um ponto mais distante de~$p_i$. Se~$i < j < i+n$, vale que~$A[i][j] = d(p_i,p_j)$. Para~$j \leq i$, temos que~$A[i][j] = -C(i - j)$ e, finalmente, para~$i + n \leq j$, vale que~$A[i][j] = -C(j - n - i)$.
 
 \begin{figure}[h]
     \centering
-    \input{Figures/Holder.tikz}
-    \caption{Matriz Monge convexa relativa ao polígono da Figura~\ref{Polygon}. Para todo quadrado escolhido (em preto), a soma dos valores marcados em verde não pode superar a dos marcados em vermelho.}
+    \input{Figures/PolygonMatrix.tikz}
+    \caption{Matriz Monge côncava relativa ao polígono da Figura~\ref{Polygon}. O valor~$C$ escolhido foi 13. Os números da forma~$d(a,b)$ para algum par de vértices~$a$,~$b$ do polígono estão marcados em preto. As entradas restantes estão marcadas em vermelho.}
 \end{figure}
 
-Como encontrar um valor máximo em cada linha de uma matriz Monge convexa sem analisar todas as suas entradas? Mais especificamente, sem gastar tempo quadrático. Para isso, vamos explorar as propriedades das matrizes Monge. Toda matriz Monge convexa é \textbf{monótona decrescente nos máximos das linhas}: os maiores índices de máximos das suas linhas estão em ordem decrescente.
+Como encontrar um valor máximo em cada linha de uma matriz Monge sem analisar todas as suas entradas? Mais especificamente, sem gastar tempo quadrático. Para isso, vamos explorar as propriedades das matrizes Monge. Toda matriz Monge côncava é \textbf{monótona crescente nos máximos das linhas}: os maiores índices de máximos das suas linhas estão em ordem decrescente.
 
 \begin{figure}[h]
     \centering
-    \input{Figures/Holder.tikz}
-    \caption{Matriz monótona decrescente nos máximos das linhas. Os máximos das linhas estão marcados em verde.}
+    \input{Figures/Monotone.tikz}
+    \caption{Matriz monótona decrescente nos máximos das linhas. Os máximos das linhas estão marcados em vermelho.}
 \end{figure}
 
-Uma matriz Monge convexa é \textbf{totalmente monótona convexa nas linhas}: toda submatriz dela é monótona decrescente nos máximos das linhas. Estas propriedades são essenciais para os algoritmos discutidos no trabalho.
+Uma matriz Monge côncava é \textbf{totalmente monótona côncava nas linhas}: toda submatriz dela é monótona crescente nos máximos das linhas. Estas propriedades são essenciais para os algoritmos discutidos no trabalho.
 \vskip2ex
-As matrizes Monge possuem também outros tipos de monotonicidade e total monotonicidade. Uma matriz Monge convexa é, por exemplo, monótona crescente nos mínimos das linhas e totalmente monótona convexa nas colunas. Existem também as matrizes Monge côncavas. Esta diversidade faz com que os algoritmos discutidos aqui resolvam vários problemas distintos. 
+Existem também as matrizes Monge convexas. As matrizes Monge possuem também outros tipos de monotonicidade e total monotonicidade. Uma matriz Monge côncava é, por exemplo, totalmente monótona côncava nas colunas e monótona decrescente nos mínimos das linhas. Esta diversidade faz com que os algoritmos discutidos aqui resolvam vários problemas distintos. 
 
 
-	\end{block}
-
-\end{column}
-
-
-\begin{column}{0.60\paperwidth} 
-
-    \begin{columns}[c,totalwidth=0.60\paperwidth]
-
-    \begin{column}{0.47\columnwidth}
-
-        \begin{block}{Divisão e conquista}
-O primeiro método não trivial para encontrar os máximos das linhas de matrizes Monge é chamado de método da divisão e conquista. A ideia é simples e utiliza apenas a monotonicidade da matriz Monge.
-\vskip2ex
-Tome uma matriz~$A$ com~$n$ linhas e~$m$ colunas. Tome como~$\ell$ uma linha do meio da matriz (teto ou chão de~$\frac{1 + n}{2}$). Se~$r$ é o maior índice de máximo desta linha, sabemos que os índices de máximos das outras linhas nas submatrizes~$A[1 \tdots \ell-1][r \tdots n]$ e~$A[\ell + 1 \tdots n][1 \tdots r]$, para as quais resolvemos o problema recursivamente.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{Progressão da divisão e conquista. A cada passo, a linha~$\ell$ está marcada em verde e a célula de máximo desta linha está circulada em vermelho.}
-\end{figure}
-
-Escolhendo~$\ell$ da forma como escolhemos, este algoritmo completa seu trabalho em tempo~$\Cl{O}((n+m)\lg(n))$.
-        \end{block}
-
-        \begin{block}{SMAWK}
-
-O algoritmo SMAWK~\cite{Aggarwal} é um método para encontrar os máximos de linhas de matrizes totalmente monótonas.
-\vskip2ex
-A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e conquista, mas em vez de encontrar o máximo de uma linha central, ele remove todas as linhas pares da matriz, resolve o problema para esta nova matriz e utiliza esta resposta para calcular rapidamente os valores das linhas restantes.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{Progressão do SMAWK. Primeiro, as linhas pares são removidas. Depois os máximos das linhas restantes (em vermelho) são encontrados recursivamente. Finalmente, para encontrar os índices das linhas originais, é necessário visitar apenas algumas posições (em verde).}
-\end{figure}
-
-Desta forma o algoritmo tomaria tempo~$\Cl{O}((n+m)\lg(n))$, assim como o método da divisão e conquista. Para melhorar esta complexidade, antes de resolver o problema recursivamente, o algoritmo SMAWK remove algumas colunas da matriz formada, tornando-a quadrada. 
-\vskip2ex
-Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, colunas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os máximos nas mesmas posições da original. Com isso, o algoritmo todo toma tempo~$\Cl{O}(n+m)$.
-
-        \end{block}
-        
-    \end{column}
-
-
-    \begin{column}{0.5\columnwidth}
-        \begin{block}{Programação Dinâmica}
-As matrizes Monge são muito úteis para resolver problemas de programação dinâmica~\cite{Galil}. 
-\vskip2ex
-O problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação 2016 pode ser reduzido para uma recorrência~$E$ tal que~${ E[1][j] = A[1][j]}$ e~${ E[\ell][j] = \min\{E[\ell-1][i]] + A[i][j] \mid i \in [j]\} }$ para todo par de índices~${ \ell \in [2 \tdots k] }$ e~$j \in [n]$ onde~$A$ é uma matriz e~$k$ e~$n$ são inteiros. Esta recorrência pode ser resolvida de maneira fácil com programação dinâmica em tempo~$\Cl{O}(kn^2)$. Porém, é possível traduzir esta recorrência para uma matriz monótona crescente nos mínimos das linhas de forma que encontrar os mínimos desta matriz é equivalente a encontrar a solução da recorrência~$E$. Esta redução resolve o problema em tempo~$\Cl{O}(kn\lg(n))$.
-\vskip2ex
-Um outro formato comum para programação dinâmica que é relacionado a matrizes Monge é o dado por uma recorrência~$E$ tal que~${ E[i] = \min\{ E[j] + C[i][j] \mid j \in [i+1 \tdots n] \} }$ para todo~$i \in [n-1]$ e~$E[n] = 0$ onde~$n$ é um natural e~$C$ é uma matriz Monge convexa. O trabalho apresenta uma estrutura de dados chamada de envelope que faz com que seja possível resolver esta recorrência em tempo~$\Cl{O}(n\lg(n))$ em vez de~$\Cl{O}(n^2)$, que é o tempo da solução trivial por programação dinâmica.
-        \end{block}
-
-        \begin{block}{Otimização de Knuth-Yao}
-A otimização de Knuth-Yao é uma aplicação das propriedades das matrizes Monge fortemente relacionada a programação dinâmica. Ela se baseia na solução de Knuth~\cite{Knuth} para o problema da árvore de busca binária ótima. Yao~\cite{Yao} percebeu que tal solução poderia ser usada para qualquer recorrência tal que~$A[i][j] = C[i][j]$ quando~$i = j$ e, quando~$1 \leq i < j \leq n$,
-\begin{equation*}
-A[i][j] = C[i][j] + \min\{A[i][k-1] + A[k][j] \mid k \in [i+1 \tdots j]\} 
-\end{equation*}
-onde~$C$ é uma matriz Monge convexa e \textbf{monótona nos intervalos}: sempre que~$i,i'$ são índices de linhas e~$j,j'$ índices de colunas de~$C$ tais que~$[i' \tdots j'] \subseteq [i \tdots j] \subseteq [1 \tdots n]$, vale que~$C[i'][j'] \leq C[i][j]$.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{Interpretação da recorrência~$A$. Desejamos dividir um vetor~$v$ em um dado ponto sucessivamente até que todas as partes tenham tamanho unitário. O objetivo é encontrar uma ordem de divisões que minimize o custo sabendo que dividir um vetor~$v[i\tdots j]$ em qualquer ponto custa~$C[i][j]$.}
-\end{figure}
-
-Tome um subvetor~$v[i \tdots j]$ de~$v$. Se um ponto ótimo para dividir~$v[i \tdots j-1]$ é~$\ell$ e um ponto ótimo para dividir~$v[i+1 \tdots j]$ é~$r$, segundo Yao, um ponto ótimo~$p$ para dividir o vetor~$v[i \tdots j]$ deve respeitar~$\ell \leq p \leq r$.
-
-\begin{figure}[h]
-    \centering
-    \input{Figures/Holder.tikz}
-    \caption{Relação entre os pontos de corte ótimos. Os dois primeiros vetores são subvetores do último. Neles está marcado, em verde, o ponto ótimo de divisão. No último, estão marcados, em vermelho, os candidatos a pontos ótimos de divisão.}
-\end{figure}
-
-Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a otimização de Knuth-Yao resolve a mesma em tempo~$\Cl{O}(n^2)$.
-
-        \end{block}
-
-    \end{column}
-
-    \end{columns}
-
-
-	\begin{block}{Mais informações}
-		\textcolor{jblue}{{\url{http://www.linux.ime.usp.br/~victorsenam/mac0499}}}
 	\end{block}
 
     \begin{block}{Referências}
@@ -213,6 +126,94 @@ Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a o
 
         \end{thebibliography}}
     \end{block}
+
+
+\end{column}
+
+
+\begin{column}{0.60\paperwidth} 
+
+    \begin{columns}[c,totalwidth=0.60\paperwidth]
+
+    \begin{column}{0.47\columnwidth}
+
+        \begin{block}{Divisão e conquista}
+O primeiro método não trivial para encontrar os máximos das linhas de matrizes Monge é chamado de método da divisão e conquista. A ideia é simples e utiliza apenas a monotonicidade da matriz Monge.
+\vskip2ex
+Tome uma matriz~$A$ monótona crescente nos máximos das linhas com~$n$ linhas e~$m$ colunas. Tome como~$\ell$ uma linha do meio da matriz (teto ou chão de~$\frac{1 + n}{2}$). Se~$r$ é o maior índice de máximo desta linha, sabemos que os índices de máximos das outras linhas estão nas submatrizes~$A[1 \tdots \ell-1][r \tdots n]$ e~$A[\ell + 1 \tdots n][1 \tdots r]$, para as quais resolvemos o problema recursivamente.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/DivConq.tikz}
+    \caption{Progressão da divisão e conquista. A cada passo, a linha~$\ell$ está marcada em verde e a célula de máximo desta linha está circulada em vermelho.}
+\end{figure}
+
+Escolhendo~$\ell$ da forma como escolhemos, este algoritmo completa seu trabalho em tempo~$\Cl{O}((n+m)\lg(n))$.
+        \end{block}
+
+        \begin{block}{SMAWK}
+
+O algoritmo SMAWK~\cite{Aggarwal} é um método para encontrar os máximos de linhas de matrizes totalmente monótonas.
+\vskip2ex
+A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e conquista, mas em vez de encontrar o máximo de uma linha central, ele remove todas as linhas pares da matriz, resolve o problema para esta nova matriz e utiliza esta resposta para calcular rapidamente os valores das linhas restantes.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/SMAWK.tikz}
+    \caption{Progressão do SMAWK. Primeiro, as linhas pares são removidas. Depois os máximos das linhas restantes (em vermelho) são encontrados recursivamente. Finalmente, para encontrar os índices das linhas originais, é necessário visitar apenas algumas posições (circuladas em verde).}
+\end{figure}
+
+Desta forma o algoritmo tomaria tempo~$\Cl{O}((n+m)\lg(n))$, assim como o método da divisão e conquista. Para melhorar esta complexidade, antes de resolver o problema recursivamente, o algoritmo SMAWK remove algumas colunas da matriz formada, tornando-a quadrada. 
+\vskip2ex
+Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, colunas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os máximos nas mesmas posições da original. Com isso, o algoritmo todo toma tempo~$\Cl{O}(n+m)$.
+
+        \end{block}
+        
+    \end{column}
+
+
+    \begin{column}{0.5\columnwidth}
+        \begin{block}{Programação Dinâmica}
+As matrizes Monge são muito úteis para resolver problemas de programação dinâmica~\cite{Galil}. 
+\vskip2ex
+O problema ``Internet Trouble'' da Final Brasileira da Maratona de Programação 2016 pode ser reduzido para uma recorrência~$E$ tal que~${ E[1][j] = A[1][j]}$ e~${ E[\ell][j] = \min\{E[\ell-1][i] + A[i][j] \mid i \in [j]\} }$ para todo par de índices~${ \ell \in [2 \tdots k] }$ e~$j \in [n]$ onde~$A$ é uma matriz e~$k$ e~$n$ são inteiros. Esta recorrência pode ser resolvida de maneira fácil com programação dinâmica em tempo~$\Cl{O}(kn^2)$. Porém, é possível traduzir esta recorrência para uma matriz monótona crescente nos mínimos das linhas de forma que encontrar os mínimos desta matriz é equivalente a encontrar a solução da recorrência~$E$. Esta redução resolve o problema em tempo~$\Cl{O}(kn\lg(n))$.
+\vskip2ex
+Um outro formato comum para programação dinâmica que é relacionado a matrizes Monge é o dado por uma recorrência~$E$ tal que~${ E[i] = \min\{ E[j] + C[i][j] \mid j \in [i+1 \tdots n] \} }$ para todo~$i \in [n-1]$ e~$E[n] = 0$ onde~$n$ é um natural e~$C$ é uma matriz Monge. O trabalho apresenta uma estrutura de dados chamada de envelope que faz com que seja possível resolver esta recorrência em tempo~$\Cl{O}(n\lg(n))$ em vez de~$\Cl{O}(n^2)$, que é o tempo da solução trivial por programação dinâmica.
+        \end{block}
+
+        \begin{block}{Otimização de Knuth-Yao}
+A otimização de Knuth-Yao é uma aplicação das propriedades das matrizes Monge fortemente relacionada a programação dinâmica. Ela se baseia na solução de Knuth~\cite{Knuth} para o problema da árvore de busca binária ótima. Yao~\cite{Yao} percebeu que tal solução poderia ser usada para qualquer recorrência tal que~$A[i][j] = C[i][j]$ quando~$i = j$ e, quando~$1 \leq i < j \leq n$,
+\begin{equation*}
+A[i][j] = C[i][j] + \min\{A[i][k-1] + A[k][j] \mid k \in [i+1 \tdots j]\} 
+\end{equation*}
+onde~$C$ é uma matriz Monge convexa e \textbf{monótona nos intervalos}: sempre que~$i,i'$ são índices de linhas e~$j,j'$ índices de colunas de~$C$ tais que~$[i' \tdots j'] \subseteq [i \tdots j] \subseteq [1 \tdots n]$, vale que~$C[i'][j'] \leq C[i][j]$.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/KY_Inter.tikz}
+    \caption{Interpretação da recorrência~$A$. Desejamos dividir um vetor~$v$ em um dado ponto sucessivamente até que todas as partes tenham tamanho unitário. O objetivo é encontrar uma ordem de divisões que minimize o custo sabendo que dividir um vetor~$v[i\tdots j]$ em qualquer ponto custa~$C[i][j]$.}
+\end{figure}
+
+Tome um subvetor~$v[i \tdots j]$ de~$v$. Se um ponto ótimo para dividir~$v[i \tdots j-1]$ é~$\ell$ e um ponto ótimo para dividir~${v[i+1 \tdots j]}$ é~$r$, segundo Yao, um ponto ótimo~$p$ para dividir o vetor~$v[i \tdots j]$ deve respeitar~$\ell \leq p \leq r$.
+
+\begin{figure}[h]
+    \centering
+    \input{Figures/KY_Cuts.tikz}
+    \caption{Relação entre os pontos de corte ótimos. Os dois primeiros vetores são subvetores do último. Neles está marcado, em verde, o ponto ótimo de divisão. No último, estão marcados, em vermelho, os candidatos a pontos ótimos de divisão.}
+\end{figure}
+
+Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a otimização de Knuth-Yao resolve a mesma em tempo~$\Cl{O}(n^2)$.
+
+        \end{block}
+
+    \end{column}
+
+    \end{columns}
+
+
+	\begin{block}{Mais informações}
+		\textcolor{jblue}{{\url{http://www.linux.ime.usp.br/~victorsenam/mac0499}}}
+	\end{block}
 
 
 \end{column}
