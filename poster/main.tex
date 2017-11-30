@@ -97,7 +97,7 @@ Como encontrar um valor máximo em cada linha de uma matriz Monge sem analisar t
 \begin{figure}[h]
     \centering
     \input{Figures/Monotone.tikz}
-    \caption{Matriz monótona decrescente nos máximos das linhas. Os máximos das linhas estão marcados em vermelho.}
+    \caption{Matriz monótona crescente nos máximos das linhas. Os máximos das linhas estão marcados em vermelho.}
 \end{figure}
 
 Uma matriz Monge côncava é \textbf{totalmente monótona côncava nas linhas}: toda submatriz dela é monótona crescente nos máximos das linhas. Estas propriedades são essenciais para os algoritmos discutidos no trabalho.
@@ -155,7 +155,7 @@ Escolhendo~$\ell$ da forma como escolhemos, este algoritmo completa seu trabalho
 
 O algoritmo SMAWK~\cite{Aggarwal} é um método para encontrar os máximos de linhas de matrizes totalmente monótonas.
 \vskip2ex
-A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e conquista, mas em vez de encontrar o máximo de uma linha central, ele remove todas as linhas pares da matriz, resolve o problema para esta nova matriz e utiliza esta resposta para calcular rapidamente os valores das linhas restantes.
+A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e conquista mas, em vez de encontrar o máximo de uma linha central, ele remove todas as linhas pares da matriz, resolve o problema para esta nova matriz e utiliza esta resposta para calcular rapidamente os valores das linhas restantes.
 
 \begin{figure}[h]
     \centering
@@ -202,7 +202,7 @@ Tome um subvetor~$v[i \tdots j]$ de~$v$. Se um ponto ótimo para dividir~$v[i \t
     \caption{Relação entre os pontos de corte ótimos. Os dois primeiros vetores são subvetores do último. Neles está marcado, em verde, o ponto ótimo de divisão. No último, estão marcados, em vermelho, os candidatos a pontos ótimos de divisão.}
 \end{figure}
 
-Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a otimização de Knuth-Yao resolve a mesma em tempo~$\Cl{O}(n^2)$.
+Enquanto a recorrência apresentada tem uma solução trivial~$\Cl{O}(n^3)$, a otimização de Knuth-Yao se utiliza desta propriedade para resolver a mesma recorrência em tempo~$\Cl{O}(n^2)$.
 
         \end{block}
 
