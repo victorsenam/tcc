@@ -1,5 +1,5 @@
 \documentclass[final]{beamer}
-\usepackage[size=custom,height=84.1,width=59.4,scale=1.0]{beamerposter}
+\usepackage[size=custom,width=70.7,height=100,scale=1.0]{beamerposter}
 
 \usepackage[brazil]{babel}
 \usepackage[utf8]{inputenc}
@@ -165,7 +165,7 @@ A ideia deste algoritmo se desenvolve de maneira parecida com a da divisão e co
 
 Desta forma o algoritmo tomaria tempo~$\Cl{O}((n+m)\lg(n))$, assim como o método da divisão e conquista. Para melhorar esta complexidade, antes de resolver o problema recursivamente, o algoritmo SMAWK remove algumas colunas da matriz formada, tornando-a quadrada. 
 \vskip2ex
-Graças à total monotonicidade, é possível remover colunas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os máximos nas mesmas posições da original em tempo~${ \Cl{O}(n+m) }$. O algoritmo todo toma tempo~${ \Cl{O}(n+m) }$.
+Graças à total monotonicidade, é possível remover, em tempo~$\Cl{O}(n+m)$, colunas suficientes de forma que a matriz resultante ainda seja totalmente monótona e possua os máximos nas mesmas posições da original. Com isso, o algoritmo todo toma tempo~$\Cl{O}(n+m)$.
 
         \end{block}
         
@@ -194,7 +194,7 @@ onde~$C$ é uma matriz Monge convexa e \textbf{monótona nos intervalos}: sempre
     \caption{Interpretação da recorrência~$A$. Desejamos dividir um vetor~$v$ em um dado ponto sucessivamente até que todas as partes tenham tamanho unitário. O objetivo é encontrar uma ordem de divisões que minimize o custo sabendo que dividir um vetor~$v[i\tdots j]$ em qualquer ponto custa~$C[i][j]$.}
 \end{figure}
 
-Tome um subvetor~$v[i \tdots j]$ de~$v$. Se~$\ell$ é um ponto ótimo para dividir~${ v[i \tdots j-1] }$ e~$r$ é um ponto ótimo para dividir~${v[i+1 \tdots j]}$, segundo Yao, um ponto ótimo~$p$ para dividir o vetor~$v[i \tdots j]$ deve respeitar~$\ell \leq p \leq r$.
+Tome um subvetor~$v[i \tdots j]$ de~$v$. Se um ponto ótimo para dividir~$v[i \tdots j-1]$ é~$\ell$ e um ponto ótimo para dividir~${v[i+1 \tdots j]}$ é~$r$, segundo Yao, um ponto ótimo~$p$ para dividir o vetor~$v[i \tdots j]$ deve respeitar~$\ell \leq p \leq r$.
 
 \begin{figure}[h]
     \centering
