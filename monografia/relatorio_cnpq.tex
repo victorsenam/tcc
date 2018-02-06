@@ -1,0 +1,108 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND SETTINGS
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt,openany]{book}
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=violet!85!black,
+    linkcolor=MidnightBlue,
+    urlcolor=MidnightBlue
+}
+
+\usepackage{setspace}
+\onehalfspacing
+\usepackage[a4paper,top=3cm,bottom=2.3cm,left=2.2cm,right=2.2cm]{geometry}
+
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+
+\usepackage[noend]{algpseudocode}
+\usepackage[chapter]{algorithm}
+\usepackage{listings}
+
+\usepackage[color=green!40]{todonotes}
+
+\usepackage[authoryear]{natbib}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,positioning,shadows,trees,patterns,snakes,matrix}
+
+\usepackage[shortlabels]{enumitem}
+
+\sloppy
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\frontmatter
+
+\thispagestyle{empty}
+\begin{center}
+\Large \textbf{\textsc{Relatório de iniciação científica}} \\
+\large \textbf{\textsc{Algoritmos em matrizes monótonas e Monge convexas}} \\
+\large \textsc{Com bolsa concedida no período de Agosto de 2017 até Janeiro de 2018} \\[120 pt]
+\large \textsc{Trabalho de conclusão de curso} \\
+\large \textsc{Universidade de São Paulo} \\
+\large \textsc{Bacharelado em Ciência da Computação, 2017}\\[120pt]
+\large \textsc{Victor Sena Molero} \\
+\large \textsc{Orientadora: Cristina G. Fernandes}
+\vfill
+\large \textsc{Trabalho fomentado pela bolsa PIBIC do CNPq.}
+\end{center}
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\include{Sections/Resumo}
+
+%----------------------------------------------------------------------------------------
+%	LISTS
+%----------------------------------------------------------------------------------------
+
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+%----------------------------------------------------------------------------------------
+%   DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+\input{definitions.tex}
+
+%----------------------------------------------------------------------------------------
+%	CONTENT
+%----------------------------------------------------------------------------------------
+
+\mainmatter
+\include{Sections/Introducao}
+\include{Sections/MatrizMonge}
+\include{Sections/DivisaoEConquista}
+\include{Sections/SMAWK}
+\include{Sections/KnuthYao}
+\include{Sections/EDPD}
+\include{Sections/Online}
+% \include{Sections/Envelopes}
+\include{Sections/Exemplos}
+% \include{Sections/Subjetiva}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{main}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}  
